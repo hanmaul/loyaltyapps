@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "959302947978",
+    "project_id": "loyalty-8e0e5",
+    "storage_bucket": "loyalty-8e0e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959302947978:android:d9db6aad9ff220097d4973",
+        "android_client_info": {
+          "package_name": "com.kamm.loyalty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNGjEZRBZwefCTr-W1BR82V4kCSQGY_sM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
