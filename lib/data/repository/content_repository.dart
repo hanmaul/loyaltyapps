@@ -5,7 +5,6 @@ import 'package:loyalty/data/model/highlight.dart';
 import 'package:loyalty/data/model/promo.dart';
 import 'package:loyalty/data/model/service.dart';
 import 'package:loyalty/data/model/banner.dart';
-import 'package:loyalty/services/fetch_content.dart';
 
 class ContentRepository {
   final DataContent dataContent;

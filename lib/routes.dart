@@ -8,7 +8,11 @@ import 'package:loyalty/screen/webview/content.dart';
 
 Map<String, WidgetBuilder> routes = {
   '/': (context) => const Auth(),
-  '/dashboard': (context) => const Dashboard(),
+  // '/dashboard': (context) => const Dashboard(page: 0),
+  '/dashboard': (context) {
+    final args = ModalRoute.of(context)!.settings.arguments as int;
+    return Dashboard(page: args);
+  },
   // '/account': (context) => const Akunku(),
   // '/register': (context) => const Register(),
   '/notifikasi': (context) => const Notifications(),

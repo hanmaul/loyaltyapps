@@ -66,6 +66,11 @@ class PrefRepository {
     return pref.getString("status") ?? "";
   }
 
+  Future<void> setFtoken(String token) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("firebaseToken", token);
+  }
+
   Future<String> getFtoken() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getString("firebaseToken") ?? "";

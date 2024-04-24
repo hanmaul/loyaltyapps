@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:loyalty/main.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:loyalty/data/repository/preferences_repository.dart';
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -15,29 +15,30 @@ class FirebaseApi {
     final fCMToken = await _firebaseMessaging.getToken();
 
     // print the token (normally you would send this to your server)
-    print('Token: $fCMToken');
+    // print('Token: $fCMToken');
 
     // save token in session
-    saveToken(fCMToken.toString());
+    await PrefRepository().setFtoken(fCMToken.toString());
 
     // initialize further settings for push notif
     initPushNotifications();
   }
 
-  void saveToken(String token) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("firebaseToken", token);
-  }
-
   // funtion to handle received messages
   void handleMessage(RemoteMessage? message) {
     // if the message is null, do nothing
-    if (message == null) return;
+    if (message == null) {
+      return;
+    } else {
+      print('Title : ${message.notification!.title.toString()}');
+      print('Body : ${message.notification!.body.toString()}');
+    }
 
     // navigate to new screen when messages is received and user taps notifications
-    navigatorKey.currentState?.pushNamed(
-      '/notifikasi',
-      arguments: message,
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(
+      '/dashboard',
+      (route) => false,
+      arguments: 2,
     );
   }
 

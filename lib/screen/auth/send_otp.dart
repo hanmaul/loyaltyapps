@@ -50,7 +50,7 @@ class _sendOtpState extends State<sendOtp> {
       MaterialPageRoute(
         builder: (BuildContext context) {
           if (nama != "") {
-            return Dashboard();
+            return Dashboard(page: 0);
           } else {
             return Register(url: url);
           }

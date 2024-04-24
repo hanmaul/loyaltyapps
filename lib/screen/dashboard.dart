@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/notifications.dart';
+import 'package:loyalty/screen/history.dart';
 import 'package:loyalty/screen/webview/akunku.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  final int page;
+  const Dashboard({
+    super.key,
+    required this.page,
+  });
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -13,12 +18,13 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentPageIndex = 0;
-  late Future<String> urlFuture;
 
   @override
   void initState() {
     super.initState();
-    urlFuture = WebviewRepository().getUrlAkunku(); // Add this line
+    if (widget.page != 0) {
+      _currentPageIndex = widget.page;
+    }
   }
 
   List<Widget> get _pages => [
@@ -26,7 +32,7 @@ class _DashboardState extends State<Dashboard> {
         HomePage(),
 
         // History
-        HomePage(),
+        History(),
 
         // Notifikasi
         Notifications(),
@@ -78,15 +84,23 @@ class _DashboardState extends State<Dashboard> {
             icon: Icon(Icons.history_outlined),
             label: 'History',
           ),
+          // NavigationDestination(
+          //   selectedIcon: Icon(
+          //     Icons.notifications_sharp,
+          //     color: Color(0xff0B60B0),
+          //   ),
+          //   icon: Badge(
+          //     label: Text('2'),
+          //     child: Icon(Icons.notifications_sharp),
+          //   ),
+          //   label: 'Notifications',
+          // ),
           NavigationDestination(
             selectedIcon: Icon(
               Icons.notifications_sharp,
               color: Color(0xff0B60B0),
             ),
-            icon: Badge(
-              label: Text('2'),
-              child: Icon(Icons.notifications_sharp),
-            ),
+            icon: Icon(Icons.notifications_sharp),
             label: 'Notifications',
           ),
           NavigationDestination(

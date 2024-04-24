@@ -29,7 +29,7 @@ class _AuthState extends State<Auth> {
         body: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is SignedIn) {
-              return const Dashboard();
+              return const Dashboard(page: 0);
             }
             if (state is InRegister) {
               return FutureBuilder<String>(

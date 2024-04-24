@@ -33,7 +33,7 @@ class _AkunkuState extends State<Akunku> {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return const Dashboard();
+          return const Dashboard(page: 0);
         },
       ),
       (route) => false,

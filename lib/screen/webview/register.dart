@@ -35,7 +35,7 @@ class _RegisterState extends State<Register> {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return const Dashboard();
+          return const Dashboard(page: 0);
         },
       ),
       (route) => false,
