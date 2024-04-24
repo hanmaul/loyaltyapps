@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loyalty/bloc/auth/auth_bloc.dart';
+import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loyalty/screen/webview/register.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:loyalty/screen/introduction.dart';
 import 'package:loyalty/screen/dashboard.dart';
 
 class Auth extends StatefulWidget {
@@ -13,37 +15,48 @@ class Auth extends StatefulWidget {
 }
 
 class _AuthState extends State<Auth> {
-  String key = "";
-  String nama = "";
-
-  void sessionCheck() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      key = pref.getString("key")!;
-      nama = pref.getString("nama")!;
-    });
-  }
-
   @override
   void initState() {
-    sessionCheck();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (BuildContext context) {
-          if (key != "" && nama != "") {
-            return const Dashboard();
-          } else if (key != "" && nama == "") {
-            return const Register();
-          } else {
-            // return Introduction(); --> User Baru
-            return const getOtp();
-          }
-        },
+    return BlocProvider(
+      create: (context) =>
+          AuthBloc(prefRepository: PrefRepository())..add(SessionCheck()),
+      child: Scaffold(
+        body: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is SignedIn) {
+              return const Dashboard();
+            }
+            if (state is InRegister) {
+              return FutureBuilder<String>(
+                future: WebviewRepository().getUrlRegister(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // or your own loading widget
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Register(url: snapshot.data!);
+                  }
+                },
+              );
+            }
+            if (state is UnRegistered) {
+              return const getOtp();
+            }
+            if (state is FailureLoadState) {
+              return Center(
+                child: Text(state.message),
+              );
+            }
+            return Container();
+          },
+        ),
       ),
     );
   }

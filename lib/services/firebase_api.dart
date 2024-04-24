@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:loyalty/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -16,8 +17,16 @@ class FirebaseApi {
     // print the token (normally you would send this to your server)
     print('Token: $fCMToken');
 
+    // save token in session
+    saveToken(fCMToken.toString());
+
     // initialize further settings for push notif
     initPushNotifications();
+  }
+
+  void saveToken(String token) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("firebaseToken", token);
   }
 
   // funtion to handle received messages

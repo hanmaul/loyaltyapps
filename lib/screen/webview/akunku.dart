@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Akunku extends StatefulWidget {
-  const Akunku({super.key});
+  final String url;
+
+  const Akunku({
+    super.key,
+    required this.url,
+  });
 
   @override
   State<Akunku> createState() => _AkunkuState();
@@ -16,19 +22,10 @@ class _AkunkuState extends State<Akunku> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   late final InAppWebViewController _webViewController;
   double _progress = 0;
-  String key = "";
 
   @override
   void initState() {
     super.initState();
-    getKey();
-  }
-
-  getKey() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      key = pref.getString('key')!;
-    });
   }
 
   Future<void> dashboard() async {
@@ -43,10 +40,8 @@ class _AkunkuState extends State<Akunku> {
     );
   }
 
-  Future<void> removeSession() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.clear();
-
+  Future<void> signOut() async {
+    await PrefRepository().removeSession();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -74,34 +69,32 @@ class _AkunkuState extends State<Akunku> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          key != ""
-              ? InAppWebView(
-                  initialUrlRequest: URLRequest(
-                    url: WebUri(
-                        "http://mobilekamm.ddns.net:8065/m_mlp/mobile/akun/profile?key=$key"),
-                  ),
-                  // onReceivedServerTrustAuthRequest:
-                  //     (controller, challenge) async {
-                  //   return ServerTrustAuthResponse(
-                  //       action: ServerTrustAuthResponseAction.PROCEED);
-                  // },
-                  onWebViewCreated: (InAppWebViewController controller) {
-                    _webViewController = controller;
-                    controller.addJavaScriptHandler(
-                      handlerName: 'dashboard',
-                      callback: (args) {
-                        dashboard();
-                      },
-                    );
-                    controller.addJavaScriptHandler(
-                      handlerName: 'logout',
-                      callback: (args) {
-                        removeSession();
-                      },
-                    );
-                  },
-                  onLoadStop: (controller, url) async {
-                    await controller.evaluateJavascript(source: """ 
+          InAppWebView(
+            initialUrlRequest: URLRequest(
+              url: WebUri(widget.url),
+            ),
+            // onReceivedServerTrustAuthRequest:
+            //     (controller, challenge) async {
+            //   return ServerTrustAuthResponse(
+            //       action: ServerTrustAuthResponseAction.PROCEED);
+            // },
+            onWebViewCreated: (InAppWebViewController controller) {
+              _webViewController = controller;
+              controller.addJavaScriptHandler(
+                handlerName: 'dashboard',
+                callback: (args) {
+                  dashboard();
+                },
+              );
+              controller.addJavaScriptHandler(
+                handlerName: 'logout',
+                callback: (args) {
+                  signOut();
+                },
+              );
+            },
+            onLoadStop: (controller, url) async {
+              await controller.evaluateJavascript(source: """ 
                       const Flutter = {
                           home(){
                             window.flutter_inappwebview.callHandler('dashboard', 'home');
@@ -111,30 +104,28 @@ class _AkunkuState extends State<Akunku> {
                           },
                      }
                       """);
-                  },
-                  onProgressChanged:
-                      (InAppWebViewController controller, int progress) {
-                    setState(() {
-                      _progress = progress / 100;
-                    });
-                  },
-                )
-              : Container(),
+            },
+            onProgressChanged:
+                (InAppWebViewController controller, int progress) {
+              setState(() {
+                _progress = progress / 100;
+              });
+            },
+          ),
           _progress < 1
               ? WillPopScope(
                   key: _keyLoader,
                   child: Stack(
                     children: [
                       Container(
-                        color: Colors.black
-                            .withOpacity(0.7), // Adjust opacity as needed
+                        color: Colors.white, // Adjust opacity as needed
                         width: double.infinity,
                         height: double.infinity,
                       ),
                       Center(
-                        child: LoadingAnimationWidget.fourRotatingDots(
-                          color: Colors.white,
-                          size: 40,
+                        child: LoadingAnimationWidget.waveDots(
+                          color: const Color(0xff0B60B0),
+                          size: 32,
                         ),
                       ),
                     ],

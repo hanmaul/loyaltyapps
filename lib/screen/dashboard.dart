@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/webview/akunku.dart';
+import 'package:loyalty/data/repository/webview_repository.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -12,13 +13,41 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentPageIndex = 0;
+  late Future<String> urlFuture;
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    HomePage(),
-    Notifications(),
-    Akunku(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    urlFuture = WebviewRepository().getUrlAkunku(); // Add this line
+  }
+
+  List<Widget> get _pages => [
+        // Home
+        HomePage(),
+
+        // History
+        HomePage(),
+
+        // Notifikasi
+        Notifications(),
+
+        // AKunku
+        FutureBuilder<String>(
+          future: WebviewRepository().getUrlAkunku(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Show a loading indicator while waiting
+            } else if (snapshot.hasError) {
+              return Text(
+                  'Error: ${snapshot.error}'); // Show error message if something went wrong
+            } else {
+              return Akunku(
+                  url: snapshot
+                      .data!); // Create Akunku widget with the fetched URL
+            }
+          },
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {

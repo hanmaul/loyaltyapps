@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:loyalty/components/square_tile.dart';
-import 'package:http/http.dart' as http;
 import 'package:loyalty/screen/auth/send_otp.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:loyalty/services/fetch_otp.dart';
 
 class getOtp extends StatefulWidget {
   const getOtp({super.key});
@@ -29,39 +26,30 @@ class _getOtpState extends State<getOtp> {
 
   void generateOTP(String nomor) async {
     if (phoneController.text != '') {
-      final response = await http.post(
-        Uri.parse('https://www.kamm-group.com:8070/fapi/autocust'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'nohp': '0' + nomor,
-        }),
-      );
-
-      List<dynamic> output = jsonDecode(response.body);
-      Map<String, dynamic> result = output[0];
-
+      final manageOtp = ManageOtp(); // Create an instance of ManageOtp
+      final response =
+          await manageOtp.getOtp(nomor); // Use the instance to call getOtp
       if (response.statusCode == 200) {
-        saveSession(result['No_hp']);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return sendOtp();
+          }),
+        );
       } else {
-        throw Exception('Failed to generate OTP');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Nomor tidak valid!'),
+          ),
+        );
       }
     } else {
-      debugPrint('field kosong');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mohon input nomor anda!'),
+        ),
+      );
     }
-  }
-
-  void saveSession(String nomor) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("nomor", nomor);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return sendOtp();
-      }),
-    );
   }
 
   @override
@@ -108,22 +96,11 @@ class _getOtpState extends State<getOtp> {
 
     return Scaffold(
       appBar: AppBar(
-        // title: Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     //SquareTile(imagePath: 'lib/assets/images/logo.png'),
-        //     // const Text("Welcome"),
-        //   ],
-        // ),
-        leading: GestureDetector(
-          child: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 18,
-            color: Colors.white,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-          },
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SquareTile(imagePath: 'assets/icons/Icon.png'),
+          ],
         ),
         backgroundColor: const Color(0xff0B60B0),
       ),

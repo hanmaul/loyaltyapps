@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:loyalty/data/repository/preferences_repository.dart';
 
 class ContentServices extends StatefulWidget {
   final String icon;
@@ -20,11 +20,13 @@ class ContentServices extends StatefulWidget {
 
 class _ContentServicesState extends State<ContentServices> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("url", urlWeb);
-    await pref.setString("url_title", urlTitle);
+    final custId = await PrefRepository().getCustId();
     if (urlWeb != "") {
-      Navigator.pushNamed(context, '/services');
+      Navigator.pushNamed(
+        context,
+        '/content',
+        arguments: {'title': urlTitle, 'url': urlWeb + custId},
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

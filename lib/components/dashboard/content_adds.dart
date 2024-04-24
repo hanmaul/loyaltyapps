@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ContentAdds extends StatefulWidget {
@@ -22,11 +21,12 @@ class ContentAdds extends StatefulWidget {
 
 class _ContentAddsState extends State<ContentAdds> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("url", urlWeb);
-    await pref.setString("url_title", urlTitle);
     if (urlWeb != "") {
-      Navigator.pushNamed(context, '/promo');
+      Navigator.pushNamed(
+        context,
+        '/content',
+        arguments: {'title': urlTitle, 'url': urlWeb},
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

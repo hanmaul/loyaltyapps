@@ -22,7 +22,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   await Permission.camera.request();
-  await Permission.microphone.request();
+  // await Permission.microphone.request();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotifications();
   runApp(const MyApp());
