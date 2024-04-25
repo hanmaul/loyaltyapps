@@ -41,7 +41,7 @@ class _AkunkuState extends State<Akunku> {
   }
 
   Future<void> signOut() async {
-    await PrefRepository().removeSession();
+    await PrefRepository().removeSession(excludeKeys: ['firebaseToken']);
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

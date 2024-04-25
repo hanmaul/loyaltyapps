@@ -1,9 +1,20 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefRepository {
-  Future<void> removeSession() async {
+  // Future<void> removeSession() async {
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   await pref.clear();
+  // }
+
+  Future<void> removeSession({required List<String> excludeKeys}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.clear();
+    Set<String> keys = pref.getKeys();
+
+    for (String key in keys) {
+      if (!excludeKeys.contains(key)) {
+        await pref.remove(key);
+      }
+    }
   }
 
   Future<bool?> firstAccess() async {
