@@ -16,4 +16,11 @@ class WebviewRepository {
     String urlRegister = url + key;
     return urlRegister;
   }
+
+  Future<String> getUrlHistory() async {
+    String custId = await PrefRepository().getCustId();
+    String url = "http://mobilekamm.ddns.net:8065/mls/mobile/kp/";
+    String urlHistory = url + custId;
+    return urlHistory;
+  }
 }

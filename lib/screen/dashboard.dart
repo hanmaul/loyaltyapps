@@ -32,7 +32,19 @@ class _DashboardState extends State<Dashboard> {
         HomePage(),
 
         // History
-        History(),
+        FutureBuilder<String>(
+          future: WebviewRepository().getUrlHistory(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Show a loading indicator while waiting
+            } else if (snapshot.hasError) {
+              return Text(
+                  'Error: ${snapshot.error}'); // Show error message if something went wrong
+            } else {
+              return History(url: snapshot.data!);
+            }
+          },
+        ),
 
         // Notifikasi
         Notifications(),
@@ -47,9 +59,7 @@ class _DashboardState extends State<Dashboard> {
               return Text(
                   'Error: ${snapshot.error}'); // Show error message if something went wrong
             } else {
-              return Akunku(
-                  url: snapshot
-                      .data!); // Create Akunku widget with the fetched URL
+              return Akunku(url: snapshot.data!);
             }
           },
         ),
@@ -101,7 +111,7 @@ class _DashboardState extends State<Dashboard> {
               color: Color(0xff0B60B0),
             ),
             icon: Icon(Icons.notifications_sharp),
-            label: 'Notifications',
+            label: 'Inbox',
           ),
           NavigationDestination(
             selectedIcon: Icon(

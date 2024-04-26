@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
