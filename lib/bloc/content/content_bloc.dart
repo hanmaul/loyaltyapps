@@ -32,7 +32,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
             promo: promos,
           ));
         } catch (e) {
-          emit(FailureLoadState(message: 'Gagal mengambil data $e'));
+          emit(FailureLoadState(message: 'Sorry, the server is busy now'));
         }
       }
 

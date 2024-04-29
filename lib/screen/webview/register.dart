@@ -3,7 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Register extends StatefulWidget {
   final String url;

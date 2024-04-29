@@ -10,7 +10,8 @@ import 'package:loyalty/components/dashboard/content_adds.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:loyalty/screen/response/server_error.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -197,8 +198,11 @@ class _HomePageState extends State<HomePage>
                 );
               }
               if (state is FailureLoadState) {
-                return Center(
-                  child: Text(state.message),
+                return ServerError(
+                  message: state.message,
+                  onRetry: () async {
+                    context.read<ContentBloc>().add(PullToRefreshEvent());
+                  },
                 );
               }
               return Container();

@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});

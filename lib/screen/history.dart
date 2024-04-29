@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class History extends StatefulWidget {
   final String url;

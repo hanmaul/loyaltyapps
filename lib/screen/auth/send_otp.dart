@@ -5,7 +5,7 @@ import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:pinput/pinput.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class sendOtp extends StatefulWidget {
   const sendOtp({super.key});

@@ -3,7 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:loyalty/components/square_tile.dart';
 import 'package:loyalty/screen/auth/send_otp.dart';
 import 'package:loyalty/services/fetch_otp.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class getOtp extends StatefulWidget {
   const getOtp({super.key});

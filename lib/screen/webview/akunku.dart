@@ -4,7 +4,7 @@ import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:loyalty/screen/no_internet_page.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Akunku extends StatefulWidget {
   final String url;
