@@ -3,6 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:loyalty/components/square_tile.dart';
 import 'package:loyalty/screen/auth/send_otp.dart';
 import 'package:loyalty/services/fetch_otp.dart';
+import 'package:loyalty/screen/no_internet_page.dart';
 
 class getOtp extends StatefulWidget {
   const getOtp({super.key});
@@ -94,178 +95,184 @@ class _getOtpState extends State<getOtp> {
       borderSide: const BorderSide(color: Colors.transparent),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SquareTile(imagePath: 'assets/icons/Icon.png'),
-          ],
-        ),
-        backgroundColor: const Color(0xff0B60B0),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        color: const Color(0xff0B60B0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return InternetAwareWidget(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                children: [
-                  const SizedBox(height: 15),
-                  RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'Masukkan '),
-                        TextSpan(
-                          text: 'Nomor Ponsel',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        TextSpan(text: ' Anda untuk melanjutkan'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  country == null
-                      ? const CircularProgressIndicator(
+              SquareTile(imagePath: 'assets/icons/Icon.png'),
+            ],
+          ),
+          backgroundColor: const Color(0xff0B60B0),
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(16.0),
+          color: const Color(0xff0B60B0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    const SizedBox(height: 15),
+                    RichText(
+                      text: const TextSpan(
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
                           color: Colors.white,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextFormField(
-                            autofocus: true,
-                            controller: phoneController,
-                            style: const TextStyle(
-                              fontSize: 22,
-                            ),
-                            onFieldSubmitted: (phoneNumber) {
-                              generateOTP(phoneController.text.toString());
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content:
-                                      // Text('+${country!.phoneCode}$phoneNumber'),
-                                      Text(
-                                          'Kode OTP dikirim ke WhatsApp Anda!'),
-                                ),
-                              );
-                            },
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              filled: true,
-                              contentPadding: EdgeInsets.zero,
-                              fillColor: Colors.white,
-                              enabledBorder: border,
-                              focusedBorder: border,
-                              hintText: '811-1234-5678',
-                              hintStyle: const TextStyle(color: Colors.black26),
-                              prefixIcon: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: showPicker,
-                                child: Container(
-                                  height: 10,
-                                  width: 85,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    '${country!.flagEmoji} +${country!.phoneCode}',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(text: 'Masukkan '),
+                          TextSpan(
+                            text: 'Nomor Ponsel',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          TextSpan(text: ' Anda untuk melanjutkan'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    country == null
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TextFormField(
+                              autofocus: true,
+                              controller: phoneController,
+                              style: const TextStyle(
+                                fontSize: 22,
+                              ),
+                              onFieldSubmitted: (phoneNumber) {
+                                generateOTP(phoneController.text.toString());
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        // Text('+${country!.phoneCode}$phoneNumber'),
+                                        Text(
+                                            'Kode OTP dikirim ke WhatsApp Anda!'),
+                                  ),
+                                );
+                              },
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                filled: true,
+                                contentPadding: EdgeInsets.zero,
+                                fillColor: Colors.white,
+                                enabledBorder: border,
+                                focusedBorder: border,
+                                hintText: '811-1234-5678',
+                                hintStyle:
+                                    const TextStyle(color: Colors.black26),
+                                prefixIcon: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: showPicker,
+                                  child: Container(
+                                    height: 10,
+                                    width: 85,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${country!.flagEmoji} +${country!.phoneCode}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
+                    const SizedBox(height: 24),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        style: TextStyle(
+                          height: 1.3,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white,
                         ),
-                  const SizedBox(height: 24),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      style: TextStyle(
-                        height: 1.3,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: 'Dengan melanjutkan, Anda menyetujui '),
+                          TextSpan(
+                            text: 'Syarat & Ketentuan',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          TextSpan(text: ' dan '),
+                          TextSpan(
+                            text: 'Kebijakan Privasi',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          TextSpan(text: ' kami'),
+                        ],
                       ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'Dengan melanjutkan, Anda menyetujui '),
-                        TextSpan(
-                          text: 'Syarat & Ketentuan',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        TextSpan(text: ' dan '),
-                        TextSpan(
-                          text: 'Kebijakan Privasi',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        TextSpan(text: ' kami'),
-                      ],
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.black12.withOpacity(0.1),
-                      border: Border.all(
-                        width: 5,
-                        color: Colors.transparent,
+                    const SizedBox(height: 24),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black12.withOpacity(0.1),
+                        border: Border.all(
+                          width: 5,
+                          color: Colors.transparent,
+                        ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(6)),
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(6)),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.warning,
-                          color: Colors.amber,
-                          size: 24.0,
-                        ),
-                        SizedBox(width: 12),
-                        Flexible(
-                          child: Text(
-                            'Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kode OTP, atau uang.',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 12,
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.warning,
+                            color: Colors.amber,
+                            size: 24.0,
+                          ),
+                          SizedBox(width: 12),
+                          Flexible(
+                            child: Text(
+                              'Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kode OTP, atau uang.',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              GestureDetector(
-                onTap: () {
-                  generateOTP(phoneController.text.toString());
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 32.0),
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
-                  child: const Text(
-                    'LANJUT',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Colors.white,
-                    ),
-                  ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
+                GestureDetector(
+                  onTap: () {
+                    generateOTP(phoneController.text.toString());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 32.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                    ),
+                    child: const Text(
+                      'LANJUT',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

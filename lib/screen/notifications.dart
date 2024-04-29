@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:loyalty/screen/no_internet_page.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});
@@ -28,20 +29,22 @@ class Notifications extends StatelessWidget {
   //   );
   // }
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Notifications",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
+    return InternetAwareWidget(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Notifications",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
           ),
+          backgroundColor: const Color(0xff0B60B0),
         ),
-        backgroundColor: const Color(0xff0B60B0),
-      ),
-      backgroundColor: Colors.white,
-      body: const Center(
-        child: Text('Under Constructions..'),
+        backgroundColor: Colors.white,
+        body: const Center(
+          child: Text('Under Constructions..'),
+        ),
       ),
     );
   }

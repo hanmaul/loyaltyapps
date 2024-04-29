@@ -4,6 +4,7 @@ import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/history.dart';
 import 'package:loyalty/screen/webview/akunku.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
+import 'package:loyalty/screen/no_internet_page.dart';
 
 class Dashboard extends StatefulWidget {
   final int page;
@@ -67,63 +68,65 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentPageIndex = index;
-          });
-        },
-        backgroundColor: Colors.white,
-        indicatorColor: Colors.transparent,
-        selectedIndex: _currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(
-              Icons.home,
-              color: Color(0xff0B60B0),
+    return InternetAwareWidget(
+      child: Scaffold(
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentPageIndex = index;
+            });
+          },
+          backgroundColor: Colors.white,
+          indicatorColor: Colors.transparent,
+          selectedIndex: _currentPageIndex,
+          destinations: const <Widget>[
+            NavigationDestination(
+              selectedIcon: Icon(
+                Icons.home,
+                color: Color(0xff0B60B0),
+              ),
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(
-              Icons.history_sharp,
-              color: Color(0xff0B60B0),
+            NavigationDestination(
+              selectedIcon: Icon(
+                Icons.history_sharp,
+                color: Color(0xff0B60B0),
+              ),
+              icon: Icon(Icons.history_outlined),
+              label: 'History',
             ),
-            icon: Icon(Icons.history_outlined),
-            label: 'History',
-          ),
-          // NavigationDestination(
-          //   selectedIcon: Icon(
-          //     Icons.notifications_sharp,
-          //     color: Color(0xff0B60B0),
-          //   ),
-          //   icon: Badge(
-          //     label: Text('2'),
-          //     child: Icon(Icons.notifications_sharp),
-          //   ),
-          //   label: 'Notifications',
-          // ),
-          NavigationDestination(
-            selectedIcon: Icon(
-              Icons.notifications_sharp,
-              color: Color(0xff0B60B0),
+            // NavigationDestination(
+            //   selectedIcon: Icon(
+            //     Icons.notifications_sharp,
+            //     color: Color(0xff0B60B0),
+            //   ),
+            //   icon: Badge(
+            //     label: Text('2'),
+            //     child: Icon(Icons.notifications_sharp),
+            //   ),
+            //   label: 'Notifications',
+            // ),
+            NavigationDestination(
+              selectedIcon: Icon(
+                Icons.notifications_sharp,
+                color: Color(0xff0B60B0),
+              ),
+              icon: Icon(Icons.notifications_sharp),
+              label: 'Inbox',
             ),
-            icon: Icon(Icons.notifications_sharp),
-            label: 'Inbox',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(
-              Icons.account_circle,
-              color: Color(0xff0B60B0),
+            NavigationDestination(
+              selectedIcon: Icon(
+                Icons.account_circle,
+                color: Color(0xff0B60B0),
+              ),
+              icon: Icon(Icons.account_circle),
+              label: 'Me',
             ),
-            icon: Icon(Icons.account_circle),
-            label: 'Me',
-          ),
-        ],
+          ],
+        ),
+        body: _pages[_currentPageIndex],
       ),
-      body: _pages[_currentPageIndex],
     );
   }
 }

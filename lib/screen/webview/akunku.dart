@@ -4,6 +4,7 @@ import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:loyalty/screen/no_internet_page.dart';
 
 class Akunku extends StatefulWidget {
   final String url;
@@ -54,85 +55,87 @@ class _AkunkuState extends State<Akunku> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "My Profile",
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: const Color(0xff0B60B0),
-      ),
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          InAppWebView(
-            initialUrlRequest: URLRequest(
-              url: WebUri(widget.url),
+    return InternetAwareWidget(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "My Profile",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
             ),
-            // onReceivedServerTrustAuthRequest:
-            //     (controller, challenge) async {
-            //   return ServerTrustAuthResponse(
-            //       action: ServerTrustAuthResponseAction.PROCEED);
-            // },
-            onWebViewCreated: (InAppWebViewController controller) {
-              _webViewController = controller;
-              controller.addJavaScriptHandler(
-                handlerName: 'dashboard',
-                callback: (args) {
-                  dashboard();
-                },
-              );
-              controller.addJavaScriptHandler(
-                handlerName: 'logout',
-                callback: (args) {
-                  signOut();
-                },
-              );
-            },
-            onLoadStop: (controller, url) async {
-              await controller.evaluateJavascript(source: """ 
-                      const Flutter = {
-                          home(){
-                            window.flutter_inappwebview.callHandler('dashboard', 'home');
-                          },
-                          logout(){
-                            window.flutter_inappwebview.callHandler('logout', 'removeSession');
-                          },
-                     }
-                      """);
-            },
-            onProgressChanged:
-                (InAppWebViewController controller, int progress) {
-              setState(() {
-                _progress = progress / 100;
-              });
-            },
           ),
-          _progress < 1
-              ? WillPopScope(
-                  key: _keyLoader,
-                  child: Stack(
-                    children: [
-                      Container(
-                        color: Colors.white, // Adjust opacity as needed
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                      Center(
-                        child: LoadingAnimationWidget.waveDots(
-                          color: const Color(0xff0B60B0),
-                          size: 32,
+          backgroundColor: const Color(0xff0B60B0),
+        ),
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            InAppWebView(
+              initialUrlRequest: URLRequest(
+                url: WebUri(widget.url),
+              ),
+              // onReceivedServerTrustAuthRequest:
+              //     (controller, challenge) async {
+              //   return ServerTrustAuthResponse(
+              //       action: ServerTrustAuthResponseAction.PROCEED);
+              // },
+              onWebViewCreated: (InAppWebViewController controller) {
+                _webViewController = controller;
+                controller.addJavaScriptHandler(
+                  handlerName: 'dashboard',
+                  callback: (args) {
+                    dashboard();
+                  },
+                );
+                controller.addJavaScriptHandler(
+                  handlerName: 'logout',
+                  callback: (args) {
+                    signOut();
+                  },
+                );
+              },
+              onLoadStop: (controller, url) async {
+                await controller.evaluateJavascript(source: """ 
+                        const Flutter = {
+                            home(){
+                              window.flutter_inappwebview.callHandler('dashboard', 'home');
+                            },
+                            logout(){
+                              window.flutter_inappwebview.callHandler('logout', 'removeSession');
+                            },
+                       }
+                        """);
+              },
+              onProgressChanged:
+                  (InAppWebViewController controller, int progress) {
+                setState(() {
+                  _progress = progress / 100;
+                });
+              },
+            ),
+            _progress < 1
+                ? WillPopScope(
+                    key: _keyLoader,
+                    child: Stack(
+                      children: [
+                        Container(
+                          color: Colors.white, // Adjust opacity as needed
+                          width: double.infinity,
+                          height: double.infinity,
                         ),
-                      ),
-                    ],
-                  ),
-                  onWillPop: () async => false,
-                )
-              : const SizedBox()
-        ],
+                        Center(
+                          child: LoadingAnimationWidget.waveDots(
+                            color: const Color(0xff0B60B0),
+                            size: 32,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onWillPop: () async => false,
+                  )
+                : const SizedBox()
+          ],
+        ),
       ),
     );
   }

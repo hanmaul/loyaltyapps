@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
       title: 'Loyalty',
       theme: ThemeData(
         //brightness: Brightness.light,
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        // primaryColor: const Color(0xff3498DB),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF0B60B0)),
+        primaryColor: const Color(0xFF0B60B0),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: Colors.grey.shade400,
           selectionColor: Colors.grey.shade300,
