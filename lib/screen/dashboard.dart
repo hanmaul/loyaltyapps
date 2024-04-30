@@ -76,8 +76,8 @@ class _DashboardState extends State<Dashboard> {
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 10,
-                blurRadius: 10,
+                spreadRadius: 5,
+                blurRadius: 7,
                 offset: Offset(0, 3),
               ),
             ],
