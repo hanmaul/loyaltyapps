@@ -47,7 +47,8 @@ class _ContentAddsState extends State<ContentAdds> {
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 12),
         color: Colors.white,
-        elevation: 4, // Adjust the elevation as needed
+        surfaceTintColor: Colors.white,
+        elevation: 2, // Adjust the elevation as needed
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),

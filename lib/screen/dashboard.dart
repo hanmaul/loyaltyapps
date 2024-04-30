@@ -70,60 +70,74 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return InternetAwareWidget(
       child: Scaffold(
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (int index) {
-            setState(() {
-              _currentPageIndex = index;
-            });
-          },
-          backgroundColor: Colors.white,
-          indicatorColor: Colors.transparent,
-          selectedIndex: _currentPageIndex,
-          destinations: const <Widget>[
-            NavigationDestination(
-              selectedIcon: Icon(
-                Icons.home,
-                color: Color(0xff0B60B0),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 10,
+                blurRadius: 10,
+                offset: Offset(0, 3),
               ),
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(
-                Icons.history_sharp,
-                color: Color(0xff0B60B0),
+            ],
+          ),
+          child: NavigationBar(
+            onDestinationSelected: (int index) {
+              setState(() {
+                _currentPageIndex = index;
+              });
+            },
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            indicatorColor: Colors.transparent,
+            selectedIndex: _currentPageIndex,
+            destinations: const <Widget>[
+              NavigationDestination(
+                selectedIcon: Icon(
+                  Icons.home,
+                  color: Color(0xff0B60B0),
+                ),
+                icon: Icon(Icons.home),
+                label: 'Home',
               ),
-              icon: Icon(Icons.history_outlined),
-              label: 'History',
-            ),
-            // NavigationDestination(
-            //   selectedIcon: Icon(
-            //     Icons.notifications_sharp,
-            //     color: Color(0xff0B60B0),
-            //   ),
-            //   icon: Badge(
-            //     label: Text('2'),
-            //     child: Icon(Icons.notifications_sharp),
-            //   ),
-            //   label: 'Notifications',
-            // ),
-            NavigationDestination(
-              selectedIcon: Icon(
-                Icons.notifications_sharp,
-                color: Color(0xff0B60B0),
+              NavigationDestination(
+                selectedIcon: Icon(
+                  Icons.history_sharp,
+                  color: Color(0xff0B60B0),
+                ),
+                icon: Icon(Icons.history_outlined),
+                label: 'History',
               ),
-              icon: Icon(Icons.notifications_sharp),
-              label: 'Inbox',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(
-                Icons.account_circle,
-                color: Color(0xff0B60B0),
+              // NavigationDestination(
+              //   selectedIcon: Icon(
+              //     Icons.notifications_sharp,
+              //     color: Color(0xff0B60B0),
+              //   ),
+              //   icon: Badge(
+              //     label: Text('2'),
+              //     child: Icon(Icons.notifications_sharp),
+              //   ),
+              //   label: 'Notifications',
+              // ),
+              NavigationDestination(
+                selectedIcon: Icon(
+                  Icons.notifications_sharp,
+                  color: Color(0xff0B60B0),
+                ),
+                icon: Icon(Icons.notifications_sharp),
+                label: 'Inbox',
               ),
-              icon: Icon(Icons.account_circle),
-              label: 'Me',
-            ),
-          ],
+              NavigationDestination(
+                selectedIcon: Icon(
+                  Icons.account_circle,
+                  color: Color(0xff0B60B0),
+                ),
+                icon: Icon(Icons.account_circle),
+                label: 'Me',
+              ),
+            ],
+          ),
         ),
         body: _pages[_currentPageIndex],
       ),
