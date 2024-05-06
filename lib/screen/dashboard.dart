@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty/screen/home.dart';
-import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/history.dart';
+import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/webview/akunku.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
@@ -48,7 +48,19 @@ class _DashboardState extends State<Dashboard> {
         ),
 
         // Notifikasi
-        Notifications(),
+        FutureBuilder<String>(
+          future: WebviewRepository().getUrlNotifikasi(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Show a loading indicator while waiting
+            } else if (snapshot.hasError) {
+              return Text(
+                  'Error: ${snapshot.error}'); // Show error message if something went wrong
+            } else {
+              return Notifications(url: snapshot.data!);
+            }
+          },
+        ),
 
         // AKunku
         FutureBuilder<String>(

@@ -15,7 +15,7 @@ Map<String, WidgetBuilder> routes = {
   },
   // '/account': (context) => const Akunku(),
   // '/register': (context) => const Register(),
-  '/notifikasi': (context) => const Notifications(),
+  // '/notifikasi': (context) => const Notifications(),
   '/content': (context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;

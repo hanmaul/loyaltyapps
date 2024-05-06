@@ -23,4 +23,11 @@ class WebviewRepository {
     String urlHistory = url + custId;
     return urlHistory;
   }
+
+  Future<String> getUrlNotifikasi() async {
+    String custId = await PrefRepository().getCustId();
+    String url = "http://mobilekamm.ddns.net:8065/notif_loyalty/notifikasi";
+    String urlNotifikasi = url + custId;
+    return url;
+  }
 }
