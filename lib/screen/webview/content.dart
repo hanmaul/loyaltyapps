@@ -43,85 +43,96 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     return InternetAwareWidget(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          backgroundColor: const Color(0xff0B60B0),
-        ),
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            InAppWebView(
-              initialUrlRequest: URLRequest(
-                url: WebUri(widget.url),
+      child: WillPopScope(
+        onWillPop: () async {
+          var isLastPage = await _webViewController.canGoBack();
+
+          if (isLastPage) {
+            _webViewController.goBack();
+            return false;
+          }
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              widget.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
               ),
-              // onReceivedServerTrustAuthRequest:
-              //     (controller, challenge) async {
-              //   return ServerTrustAuthResponse(
-              //       action: ServerTrustAuthResponseAction.PROCEED);
-              // },
-              onWebViewCreated: (InAppWebViewController controller) {
-                _webViewController = controller;
-                controller.addJavaScriptHandler(
-                  handlerName: 'dashboard',
-                  callback: (args) {
-                    dashboard();
-                  },
-                );
-              },
-              onLoadStop: (controller, url) async {
-                await controller.evaluateJavascript(source: """ 
-                  const Flutter = {
-                      home(){
-                        window.flutter_inappwebview.callHandler('dashboard', 'home');
-                      },
-                 }
-                  """);
-              },
-              onProgressChanged:
-                  (InAppWebViewController controller, int progress) {
-                setState(() {
-                  _progress = progress / 100;
-                });
+            ),
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
               },
             ),
-            _progress < 1
-                ? WillPopScope(
-                    key: _keyLoader,
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.white,
-                          width: double.infinity,
-                          height: double.infinity,
-                        ),
-                        Center(
-                          child: LoadingAnimationWidget.waveDots(
-                            color: const Color(0xff0B60B0),
-                            size: 32,
+            backgroundColor: const Color(0xff0B60B0),
+          ),
+          backgroundColor: Colors.white,
+          body: Stack(
+            children: [
+              InAppWebView(
+                initialUrlRequest: URLRequest(
+                  url: WebUri(widget.url),
+                ),
+                // onReceivedServerTrustAuthRequest:
+                //     (controller, challenge) async {
+                //   return ServerTrustAuthResponse(
+                //       action: ServerTrustAuthResponseAction.PROCEED);
+                // },
+                onWebViewCreated: (InAppWebViewController controller) {
+                  _webViewController = controller;
+                  controller.addJavaScriptHandler(
+                    handlerName: 'dashboard',
+                    callback: (args) {
+                      dashboard();
+                    },
+                  );
+                },
+                onLoadStop: (controller, url) async {
+                  await controller.evaluateJavascript(source: """ 
+                    const Flutter = {
+                        home(){
+                          window.flutter_inappwebview.callHandler('dashboard', 'home');
+                        },
+                   }
+                    """);
+                },
+                onProgressChanged:
+                    (InAppWebViewController controller, int progress) {
+                  setState(() {
+                    _progress = progress / 100;
+                  });
+                },
+              ),
+              _progress < 1
+                  ? WillPopScope(
+                      key: _keyLoader,
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Colors.white,
+                            width: double.infinity,
+                            height: double.infinity,
                           ),
-                        ),
-                      ],
-                    ),
-                    onWillPop: () async => false,
-                  )
-                : const SizedBox(),
-          ],
+                          Center(
+                            child: LoadingAnimationWidget.waveDots(
+                              color: const Color(0xff0B60B0),
+                              size: 32,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onWillPop: () async => false,
+                    )
+                  : const SizedBox(),
+            ],
+          ),
         ),
       ),
     );
