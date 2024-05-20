@@ -24,7 +24,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           final highlights = await contentRepository.getHighlight();
           final services = await contentRepository.getService();
           final promos = await contentRepository.getPromo();
-          await prefRepository.firstAccessFalse();
+          //await prefRepository.firstAccessFalse();
           emit(LoadedState(
             banner: banners,
             highlight: highlights,

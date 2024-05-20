@@ -30,10 +30,12 @@ class _ContentServicesState extends State<ContentServices> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text(
-          "Url Kosong!",
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        )),
+          content: Text(
+            "Url Kosong!",
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+          duration: Duration(seconds: 1),
+        ),
       );
     }
   }

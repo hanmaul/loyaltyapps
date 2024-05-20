@@ -17,14 +17,14 @@ class PrefRepository {
     }
   }
 
-  Future<bool?> firstAccess() async {
+  Future<bool> firstAccess() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    return pref.getBool('firstAccess');
+    return pref.getBool('firstAccess') ?? true;
   }
 
   Future<void> firstAccessFalse() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setBool("firstAccess", true);
+    await pref.setBool("firstAccess", false);
   }
 
   Future<void> setNomor(String nomor) async {

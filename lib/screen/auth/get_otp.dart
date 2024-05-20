@@ -41,6 +41,7 @@ class _getOtpState extends State<getOtp> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Nomor tidak valid!'),
+            duration: Duration(seconds: 1),
           ),
         );
       }
@@ -48,6 +49,7 @@ class _getOtpState extends State<getOtp> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Mohon input nomor anda!'),
+          duration: Duration(seconds: 1),
         ),
       );
     }
@@ -155,6 +157,7 @@ class _getOtpState extends State<getOtp> {
                                         // Text('+${country!.phoneCode}$phoneNumber'),
                                         Text(
                                             'Kode OTP dikirim ke WhatsApp Anda!'),
+                                    duration: Duration(seconds: 1),
                                   ),
                                 );
                               },

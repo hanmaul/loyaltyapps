@@ -28,6 +28,29 @@ class _DashboardState extends State<Dashboard> {
     if (widget.page != 0) {
       _currentPageIndex = widget.page;
     }
+    welcomeMsg();
+  }
+
+  Future<void> welcomeMsg() async {
+    PrefRepository prefRepository = PrefRepository();
+
+    bool first = await prefRepository.firstAccess();
+
+    if (first == true) {
+      String nama = await prefRepository.getName();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Hai, $nama !",
+            style: const TextStyle(fontSize: 14, color: Colors.white),
+          ),
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
+        ),
+      );
+      await prefRepository.firstAccessFalse();
+    }
   }
 
   List<String> get _appBars => [

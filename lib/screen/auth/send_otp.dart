@@ -29,6 +29,7 @@ class _sendOtpState extends State<sendOtp> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Kode OTP Salah!'),
+            duration: Duration(seconds: 1),
           ),
         );
       } else {
@@ -67,6 +68,7 @@ class _sendOtpState extends State<sendOtp> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Kode OTP dikirim ke WhatsApp Anda!'),
+          duration: Duration(seconds: 1),
         ),
       );
     } else {
