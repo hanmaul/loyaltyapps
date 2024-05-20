@@ -34,16 +34,6 @@ class _HistoryState extends State<History> {
           return true;
         },
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "History",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: const Color(0xff0B60B0),
-          ),
           backgroundColor: Colors.white,
           body: Stack(
             children: [

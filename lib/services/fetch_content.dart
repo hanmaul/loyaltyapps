@@ -22,4 +22,20 @@ class DataContent {
     );
     return response;
   }
+
+  Future<http.Response> getNotifUnread() async {
+    String custId = await PrefRepository().getCustId();
+
+    const baseUrl = "http://mobilekamm.ddns.net:8065/notif_loyalty/api/unread";
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'cust_id': custId,
+      }),
+    );
+    return response;
+  }
 }

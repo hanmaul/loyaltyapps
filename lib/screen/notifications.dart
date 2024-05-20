@@ -19,6 +19,22 @@ class _NotificationsState extends State<Notifications> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   late final InAppWebViewController _webViewController;
   double _progress = 0;
+  String _unRead = '0';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> countRead(String unread) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(
+        "Notifikasi Belum Dibaca = $unread",
+        style: TextStyle(fontSize: 16, color: Colors.white),
+      )),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,16 +50,6 @@ class _NotificationsState extends State<Notifications> {
           return true;
         },
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "Inbox",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: const Color(0xff0B60B0),
-          ),
           backgroundColor: Colors.white,
           body: Stack(
             children: [
@@ -58,6 +64,22 @@ class _NotificationsState extends State<Notifications> {
                 // },
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
+                  controller.addJavaScriptHandler(
+                    handlerName: 'countRead',
+                    callback: (args) {
+                      String unread = args.join('');
+                      //countRead(unread);
+                    },
+                  );
+                },
+                onLoadStop: (controller, url) async {
+                  await controller.evaluateJavascript(source: """ 
+                          const Flutter = {
+                              countRead(unread){
+                                window.flutter_inappwebview.callHandler('countRead', unread);
+                              },
+                         }
+                          """);
                 },
                 onProgressChanged:
                     (InAppWebViewController controller, int progress) {

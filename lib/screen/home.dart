@@ -40,41 +40,6 @@ class _HomePageState extends State<HomePage>
             prefRepository: PrefRepository())
           ..add(LoadEvent()),
         child: Scaffold(
-          appBar: AppBar(
-            title: FutureBuilder<String>(
-              future: PrefRepository().getName(),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else {
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return RichText(
-                      text: TextSpan(
-                        text: "Hai, ",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: snapshot.data,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }
-                }
-              },
-            ),
-            backgroundColor: const Color(0xff0B60B0),
-          ),
           body: BlocBuilder<ContentBloc, ContentState>(
             builder: (context, state) {
               if (state is LoadedState) {

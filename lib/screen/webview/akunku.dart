@@ -67,16 +67,6 @@ class _AkunkuState extends State<Akunku> {
           return true;
         },
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              "My Profile",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
-            backgroundColor: const Color(0xff0B60B0),
-          ),
           backgroundColor: Colors.white,
           body: Stack(
             children: [

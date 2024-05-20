@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/history.dart';
 import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/webview/akunku.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
+import 'package:loyalty/data/repository/notification_repository.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Dashboard extends StatefulWidget {
@@ -27,6 +29,13 @@ class _DashboardState extends State<Dashboard> {
       _currentPageIndex = widget.page;
     }
   }
+
+  List<String> get _appBars => [
+        "Home",
+        "History",
+        "Notification",
+        "My Profile",
+      ];
 
   List<Widget> get _pages => [
         // Home
@@ -82,6 +91,16 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return InternetAwareWidget(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _appBars[_currentPageIndex],
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: const Color(0xff0B60B0),
+        ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -104,8 +123,8 @@ class _DashboardState extends State<Dashboard> {
             surfaceTintColor: Colors.white,
             indicatorColor: Colors.transparent,
             selectedIndex: _currentPageIndex,
-            destinations: const <Widget>[
-              NavigationDestination(
+            destinations: <Widget>[
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.home,
                   color: Color(0xff0B60B0),
@@ -113,7 +132,7 @@ class _DashboardState extends State<Dashboard> {
                 icon: Icon(Icons.home),
                 label: 'Home',
               ),
-              NavigationDestination(
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.history_sharp,
                   color: Color(0xff0B60B0),
@@ -121,26 +140,30 @@ class _DashboardState extends State<Dashboard> {
                 icon: Icon(Icons.history_outlined),
                 label: 'History',
               ),
-              // NavigationDestination(
-              //   selectedIcon: Icon(
-              //     Icons.notifications_sharp,
-              //     color: Color(0xff0B60B0),
-              //   ),
-              //   icon: Badge(
-              //     label: Text('2'),
-              //     child: Icon(Icons.notifications_sharp),
-              //   ),
-              //   label: 'Notifications',
-              // ),
               NavigationDestination(
-                selectedIcon: Icon(
+                selectedIcon: const Icon(
                   Icons.notifications_sharp,
                   color: Color(0xff0B60B0),
                 ),
-                icon: Icon(Icons.notifications_sharp),
-                label: 'Inbox',
+                icon: FutureBuilder<int>(
+                  future: NotifRepository().getUnread(),
+                  builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.hasError ||
+                        snapshot.data == 0) {
+                      return const Icon(Icons
+                          .notifications_sharp); // Show a loading indicator while waiting
+                    } else {
+                      return Badge(
+                        label: Text('${snapshot.data}'),
+                        child: const Icon(Icons.notifications_sharp),
+                      );
+                    }
+                  },
+                ),
+                label: 'Notification',
               ),
-              NavigationDestination(
+              const NavigationDestination(
                 selectedIcon: Icon(
                   Icons.account_circle,
                   color: Color(0xff0B60B0),
