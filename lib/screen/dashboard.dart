@@ -3,7 +3,7 @@ import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/history.dart';
 import 'package:loyalty/screen/notifications.dart';
-import 'package:loyalty/screen/webview/akunku.dart';
+import 'package:loyalty/screen/akunku.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/data/repository/notification_repository.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
@@ -95,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
           title: Text(
             _appBars[_currentPageIndex],
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
           ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'dashboard.dart';
+import '../dashboard.dart';
 
 class Introduction extends StatefulWidget {
   const Introduction({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loyalty/screen/auth/auth.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/notifications.dart';
-import 'package:loyalty/screen/webview/akunku.dart';
+import 'package:loyalty/screen/akunku.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/webview/content.dart';
 
