@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/content/content_bloc.dart';
-import 'package:loyalty/data/repository/content_repository.dart';
 import 'package:loyalty/data/repository/preferences_repository.dart';
-import 'package:loyalty/services/fetch_content.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/components/dashboard/content_keuangan.dart';
 import 'package:loyalty/components/dashboard/content_services.dart';
 import 'package:loyalty/components/dashboard/content_adds.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/response/server_error.dart';
 import 'package:loyalty/screen/loading/shimmer_home.dart';
@@ -21,11 +19,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -33,13 +27,12 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return InternetAwareWidget(
       child: BlocProvider(
         create: (context) => ContentBloc(
-            contentRepository: ContentRepository(dataContent: DataContent()),
-            prefRepository: PrefRepository())
-          ..add(LoadEvent()),
+          prefRepository: PrefRepository(),
+          databaseRepository: DatabaseRepository(),
+        )..add(LoadEvent()),
         child: Scaffold(
           body: BlocBuilder<ContentBloc, ContentState>(
             builder: (context, state) {
@@ -185,7 +178,7 @@ class _HomePageState extends State<HomePage>
       items: banners.map<Widget>((item) {
         return Container(
           child: CachedNetworkImage(
-            imageUrl: item.url,
+            imageUrl: item.gambar,
           ),
         );
       }).toList(),

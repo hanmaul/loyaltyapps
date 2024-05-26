@@ -28,11 +28,3 @@ final class FailureLoadState extends ContentState {
     required this.message,
   });
 }
-
-final class LoadedAkun extends ContentState {
-  final String url;
-
-  LoadedAkun({
-    required this.url,
-  });
-}

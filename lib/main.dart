@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:loyalty/screen/auth/auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/routes.dart';
 import 'package:loyalty/services/firebase_api.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -34,23 +35,28 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Loyalty',
-      theme: ThemeData(
-        //brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF0B60B0)),
-        primaryColor: const Color(0xFF0B60B0),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Colors.grey.shade400,
-          selectionColor: Colors.grey.shade300,
-          selectionHandleColor: Colors.blue,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (context) => DatabaseRepository()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Loyalty',
+        theme: ThemeData(
+          //brightness: Brightness.light,
+          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF0B60B0)),
+          primaryColor: const Color(0xFF0B60B0),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.grey.shade400,
+            selectionColor: Colors.grey.shade300,
+            selectionHandleColor: Colors.blue,
+          ),
+          useMaterial3: true,
         ),
-        useMaterial3: true,
+        navigatorKey: navigatorKey,
+        initialRoute: '/',
+        routes: routes,
       ),
-      navigatorKey: navigatorKey,
-      initialRoute: '/',
-      routes: routes,
     );
   }
 }
