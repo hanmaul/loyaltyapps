@@ -5,6 +5,7 @@ import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 
 class Akunku extends StatefulWidget {
   final String url;
@@ -42,6 +43,7 @@ class _AkunkuState extends State<Akunku> {
 
   Future<void> signOut() async {
     await PrefRepository().removeSession(excludeKeys: ['firebaseToken']);
+    await DatabaseRepository().clearDatabase();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
