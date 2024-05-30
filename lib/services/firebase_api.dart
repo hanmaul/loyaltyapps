@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:loyalty/main.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -8,20 +8,20 @@ class FirebaseApi {
 
   // funtion to initialize notifications
   Future<void> initNotifications() async {
-    // reqyest permission from user (will prompt user)
+    // request permission from user (will prompt user)
     await _firebaseMessaging.requestPermission();
-
-    // fetch the FCM token for this device
-    final fCMToken = await _firebaseMessaging.getToken();
-
-    // print the token (normally you would send this to your server)
-    // print('Token: $fCMToken');
-
-    // save token in session
-    await PrefRepository().setFtoken(fCMToken.toString());
 
     // initialize further settings for push notif
     initPushNotifications();
+  }
+
+  Future<void> getFCM() async {
+    // fetch the FCM token for this device
+    final fCMToken = await _firebaseMessaging.getToken();
+
+    // save token in storage
+    await DatabaseRepository()
+        .updateUser(field: 'firebaseToken', data: fCMToken.toString());
   }
 
   // funtion to handle received messages

@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/services/firebase_api.dart';
 
 class ManageOtp {
   Future<http.Response> getOtp(String nomor) async {
@@ -17,14 +18,14 @@ class ManageOtp {
       }),
     );
     if (response.statusCode == 200) {
-      await PrefRepository().setNomor(no);
+      await DatabaseRepository().updateUser(field: 'nomor', data: no);
     }
     return response;
   }
 
   Future<http.Response> sendOtp(String otp) async {
-    PrefRepository prefRepository = PrefRepository();
-    String nomor = await prefRepository.getNomor();
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    String nomor = await databaseRepository.loadUser(field: 'nomor');
     const baseUrl =
         "https://www.kamm-group.com:8070/loyaltykammapi_native/public/index.php/verifyotphp";
     final response = await http.post(
@@ -41,10 +42,14 @@ class ManageOtp {
     if (response.body != 'otp salah') {
       List<dynamic> output = jsonDecode(response.body);
       Map<String, dynamic> result = output[0];
-      await prefRepository.setName(result['nama']);
-      await prefRepository.setCustId(result['Cust_id']);
-      await prefRepository.setStatus(result['status_mediator']);
-      await prefRepository.setKey(result['key']);
+      await DatabaseRepository()
+          .updateUser(field: 'nama', data: result['nama']);
+      await DatabaseRepository()
+          .updateUser(field: 'custId', data: result['Cust_id']);
+      await DatabaseRepository()
+          .updateUser(field: 'status', data: result['status_mediator']);
+      await DatabaseRepository().updateUser(field: 'key', data: result['key']);
+      await FirebaseApi().getFCM();
     }
     return response;
   }

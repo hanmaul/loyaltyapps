@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/history.dart';
@@ -37,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
     bool first = await prefRepository.firstAccess();
 
     if (first == true) {
-      String nama = await prefRepository.getName();
+      String nama = await DatabaseRepository().loadUser(field: 'nama');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/content/content_bloc.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
-import 'package:loyalty/data/repository/content_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/components/dashboard/content_keuangan.dart';
 import 'package:loyalty/components/dashboard/content_services.dart';
 import 'package:loyalty/components/dashboard/content_adds.dart';
@@ -30,8 +29,7 @@ class _HomePageState extends State<HomePage> {
     return InternetAwareWidget(
       child: BlocProvider(
         create: (context) => ContentBloc(
-          prefRepository: PrefRepository(),
-          contentRepository: ContentRepository(),
+          databaseRepository: DatabaseRepository(),
         )..add(LoadEvent()),
         child: Scaffold(
           body: BlocBuilder<ContentBloc, ContentState>(

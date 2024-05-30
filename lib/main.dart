@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loyalty/data/repository/content_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/routes.dart';
 import 'package:loyalty/services/firebase_api.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => ContentRepository()),
+        RepositoryProvider(create: (context) => DatabaseRepository()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

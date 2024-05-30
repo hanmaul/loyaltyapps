@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 
 class DataContent {
   Future<http.Response> getContents() async {
-    String custId = await PrefRepository().getCustId();
-    String fToken = await PrefRepository().getFtoken();
+    String custId = await DatabaseRepository().loadUser(field: 'custId');
+    String fToken = await DatabaseRepository().loadUser(field: 'firebaseToken');
 
     const baseUrl =
         "https://www.kamm-group.com:8070/fapi/newcontent2?key=3356271533a91b348974492cba3b7d6c";
@@ -24,7 +24,7 @@ class DataContent {
   }
 
   Future<http.Response> getNotifUnread() async {
-    String custId = await PrefRepository().getCustId();
+    String custId = await DatabaseRepository().loadUser(field: 'custId');
 
     const baseUrl = "http://mobilekamm.ddns.net:8065/notif_loyalty/api/unread";
     final response = await http.post(

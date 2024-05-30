@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
@@ -28,7 +28,7 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> saveNama(String nama) async {
-    await PrefRepository().setName(nama);
+    await DatabaseRepository().updateUser(field: 'nama', data: nama);
   }
 
   Future<void> dashboard() async {

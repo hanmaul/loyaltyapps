@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/dashboard.dart';
 import 'package:loyalty/screen/webview/register.dart';
@@ -41,8 +41,8 @@ class _sendOtpState extends State<sendOtp> {
   }
 
   Future<void> nextPage() async {
-    PrefRepository prefRepository = PrefRepository();
-    String nama = await prefRepository.getName();
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    String nama = await databaseRepository.loadUser(field: 'nama');
     String url = await WebviewRepository().getUrlRegister();
 
     Navigator.pushAndRemoveUntil(
@@ -61,7 +61,7 @@ class _sendOtpState extends State<sendOtp> {
   }
 
   void generateOTP() async {
-    String nomor = await PrefRepository().getNomor();
+    String nomor = await DatabaseRepository().loadUser(field: 'nomor');
     final manageOtp = ManageOtp();
     final response = await manageOtp.getOtp(nomor);
     if (response.statusCode == 200) {
@@ -140,7 +140,7 @@ class _sendOtpState extends State<sendOtp> {
                 ),
                 const SizedBox(height: 20),
                 FutureBuilder<String>(
-                  future: PrefRepository().getNomor(),
+                  future: DatabaseRepository().loadUser(field: 'nomor'),
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
