@@ -314,4 +314,14 @@ class DatabaseRepository {
       await dbInstance.clear();
     });
   }
+
+  Future<void> clearContent() async {
+    final Isar dbInstance = await _db;
+    await dbInstance.writeTxn(() async {
+      await dbInstance.services.clear();
+      await dbInstance.highlights.clear();
+      await dbInstance.promos.clear();
+      await dbInstance.banners.clear();
+    });
+  }
 }

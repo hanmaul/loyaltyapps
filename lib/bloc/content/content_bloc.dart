@@ -21,7 +21,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           emit(LoadingState());
           try {
             if (event is PullToRefreshEvent) {
-              await databaseRepository.clearDatabase();
+              await databaseRepository.clearContent();
             }
 
             final banners = databaseRepository.loadAllBanner();
