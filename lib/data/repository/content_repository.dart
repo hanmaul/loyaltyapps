@@ -8,10 +8,10 @@ import 'package:loyalty/data/model/service.dart';
 import 'package:loyalty/services/fetch_content.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DatabaseRepository {
+class ContentRepository {
   late Future<Isar> _db;
 
-  DatabaseRepository() {
+  ContentRepository() {
     _db = openDatabase();
   }
 
