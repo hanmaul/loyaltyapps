@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 
 class ContentServices extends StatefulWidget {
   final String icon;
@@ -20,7 +20,7 @@ class ContentServices extends StatefulWidget {
 
 class _ContentServicesState extends State<ContentServices> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    final custId = await PrefRepository().getCustId();
+    final custId = await DatabaseRepository().loadUser(field: "custId");
     if (urlWeb != "") {
       Navigator.pushNamed(
         context,

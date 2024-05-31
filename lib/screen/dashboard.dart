@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/screen/home.dart';
 import 'package:loyalty/screen/history.dart';
 import 'package:loyalty/screen/notifications.dart';
@@ -33,11 +32,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> welcomeMsg() async {
-    PrefRepository prefRepository = PrefRepository();
+    DatabaseRepository databaseRepository = DatabaseRepository();
 
-    bool first = await prefRepository.firstAccess();
+    String first = await databaseRepository.loadUser(field: "firstAccess");
+    String currentDate = DateTime.now().toString();
 
-    if (first == true) {
+    if (first == "") {
       String nama = await DatabaseRepository().loadUser(field: 'nama');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -50,7 +50,8 @@ class _DashboardState extends State<Dashboard> {
           margin: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
         ),
       );
-      await prefRepository.firstAccessFalse();
+      await databaseRepository.updateUser(
+          field: "firstAccess", data: currentDate);
     }
   }
 

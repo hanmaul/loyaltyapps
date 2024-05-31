@@ -11,4 +11,5 @@ class User {
   late String custId = '';
   late String status = '';
   late String firebaseToken = '';
+  late String firstAccess = '';
 }

@@ -27,23 +27,28 @@ const UserSchema = CollectionSchema(
       name: r'firebaseToken',
       type: IsarType.string,
     ),
-    r'key': PropertySchema(
+    r'firstAccess': PropertySchema(
       id: 2,
+      name: r'firstAccess',
+      type: IsarType.string,
+    ),
+    r'key': PropertySchema(
+      id: 3,
       name: r'key',
       type: IsarType.string,
     ),
     r'nama': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'nama',
       type: IsarType.string,
     ),
     r'nomor': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'nomor',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'status',
       type: IsarType.string,
     )
@@ -70,6 +75,7 @@ int _userEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.custId.length * 3;
   bytesCount += 3 + object.firebaseToken.length * 3;
+  bytesCount += 3 + object.firstAccess.length * 3;
   bytesCount += 3 + object.key.length * 3;
   bytesCount += 3 + object.nama.length * 3;
   bytesCount += 3 + object.nomor.length * 3;
@@ -85,10 +91,11 @@ void _userSerialize(
 ) {
   writer.writeString(offsets[0], object.custId);
   writer.writeString(offsets[1], object.firebaseToken);
-  writer.writeString(offsets[2], object.key);
-  writer.writeString(offsets[3], object.nama);
-  writer.writeString(offsets[4], object.nomor);
-  writer.writeString(offsets[5], object.status);
+  writer.writeString(offsets[2], object.firstAccess);
+  writer.writeString(offsets[3], object.key);
+  writer.writeString(offsets[4], object.nama);
+  writer.writeString(offsets[5], object.nomor);
+  writer.writeString(offsets[6], object.status);
 }
 
 User _userDeserialize(
@@ -100,11 +107,12 @@ User _userDeserialize(
   final object = User();
   object.custId = reader.readString(offsets[0]);
   object.firebaseToken = reader.readString(offsets[1]);
+  object.firstAccess = reader.readString(offsets[2]);
   object.id = id;
-  object.key = reader.readString(offsets[2]);
-  object.nama = reader.readString(offsets[3]);
-  object.nomor = reader.readString(offsets[4]);
-  object.status = reader.readString(offsets[5]);
+  object.key = reader.readString(offsets[3]);
+  object.nama = reader.readString(offsets[4]);
+  object.nomor = reader.readString(offsets[5]);
+  object.status = reader.readString(offsets[6]);
   return object;
 }
 
@@ -126,6 +134,8 @@ P _userDeserializeProp<P>(
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
+      return (reader.readString(offset)) as P;
+    case 6:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -473,6 +483,136 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'firebaseToken',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'firstAccess',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'firstAccess',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'firstAccess',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'firstAccess',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstAccessIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'firstAccess',
         value: '',
       ));
     });
@@ -1072,6 +1212,18 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
     });
   }
 
+  QueryBuilder<User, User, QAfterSortBy> sortByFirstAccess() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstAccess', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByFirstAccessDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstAccess', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> sortByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
@@ -1143,6 +1295,18 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
   QueryBuilder<User, User, QAfterSortBy> thenByFirebaseTokenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'firebaseToken', Sort.desc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByFirstAccess() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstAccess', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByFirstAccessDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'firstAccess', Sort.desc);
     });
   }
 
@@ -1223,6 +1387,13 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
     });
   }
 
+  QueryBuilder<User, User, QDistinct> distinctByFirstAccess(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'firstAccess', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<User, User, QDistinct> distinctByKey(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1268,6 +1439,12 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, String, QQueryOperations> firebaseTokenProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'firebaseToken');
+    });
+  }
+
+  QueryBuilder<User, String, QQueryOperations> firstAccessProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'firstAccess');
     });
   }
 
