@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:loyalty/data/repository/preferences_repository.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:meta/meta.dart';
 
