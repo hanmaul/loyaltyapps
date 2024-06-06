@@ -12,7 +12,6 @@ final navigatorKey = GlobalKey<NavigatorState>();
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Permission.camera.request();
-  // await Permission.microphone.request();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotifications();
   runApp(const MyApp());
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Loyalty',
         theme: ThemeData(
-          //brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF0B60B0)),
           primaryColor: const Color(0xFF0B60B0),
           textSelectionTheme: TextSelectionThemeData(
