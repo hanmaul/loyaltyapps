@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Loyalty',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF0B60B0)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
           primaryColor: const Color(0xFF0B60B0),
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.grey.shade400,
