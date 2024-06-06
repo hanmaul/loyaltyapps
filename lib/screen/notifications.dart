@@ -57,11 +57,6 @@ class _NotificationsState extends State<Notifications> {
                 initialUrlRequest: URLRequest(
                   url: WebUri(widget.url),
                 ),
-                // onReceivedServerTrustAuthRequest:
-                //     (controller, challenge) async {
-                //   return ServerTrustAuthResponse(
-                //       action: ServerTrustAuthResponseAction.PROCEED);
-                // },
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
                   controller.addJavaScriptHandler(

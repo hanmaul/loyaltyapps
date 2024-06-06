@@ -41,11 +41,6 @@ class _HistoryState extends State<History> {
                 initialUrlRequest: URLRequest(
                   url: WebUri(widget.url),
                 ),
-                // onReceivedServerTrustAuthRequest:
-                //     (controller, challenge) async {
-                //   return ServerTrustAuthResponse(
-                //       action: ServerTrustAuthResponseAction.PROCEED);
-                // },
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
                 },

@@ -26,7 +26,7 @@ class WebviewRepository {
 
   Future<String> getUrlNotifikasi() async {
     String custId = await DatabaseRepository().loadUser(field: "custId");
-    String url = "http://mobilekamm.ddns.net:8065/notif_loyalty/get/";
+    String url = "https://www.kamm-group.com:8070/notif_loyalty/get/";
     String urlNotifikasi = url + custId;
     return urlNotifikasi;
   }

@@ -9,7 +9,7 @@ class DataContent {
     String fToken = await DatabaseRepository().loadUser(field: 'firebaseToken');
 
     const baseUrl =
-        "https://www.kamm-group.com:8070/fapi/newcontent2?key=3356271533a91b348974492cba3b7d6c";
+        "https://kamm-group.com:8070/fapi/newcontent2?key=3356271533a91b348974492cba3b7d6c";
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: <String, String>{
@@ -26,7 +26,7 @@ class DataContent {
   Future<http.Response> getNotifUnread() async {
     String custId = await DatabaseRepository().loadUser(field: 'custId');
 
-    const baseUrl = "http://mobilekamm.ddns.net:8065/notif_loyalty/api/unread";
+    const baseUrl = "https://kamm-group.com:8070/notif_loyalty/api/unread";
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: <String, String>{
