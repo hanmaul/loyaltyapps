@@ -168,7 +168,7 @@ class _getOtpState extends State<getOtp> {
                                 fillColor: Colors.white,
                                 enabledBorder: border,
                                 focusedBorder: border,
-                                hintText: '811-1234-5678',
+                                hintText: '811XXXXXXXX',
                                 hintStyle:
                                     const TextStyle(color: Colors.black26),
                                 prefixIcon: GestureDetector(
