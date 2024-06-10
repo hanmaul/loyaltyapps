@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 
 class ContentServices extends StatefulWidget {
@@ -28,15 +29,14 @@ class _ContentServicesState extends State<ContentServices> {
         arguments: {'title': urlTitle, 'url': urlWeb + custId},
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Url Kosong!",
-            style: TextStyle(fontSize: 16, color: Colors.white),
-          ),
-          duration: Duration(seconds: 1),
-        ),
-      );
+      if (mounted) {
+        showAlert(
+          context: context,
+          title: 'Akses Gagal!',
+          content: 'Mohon maaf saat ini menu tidak dapat diakses.',
+          type: 'error',
+        );
+      }
     }
   }
 

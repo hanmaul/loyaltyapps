@@ -23,6 +23,22 @@ class ManageOtp {
     return response;
   }
 
+  Future<http.Response> reGetOtp() async {
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    String nomor = await databaseRepository.loadUser(field: 'nomor');
+    const baseUrl = "https://www.kamm-group.com:8070/fapi/autocust";
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'nohp': nomor,
+      }),
+    );
+    return response;
+  }
+
   Future<http.Response> sendOtp(String otp) async {
     DatabaseRepository databaseRepository = DatabaseRepository();
     String nomor = await databaseRepository.loadUser(field: 'nomor');

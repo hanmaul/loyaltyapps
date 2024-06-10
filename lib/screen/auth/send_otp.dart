@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
@@ -6,32 +7,54 @@ import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:pinput/pinput.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:loyalty/components/alert.dart';
 
-class sendOtp extends StatefulWidget {
-  const sendOtp({super.key});
+class SendOtp extends StatefulWidget {
+  const SendOtp({super.key});
 
   @override
-  State<sendOtp> createState() => _sendOtpState();
+  State<SendOtp> createState() => _SendOtpState();
 }
 
-class _sendOtpState extends State<sendOtp> {
+class _SendOtpState extends State<SendOtp> {
   @override
   void initState() {
     super.initState();
   }
 
-  void sendOTP(String otp) async {
+  void showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  Future<void> sendOTP(String otp) async {
     try {
       final manageOtp = ManageOtp();
+
+      // Show loading dialog
+      showLoadingDialog();
+
       final response = await manageOtp.sendOtp(otp);
 
+      // Dismiss loading dialog
+      Navigator.pop(context);
+
       if (response.body == 'otp salah') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Kode OTP Salah!'),
-            duration: Duration(seconds: 1),
-          ),
-        );
+        if (mounted) {
+          showAlert(
+            context: context,
+            title: 'OTP Salah!',
+            content: 'Silakan periksa OTP Anda dan coba lagi.',
+            type: 'error',
+          );
+        }
       } else {
         nextPage();
       }
@@ -60,17 +83,18 @@ class _sendOtpState extends State<sendOtp> {
     );
   }
 
-  void generateOTP() async {
-    String nomor = await DatabaseRepository().loadUser(field: 'nomor');
+  Future<void> reGenerateOTP() async {
     final manageOtp = ManageOtp();
-    final response = await manageOtp.getOtp(nomor);
+    final response = await manageOtp.reGetOtp();
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kode OTP dikirim ke WhatsApp Anda!'),
-          duration: Duration(seconds: 1),
-        ),
-      );
+      if (mounted) {
+        showAlert(
+          context: context,
+          title: 'OTP Dikirim!',
+          content: 'Silakan periksa OTP Anda dan coba lagi.',
+          type: 'info',
+        );
+      }
     } else {
       throw Exception('Failed to generate OTP');
     }
@@ -183,7 +207,7 @@ class _sendOtpState extends State<sendOtp> {
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
-                    generateOTP();
+                    reGenerateOTP();
                   },
                   child: const Text(
                     'Kirim ulang',

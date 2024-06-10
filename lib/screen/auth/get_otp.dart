@@ -5,14 +5,14 @@ import 'package:loyalty/screen/auth/send_otp.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
-class getOtp extends StatefulWidget {
-  const getOtp({super.key});
+class GetOtp extends StatefulWidget {
+  const GetOtp({super.key});
 
   @override
-  State<getOtp> createState() => _getOtpState();
+  State<GetOtp> createState() => _GetOtpState();
 }
 
-class _getOtpState extends State<getOtp> {
+class _GetOtpState extends State<GetOtp> {
   Country? country;
 
   final phoneController = TextEditingController();
@@ -34,7 +34,7 @@ class _getOtpState extends State<getOtp> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) {
-            return sendOtp();
+            return SendOtp();
           }),
         );
       } else {

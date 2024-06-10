@@ -46,7 +46,7 @@ class _AkunkuState extends State<Akunku> {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return getOtp();
+          return GetOtp();
         },
       ),
       (route) => false,
