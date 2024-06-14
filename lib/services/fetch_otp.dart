@@ -6,7 +6,7 @@ import 'package:loyalty/services/firebase_api.dart';
 
 class ManageOtp {
   Future<http.Response> getOtp(String nomor) async {
-    final no = '0$nomor';
+    final no = nomor[0] == "0" ? nomor : "0$nomor";
     const baseUrl = "https://www.kamm-group.com:8070/fapi/autocust";
     final response = await http.post(
       Uri.parse(baseUrl),

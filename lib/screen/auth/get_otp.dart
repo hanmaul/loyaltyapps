@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:loyalty/components/square_tile.dart';
 import 'package:loyalty/screen/auth/send_otp.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:http/http.dart' as http;
 
 class GetOtp extends StatefulWidget {
   const GetOtp({super.key});
@@ -18,11 +21,10 @@ class _GetOtpState extends State<GetOtp> {
   final phoneController = TextEditingController();
 
   Future<String> fetchCountryCode() async {
-    // final response = await http.get(Uri.parse('http://ip-api.com/json'));
-    // final body = json.decode(response.body);
-    // final countryCode = body['countryCode'];
-    // return countryCode;
-    return 'ID';
+    final response = await http.get(Uri.parse('http://ip-api.com/json'));
+    final body = json.decode(response.body);
+    final countryCode = body['countryCode'];
+    return countryCode;
   }
 
   void generateOTP(String nomor) async {
@@ -63,31 +65,6 @@ class _GetOtpState extends State<GetOtp> {
         country = CountryParser.parseCountryCode(countryCode);
       });
     });
-  }
-
-  void showPicker() {
-    showCountryPicker(
-      context: context,
-      favorite: ['ID'],
-      countryListTheme: CountryListThemeData(
-        bottomSheetHeight: 600,
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(20),
-        inputDecoration: const InputDecoration(
-          prefixIcon: Icon(
-            Icons.search,
-            color: Color(0xff0B60B0),
-          ),
-          hintText: 'Cari negara Anda di sini..',
-          border: InputBorder.none,
-        ),
-      ),
-      onSelect: (country) {
-        setState(() {
-          this.country = country;
-        });
-      },
-    );
   }
 
   @override
@@ -171,24 +148,21 @@ class _GetOtpState extends State<GetOtp> {
                                 hintText: '811XXXXXXXX',
                                 hintStyle:
                                     const TextStyle(color: Colors.black26),
-                                prefixIcon: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: showPicker,
-                                  child: Container(
-                                    height: 10,
-                                    width: 85,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      '${country!.flagEmoji} +${country!.phoneCode}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                prefixIcon: Container(
+                                  height: 10,
+                                  width: 85,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${country!.flagEmoji} +${country!.phoneCode}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
                               ),
+                              enableInteractiveSelection: false,
                             ),
                           ),
                     const SizedBox(height: 24),
@@ -240,7 +214,7 @@ class _GetOtpState extends State<GetOtp> {
                           SizedBox(width: 12),
                           Flexible(
                             child: Text(
-                              'Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kode OTP, atau uang.',
+                              'Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kata sandi atau uang.',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Colors.white,
