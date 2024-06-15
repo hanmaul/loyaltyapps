@@ -41,7 +41,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
               promo: promo,
             ));
           } catch (e) {
-            emit(FailureLoadState(message: '$e'));
+            emit(FailureLoadState(message: 'Failed to load content..'));
           }
         }
       },

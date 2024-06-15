@@ -21,7 +21,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(UnRegistered(message: 'Silahkan masukkan nomor anda'));
           }
         } catch (e) {
-          emit(FailureLoadState(message: 'Gagal Memvalidasi Session $e'));
+          emit(FailureLoadState(message: 'Gagal Memvalidasi Session'));
         }
       }
     });
