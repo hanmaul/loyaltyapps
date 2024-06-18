@@ -1,4 +1,5 @@
-import 'dart:ui';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -12,15 +13,22 @@ class InternetAwareWidget extends StatefulWidget {
 
 class _InternetAwareWidgetState extends State<InternetAwareWidget> {
   bool _isOnline = true;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
-    _checkInternetConnectivity();
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
-  Future<void> _checkInternetConnectivity() async {
-    final result = await Connectivity().checkConnectivity();
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     if (result == ConnectivityResult.none) {
       setState(() => _isOnline = false);
     } else {
@@ -47,31 +55,18 @@ class NoInternet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                     top: 50.0, left: 50.0, right: 50.0, bottom: 50.0),
                 child: Image.asset(
                   'assets/images/No connection-rafiki.png',
                   fit: BoxFit.cover,
                 ),
               ),
-              Text('No Internet Connection..'),
-              SizedBox(height: 20), // Add some space before the button
-              ElevatedButton(
-                onPressed: () => _retryInternetConnection(context),
-                child: Text('Retry'),
-              ),
+              const Text('Please check your internet connection..'),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _retryInternetConnection(BuildContext context) {
-    // You can use a function like this to retry the connection
-    // This assumes your InternetAwareWidget is above this in the widget tree
-    var internetAwareWidgetState =
-        context.findAncestorStateOfType<_InternetAwareWidgetState>();
-    internetAwareWidgetState?._checkInternetConnectivity();
   }
 }

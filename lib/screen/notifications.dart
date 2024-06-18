@@ -18,12 +18,23 @@ class Notifications extends StatefulWidget {
 class _NotificationsState extends State<Notifications> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   late final InAppWebViewController _webViewController;
+  late PullToRefreshController _pullToRefreshController;
+
   double _progress = 0;
   String _unRead = '0';
 
   @override
   void initState() {
     super.initState();
+    _pullToRefreshController = PullToRefreshController(
+      settings: PullToRefreshSettings(
+        color: const Color(0xff0B60B0),
+      ),
+      onRefresh: () async {
+        await _webViewController.reload();
+        _pullToRefreshController.endRefreshing();
+      },
+    );
   }
 
   Future<void> countRead(String unread) async {
@@ -31,7 +42,7 @@ class _NotificationsState extends State<Notifications> {
       SnackBar(
           content: Text(
         "Notifikasi Belum Dibaca = $unread",
-        style: TextStyle(fontSize: 16, color: Colors.white),
+        style: const TextStyle(fontSize: 16, color: Colors.white),
       )),
     );
   }
@@ -57,6 +68,10 @@ class _NotificationsState extends State<Notifications> {
                 initialUrlRequest: URLRequest(
                   url: WebUri(widget.url),
                 ),
+                initialSettings: InAppWebViewSettings(
+                  supportZoom: false,
+                ),
+                pullToRefreshController: _pullToRefreshController,
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
                   controller.addJavaScriptHandler(
@@ -67,8 +82,13 @@ class _NotificationsState extends State<Notifications> {
                     },
                   );
                 },
+                onReceivedError: (controller, request, error) {
+                  controller.loadUrl(
+                      urlRequest: URLRequest(url: WebUri("about:blank")));
+                },
                 onLoadStop: (controller, url) async {
                   await controller.evaluateJavascript(source: """ 
+                      document.body.style.minHeight = '101vh';
                           const Flutter = {
                               countRead(unread){
                                 window.flutter_inappwebview.callHandler('countRead', unread);
@@ -83,27 +103,26 @@ class _NotificationsState extends State<Notifications> {
                   });
                 },
               ),
-              _progress < 1
-                  ? WillPopScope(
-                      key: _keyLoader,
-                      child: Stack(
-                        children: [
-                          Container(
-                            color: Colors.white, // Adjust opacity as needed
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                          Center(
-                            child: LoadingAnimationWidget.waveDots(
-                              color: const Color(0xff0B60B0),
-                              size: 32,
-                            ),
-                          ),
-                        ],
+              if (_progress < 1)
+                WillPopScope(
+                  key: _keyLoader,
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
-                      onWillPop: () async => false,
-                    )
-                  : const SizedBox()
+                      Center(
+                        child: LoadingAnimationWidget.waveDots(
+                          color: const Color(0xff0B60B0),
+                          size: 32,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onWillPop: () async => false,
+                ),
             ],
           ),
         ),

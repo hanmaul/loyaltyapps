@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                 //     size: 32,
                 //   ),
                 // );
-                return ShimmerHome();
+                return const ShimmerHome();
               }
               if (state is FailureLoadState) {
                 return ServerError(

@@ -80,6 +80,9 @@ class _ContentState extends State<Content> {
                 initialUrlRequest: URLRequest(
                   url: WebUri(widget.url),
                 ),
+                initialSettings: InAppWebViewSettings(
+                  supportZoom: false,
+                ),
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
                   controller.addJavaScriptHandler(
@@ -88,6 +91,10 @@ class _ContentState extends State<Content> {
                       dashboard();
                     },
                   );
+                },
+                onReceivedError: (controller, request, error) {
+                  controller.loadUrl(
+                      urlRequest: URLRequest(url: WebUri("about:blank")));
                 },
                 onLoadStop: (controller, url) async {
                   await controller.evaluateJavascript(source: """ 
@@ -105,27 +112,26 @@ class _ContentState extends State<Content> {
                   });
                 },
               ),
-              _progress < 1
-                  ? WillPopScope(
-                      key: _keyLoader,
-                      child: Stack(
-                        children: [
-                          Container(
-                            color: Colors.white,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                          Center(
-                            child: LoadingAnimationWidget.waveDots(
-                              color: const Color(0xff0B60B0),
-                              size: 32,
-                            ),
-                          ),
-                        ],
+              if (_progress < 1)
+                WillPopScope(
+                  key: _keyLoader,
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
-                      onWillPop: () async => false,
-                    )
-                  : const SizedBox(),
+                      Center(
+                        child: LoadingAnimationWidget.waveDots(
+                          color: const Color(0xff0B60B0),
+                          size: 32,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onWillPop: () async => false,
+                ),
             ],
           ),
         ),
