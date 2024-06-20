@@ -21,14 +21,24 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentPageIndex = 0;
+  String _appVersion = 'Unknown';
 
   @override
   void initState() {
     super.initState();
+    getVersion();
     if (widget.page != 0) {
       _currentPageIndex = widget.page;
     }
     welcomeMsg();
+  }
+
+  Future<void> getVersion() async {
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    String version = await databaseRepository.loadUser(field: "appVersion");
+    setState(() {
+      _appVersion = version;
+    });
   }
 
   Future<void> welcomeMsg() async {
@@ -76,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
               return Text(
                   'Error: ${snapshot.error}'); // Show error message if something went wrong
             } else {
-              return History(url: snapshot.data!);
+              return History(url: snapshot.data!, onGoToHome: _goToHome);
             }
           },
         ),
@@ -91,7 +101,7 @@ class _DashboardState extends State<Dashboard> {
               return Text(
                   'Error: ${snapshot.error}'); // Show error message if something went wrong
             } else {
-              return Notifications(url: snapshot.data!);
+              return Notifications(url: snapshot.data!, onGoToHome: _goToHome);
             }
           },
         ),
@@ -106,11 +116,21 @@ class _DashboardState extends State<Dashboard> {
               return Text(
                   'Error: ${snapshot.error}'); // Show error message if something went wrong
             } else {
-              return Akunku(url: snapshot.data!);
+              return Akunku(
+                url: snapshot.data!,
+                onGoToHome: _goToHome,
+                appVersion: _appVersion,
+              );
             }
           },
         ),
       ];
+
+  void _goToHome() {
+    setState(() {
+      _currentPageIndex = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

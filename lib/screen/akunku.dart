@@ -8,10 +8,14 @@ import 'package:loyalty/data/repository/database_repository.dart';
 
 class Akunku extends StatefulWidget {
   final String url;
+  final String appVersion;
+  final VoidCallback onGoToHome;
 
   const Akunku({
     super.key,
     required this.url,
+    required this.onGoToHome,
+    required this.appVersion,
   });
 
   @override
@@ -26,6 +30,23 @@ class _AkunkuState extends State<Akunku> {
   @override
   void initState() {
     super.initState();
+  }
+
+  String _injectVersionIntoWebView() {
+    return """
+    if (!document.getElementById('app-version')) {
+      var versionElement = document.createElement('div');
+      versionElement.id = 'app-version';
+      versionElement.innerText = 'App Version: ${widget.appVersion}';
+      versionElement.style.bottom = '0';
+      versionElement.style.width = '100%';
+      versionElement.style.textAlign = 'center';
+      versionElement.style.backgroundColor = '#FFF'; // Change as needed
+      versionElement.style.marginTop = '10px'; // Adjust as needed
+      versionElement.style.marginBottom = '10px'; // Adjust as needed
+      document.body.appendChild(versionElement);
+    }
+  """;
   }
 
   Future<void> dashboard() async {
@@ -63,8 +84,10 @@ class _AkunkuState extends State<Akunku> {
           if (isLastPage) {
             _webViewController.goBack();
             return false;
+          } else {
+            widget.onGoToHome();
+            return false;
           }
-          return true;
         },
         child: Scaffold(
           backgroundColor: Colors.white,
@@ -97,6 +120,9 @@ class _AkunkuState extends State<Akunku> {
                       urlRequest: URLRequest(url: WebUri("about:blank")));
                 },
                 onLoadStop: (controller, url) async {
+                  String script = _injectVersionIntoWebView();
+                  await controller.evaluateJavascript(source: script);
+
                   await controller.evaluateJavascript(source: """ 
                           const Flutter = {
                               home(){

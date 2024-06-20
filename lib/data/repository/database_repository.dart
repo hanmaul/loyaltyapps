@@ -51,6 +51,8 @@ class DatabaseRepository {
           return existingUser.firebaseToken;
         case 'firstAccess':
           return existingUser.firstAccess;
+        case 'appVersion':
+          return existingUser.appVersion;
         default:
           print('Invalid field: $field');
           return '';
@@ -88,6 +90,9 @@ class DatabaseRepository {
         case 'firstAccess':
           existingUser.firstAccess = data;
           break;
+        case 'appVersion':
+          existingUser.appVersion = data;
+          break;
         default:
           print('Invalid field: $field');
           return;
@@ -118,6 +123,9 @@ class DatabaseRepository {
           break;
         case 'firstAccess':
           newUser.firstAccess = data;
+          break;
+        case 'appVersion':
+          newUser.appVersion = data;
           break;
         default:
           print('Invalid field: $field');

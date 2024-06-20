@@ -5,10 +5,12 @@ import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class History extends StatefulWidget {
   final String url;
+  final VoidCallback onGoToHome;
 
   const History({
     super.key,
     required this.url,
+    required this.onGoToHome,
   });
 
   @override
@@ -30,8 +32,10 @@ class _HistoryState extends State<History> {
           if (isLastPage) {
             _webViewController.goBack();
             return false;
+          } else {
+            widget.onGoToHome();
+            return false;
           }
-          return true;
         },
         child: Scaffold(
           backgroundColor: Colors.white,

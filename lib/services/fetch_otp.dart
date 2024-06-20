@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/services/firebase_api.dart';
+import 'package:loyalty/services/fetch_version.dart';
 
 class ManageOtp {
   Future<http.Response> getOtp(String nomor) async {
@@ -66,6 +67,7 @@ class ManageOtp {
           .updateUser(field: 'status', data: result['status_mediator']);
       await DatabaseRepository().updateUser(field: 'key', data: result['key']);
       await FirebaseApi().getFCM();
+      await AppVersion().getVersion();
     }
     return response;
   }

@@ -5,10 +5,12 @@ import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Notifications extends StatefulWidget {
   final String url;
+  final VoidCallback onGoToHome;
 
   const Notifications({
     super.key,
     required this.url,
+    required this.onGoToHome,
   });
 
   @override
@@ -57,8 +59,10 @@ class _NotificationsState extends State<Notifications> {
           if (isLastPage) {
             _webViewController.goBack();
             return false;
+          } else {
+            widget.onGoToHome();
+            return false;
           }
-          return true;
         },
         child: Scaffold(
           backgroundColor: Colors.white,

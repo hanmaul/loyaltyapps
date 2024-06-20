@@ -12,4 +12,5 @@ class User {
   late String status = '';
   late String firebaseToken = '';
   late String firstAccess = '';
+  late String appVersion = '';
 }

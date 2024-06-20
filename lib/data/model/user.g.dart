@@ -17,38 +17,43 @@ const UserSchema = CollectionSchema(
   name: r'User',
   id: -7838171048429979076,
   properties: {
-    r'custId': PropertySchema(
+    r'appVersion': PropertySchema(
       id: 0,
+      name: r'appVersion',
+      type: IsarType.string,
+    ),
+    r'custId': PropertySchema(
+      id: 1,
       name: r'custId',
       type: IsarType.string,
     ),
     r'firebaseToken': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'firebaseToken',
       type: IsarType.string,
     ),
     r'firstAccess': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'firstAccess',
       type: IsarType.string,
     ),
     r'key': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'key',
       type: IsarType.string,
     ),
     r'nama': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'nama',
       type: IsarType.string,
     ),
     r'nomor': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'nomor',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'status',
       type: IsarType.string,
     )
@@ -73,6 +78,7 @@ int _userEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.appVersion.length * 3;
   bytesCount += 3 + object.custId.length * 3;
   bytesCount += 3 + object.firebaseToken.length * 3;
   bytesCount += 3 + object.firstAccess.length * 3;
@@ -89,13 +95,14 @@ void _userSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.custId);
-  writer.writeString(offsets[1], object.firebaseToken);
-  writer.writeString(offsets[2], object.firstAccess);
-  writer.writeString(offsets[3], object.key);
-  writer.writeString(offsets[4], object.nama);
-  writer.writeString(offsets[5], object.nomor);
-  writer.writeString(offsets[6], object.status);
+  writer.writeString(offsets[0], object.appVersion);
+  writer.writeString(offsets[1], object.custId);
+  writer.writeString(offsets[2], object.firebaseToken);
+  writer.writeString(offsets[3], object.firstAccess);
+  writer.writeString(offsets[4], object.key);
+  writer.writeString(offsets[5], object.nama);
+  writer.writeString(offsets[6], object.nomor);
+  writer.writeString(offsets[7], object.status);
 }
 
 User _userDeserialize(
@@ -105,14 +112,15 @@ User _userDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = User();
-  object.custId = reader.readString(offsets[0]);
-  object.firebaseToken = reader.readString(offsets[1]);
-  object.firstAccess = reader.readString(offsets[2]);
+  object.appVersion = reader.readString(offsets[0]);
+  object.custId = reader.readString(offsets[1]);
+  object.firebaseToken = reader.readString(offsets[2]);
+  object.firstAccess = reader.readString(offsets[3]);
   object.id = id;
-  object.key = reader.readString(offsets[3]);
-  object.nama = reader.readString(offsets[4]);
-  object.nomor = reader.readString(offsets[5]);
-  object.status = reader.readString(offsets[6]);
+  object.key = reader.readString(offsets[4]);
+  object.nama = reader.readString(offsets[5]);
+  object.nomor = reader.readString(offsets[6]);
+  object.status = reader.readString(offsets[7]);
   return object;
 }
 
@@ -136,6 +144,8 @@ P _userDeserializeProp<P>(
     case 5:
       return (reader.readString(offset)) as P;
     case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -230,6 +240,136 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
 }
 
 extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'appVersion',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'appVersion',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'appVersion',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'appVersion',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> appVersionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'appVersion',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> custIdEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1188,6 +1328,18 @@ extension UserQueryObject on QueryBuilder<User, User, QFilterCondition> {}
 extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {}
 
 extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
+  QueryBuilder<User, User, QAfterSortBy> sortByAppVersion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'appVersion', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByAppVersionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'appVersion', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> sortByCustId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'custId', Sort.asc);
@@ -1274,6 +1426,18 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
 }
 
 extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
+  QueryBuilder<User, User, QAfterSortBy> thenByAppVersion() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'appVersion', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByAppVersionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'appVersion', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> thenByCustId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'custId', Sort.asc);
@@ -1372,6 +1536,13 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
 }
 
 extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
+  QueryBuilder<User, User, QDistinct> distinctByAppVersion(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'appVersion', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<User, User, QDistinct> distinctByCustId(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1427,6 +1598,12 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<User, String, QQueryOperations> appVersionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'appVersion');
     });
   }
 
