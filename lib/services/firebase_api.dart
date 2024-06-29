@@ -27,6 +27,7 @@ class FirebaseApi {
   // funtion to handle received messages
   void handleMessage(RemoteMessage? message) {
     // if the message is null, do nothing
+
     if (message == null) {
       return;
     } else {
@@ -36,9 +37,8 @@ class FirebaseApi {
 
     // navigate to new screen when messages is received and user taps notifications
     navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      '/dashboard',
+      '/notifications',
       (route) => false,
-      arguments: 2,
     );
   }
 

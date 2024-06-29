@@ -1,24 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty/screen/auth/auth.dart';
-import 'package:loyalty/screen/dashboard.dart';
-import 'package:loyalty/screen/notifications.dart';
-import 'package:loyalty/screen/akunku.dart';
+import 'package:loyalty/screen/auth/get_otp.dart';
+import 'package:loyalty/screen/auth/send_otp.dart';
+import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/screen/webview/register.dart';
-import 'package:loyalty/screen/webview/content.dart';
+import 'package:loyalty/screen/auth/auth.dart';
 
-Map<String, WidgetBuilder> routes = {
-  '/': (context) => const Auth(),
-  // '/dashboard': (context) => const Dashboard(page: 0),
-  '/dashboard': (context) {
-    final args = ModalRoute.of(context)!.settings.arguments as int;
-    return Dashboard(page: args);
-  },
-  // '/account': (context) => const Akunku(),
-  // '/register': (context) => const Register(),
-  // '/notifikasi': (context) => const Notifications(),
-  '/content': (context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    return Content(title: args['title']!, url: args['url']!);
-  },
-};
+Route<dynamic> generateRoute(RouteSettings settings) {
+  if (settings.name!.startsWith('/send-otp/')) {
+    final phone = settings.name!.split('/').last;
+    return MaterialPageRoute(
+      builder: (_) => SendOtp(phoneNumber: phone),
+    );
+  }
+
+  switch (settings.name) {
+    case '/dashboard':
+      final args = settings.arguments as int;
+      return MaterialPageRoute(
+        builder: (_) => Dashboard(page: args),
+      );
+    case '/get-otp':
+      return MaterialPageRoute(
+        builder: (_) => const GetOtp(),
+      );
+    case '/register':
+      return MaterialPageRoute(
+        builder: (_) => const Register(),
+      );
+    case '/home':
+      return MaterialPageRoute(
+        builder: (_) => const Dashboard(page: 0),
+      );
+    case '/history':
+      return MaterialPageRoute(
+        builder: (_) => const Dashboard(page: 1),
+      );
+    case '/notifications':
+      return MaterialPageRoute(
+        builder: (_) => const Dashboard(page: 2),
+      );
+    case '/account':
+      return MaterialPageRoute(
+        builder: (_) => const Dashboard(page: 3),
+      );
+    default:
+      return MaterialPageRoute(
+        builder: (_) => const Auth(),
+      );
+  }
+}

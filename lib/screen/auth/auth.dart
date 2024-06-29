@@ -4,8 +4,9 @@ import 'package:loyalty/bloc/auth/auth_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
+import 'package:loyalty/screen/auth/otp.dart';
 import 'package:loyalty/screen/webview/register.dart';
-import 'package:loyalty/screen/dashboard.dart';
+import 'package:loyalty/screen/dashboard/dashboard.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -32,21 +33,10 @@ class _AuthState extends State<Auth> {
               return const Dashboard(page: 0);
             }
             if (state is InRegister) {
-              return FutureBuilder<String>(
-                future: WebviewRepository().getUrlRegister(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // or your own loading widget
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return Register(url: snapshot.data!);
-                  }
-                },
-              );
+              return const Register();
             }
             if (state is UnRegistered) {
+              //return const OTP(page: 0);
               return const GetOtp();
             }
             if (state is FailureLoadState) {

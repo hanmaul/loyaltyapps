@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
-import 'package:loyalty/routes.dart';
 import 'package:loyalty/services/firebase_api.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loyalty/firebase_options.dart';
+import 'package:loyalty/routes.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -60,7 +60,10 @@ class _MyAppState extends State<MyApp> {
         ),
         navigatorKey: navigatorKey,
         initialRoute: '/',
-        routes: routes,
+        onGenerateInitialRoutes: (String initialRoute) {
+          return [generateRoute(RouteSettings(name: initialRoute))];
+        },
+        onGenerateRoute: generateRoute,
       ),
     );
   }

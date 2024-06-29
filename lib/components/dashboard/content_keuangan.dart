@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
+import 'package:loyalty/screen/webview/content.dart';
 
 class ContentKeuangan extends StatefulWidget {
   final String icon;
@@ -23,10 +25,11 @@ class ContentKeuangan extends StatefulWidget {
 class _ContentKeuanganState extends State<ContentKeuangan> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     if (urlWeb != "" && urlWeb != "#") {
-      Navigator.pushNamed(
+      Navigator.push(
         context,
-        '/content',
-        arguments: {'title': urlTitle, 'url': urlWeb},
+        CupertinoPageRoute(
+          builder: (context) => Content(title: urlTitle, url: urlWeb),
+        ),
       );
     } else {
       showAlert(

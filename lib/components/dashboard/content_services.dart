@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/screen/webview/content.dart';
 
 class ContentServices extends StatefulWidget {
   final String icon;
@@ -23,10 +25,11 @@ class _ContentServicesState extends State<ContentServices> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     final custId = await DatabaseRepository().loadUser(field: "custId");
     if (urlWeb != "") {
-      Navigator.pushNamed(
+      Navigator.push(
         context,
-        '/content',
-        arguments: {'title': urlTitle, 'url': urlWeb + custId},
+        CupertinoPageRoute(
+          builder: (context) => Content(title: urlTitle, url: urlWeb + custId),
+        ),
       );
     } else {
       if (mounted) {

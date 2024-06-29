@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:loyalty/screen/dashboard.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
@@ -29,15 +28,7 @@ class _ContentState extends State<Content> {
   }
 
   Future<void> dashboard() async {
-    await Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return const Dashboard(page: 0);
-        },
-      ),
-      (route) => false,
-    );
+    Navigator.pop(context);
   }
 
   @override
@@ -50,8 +41,10 @@ class _ContentState extends State<Content> {
           if (isLastPage) {
             _webViewController.goBack();
             return false;
+          } else {
+            Navigator.pop(context);
+            return false;
           }
-          return true;
         },
         child: Scaffold(
           appBar: AppBar(
