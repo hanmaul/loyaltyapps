@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/auth/auth_bloc.dart';
@@ -33,6 +35,11 @@ class _DashboardState extends State<Dashboard> {
       _currentPageIndex = widget.page;
     }
     welcomeMsg();
+    if (Platform.isIOS) {
+      debugPrint('Ini IOS');
+    } else {
+      debugPrint('Ini ANDROID');
+    }
   }
 
   Future<void> welcomeMsg() async {

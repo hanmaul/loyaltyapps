@@ -47,7 +47,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Loyalty',
+        title: 'KAMM Loyalty',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
           primaryColor: const Color(0xFF0B60B0),
