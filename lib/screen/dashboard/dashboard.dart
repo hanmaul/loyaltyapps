@@ -35,11 +35,6 @@ class _DashboardState extends State<Dashboard> {
       _currentPageIndex = widget.page;
     }
     welcomeMsg();
-    if (Platform.isIOS) {
-      debugPrint('Ini IOS');
-    } else {
-      debugPrint('Ini ANDROID');
-    }
   }
 
   Future<void> welcomeMsg() async {
