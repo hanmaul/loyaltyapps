@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -44,37 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAoJq7_X0Hv5NcZs4WTSziyeHBRstfqgcE',
-    appId: '1:959302947978:web:abdd698b6ab8a0e87d4973',
-    messagingSenderId: '959302947978',
-    projectId: 'loyalty-8e0e5',
-    authDomain: 'loyalty-8e0e5.firebaseapp.com',
-    storageBucket: 'loyalty-8e0e5.appspot.com',
+    apiKey: 'AIzaSyAB7e-tXtKcdz6HGu-oHPOwINcggkXbrBw',
+    appId: '1:642297853297:web:e5be53e67b4cc71b9d72d0',
+    messagingSenderId: '642297853297',
+    projectId: 'loyalty-c0110',
+    authDomain: 'loyalty-c0110.firebaseapp.com',
+    storageBucket: 'loyalty-c0110.appspot.com',
+    measurementId: 'G-PWBGFF5YK6',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDNGjEZRBZwefCTr-W1BR82V4kCSQGY_sM',
-    appId: '1:959302947978:android:d9db6aad9ff220097d4973',
-    messagingSenderId: '959302947978',
-    projectId: 'loyalty-8e0e5',
-    storageBucket: 'loyalty-8e0e5.appspot.com',
+    apiKey: 'AIzaSyD4fMfM1ab_tyMwzTaz7X-pxoBrPylI9AM',
+    appId: '1:642297853297:android:6945bf3c204731439d72d0',
+    messagingSenderId: '642297853297',
+    projectId: 'loyalty-c0110',
+    storageBucket: 'loyalty-c0110.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAAUtys0GGnMKiOyPovVCiVsJh0M4hILEo',
-    appId: '1:959302947978:ios:f26b70abb49d857e7d4973',
-    messagingSenderId: '959302947978',
-    projectId: 'loyalty-8e0e5',
-    storageBucket: 'loyalty-8e0e5.appspot.com',
-    iosBundleId: 'com.beringin.loyalty',
+    apiKey: 'AIzaSyAV6kSuwFD8pgdnMbebYk0kMwAjFx0fMx4',
+    appId: '1:642297853297:ios:04e558d6222c062c9d72d0',
+    messagingSenderId: '642297853297',
+    projectId: 'loyalty-c0110',
+    storageBucket: 'loyalty-c0110.appspot.com',
+    iosBundleId: 'com.beringin.loyatly',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAAUtys0GGnMKiOyPovVCiVsJh0M4hILEo',
-    appId: '1:959302947978:ios:c61c3dc1e71662427d4973',
-    messagingSenderId: '959302947978',
-    projectId: 'loyalty-8e0e5',
-    storageBucket: 'loyalty-8e0e5.appspot.com',
-    iosBundleId: 'com.kamm.loyalty.RunnerTests',
+    apiKey: 'AIzaSyAV6kSuwFD8pgdnMbebYk0kMwAjFx0fMx4',
+    appId: '1:642297853297:ios:f5d9716c20122d0b9d72d0',
+    messagingSenderId: '642297853297',
+    projectId: 'loyalty-c0110',
+    storageBucket: 'loyalty-c0110.appspot.com',
+    iosBundleId: 'com.kamm.loyalty',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAB7e-tXtKcdz6HGu-oHPOwINcggkXbrBw',
+    appId: '1:642297853297:web:0d4b6fdcd95c74dc9d72d0',
+    messagingSenderId: '642297853297',
+    projectId: 'loyalty-c0110',
+    authDomain: 'loyalty-c0110.firebaseapp.com',
+    storageBucket: 'loyalty-c0110.appspot.com',
+    measurementId: 'G-J07FB2RSPL',
+  );
+
 }
