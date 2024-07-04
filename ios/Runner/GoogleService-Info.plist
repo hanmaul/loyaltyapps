@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyAAUtys0GGnMKiOyPovVCiVsJh0M4hILEo</string>
+	<string>AIzaSyAV6kSuwFD8pgdnMbebYk0kMwAjFx0fMx4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>959302947978</string>
+	<string>642297853297</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.beringin.loyalty</string>
+	<string>com.beringin.loyatly</string>
 	<key>PROJECT_ID</key>
-	<string>loyalty-8e0e5</string>
+	<string>loyalty-c0110</string>
 	<key>STORAGE_BUCKET</key>
-	<string>loyalty-8e0e5.appspot.com</string>
+	<string>loyalty-c0110.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:959302947978:ios:f26b70abb49d857e7d4973</string>
+	<string>1:642297853297:ios:04e558d6222c062c9d72d0</string>
 </dict>
 </plist>
