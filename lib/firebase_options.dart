@@ -62,11 +62,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAAUtys0GGnMKiOyPovVCiVsJh0M4hILEo',
-    appId: '1:959302947978:ios:c0cf48f5d11b446f7d4973',
+    appId: '1:959302947978:ios:f26b70abb49d857e7d4973',
     messagingSenderId: '959302947978',
     projectId: 'loyalty-8e0e5',
     storageBucket: 'loyalty-8e0e5.appspot.com',
-    iosBundleId: 'com.kamm.loyalty',
+    iosBundleId: 'com.beringin.loyalty',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
