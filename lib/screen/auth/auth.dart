@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/auth/auth_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
-import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
-import 'package:loyalty/screen/auth/otp.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 

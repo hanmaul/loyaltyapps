@@ -211,7 +211,7 @@ class _GetOtpState extends State<GetOtp> {
                           SizedBox(width: 12),
                           Flexible(
                             child: Text(
-                              'Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kata sandi atau uang.',
+                              "Hati-hati terhadap penipuan karena kami tidak pernah memberikan link, meminta PIN, kata sandi atau uang.",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Colors.white,
