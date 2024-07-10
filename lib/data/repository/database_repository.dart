@@ -7,6 +7,8 @@ import 'package:loyalty/data/model/promo.dart';
 import 'package:loyalty/data/model/service.dart';
 import 'package:loyalty/data/model/user.dart';
 import 'package:loyalty/services/fetch_content.dart';
+import 'package:loyalty/services/fetch_version.dart';
+import 'package:loyalty/services/firebase_api.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseRepository {
@@ -29,6 +31,52 @@ class DatabaseRepository {
       return isar;
     }
     return Future.value(Isar.getInstance());
+  }
+
+  Future<void> saveUser({
+    required Map<String, dynamic> userData,
+    required bool newDevice,
+  }) async {
+    // Data from Device
+    FirebaseApi firebase = FirebaseApi();
+    String fcmToken = await firebase.fetchFCM();
+    String appVersion = await AppVersion().getVersion();
+
+    // Validate Token
+    bool validToken = await firebase.validateToken(
+        key: userData['key'], custId: userData['Cust_id']);
+
+    if (validToken || newDevice) {
+      final Isar dbInstance = await _db;
+      final existingUser = await dbInstance.users.get(1);
+      if (existingUser != null) {
+        existingUser.nama = userData['nama'];
+        existingUser.custId = userData['Cust_id'];
+        existingUser.status = userData['status_mediator'];
+        existingUser.key = userData['key'];
+        existingUser.firebaseToken = fcmToken;
+        existingUser.appVersion = appVersion;
+
+        await dbInstance.writeTxn(() async {
+          await dbInstance.users.put(existingUser);
+        });
+      } else {
+        final newUser = User()
+          ..id = 1
+          ..nama = userData['nama']
+          ..custId = userData['Cust_id']
+          ..status = userData['status_mediator']
+          ..key = userData['key']
+          ..firebaseToken = fcmToken
+          ..appVersion = appVersion;
+
+        await dbInstance.writeTxn(() async {
+          await dbInstance.users.put(newUser);
+        });
+      }
+    } else {
+      return;
+    }
   }
 
   Future<String> loadUser({required String field}) async {

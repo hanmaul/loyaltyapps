@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:loyalty/main.dart';
-import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:http/http.dart' as http;
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -15,13 +18,42 @@ class FirebaseApi {
     initPushNotifications();
   }
 
-  Future<void> getFCM() async {
+  Future<String> fetchFCM() async {
     // fetch the FCM token for this device
-    final fCMToken = await _firebaseMessaging.getToken();
+    final fcmToken = await _firebaseMessaging.getToken();
+    String token = fcmToken.toString();
+    return token;
+  }
 
-    // save token in storage
-    await DatabaseRepository()
-        .updateUser(field: 'firebaseToken', data: fCMToken.toString());
+  Future<bool> validateToken(
+      {required String key, required String custId}) async {
+    String fToken = await fetchFCM();
+
+    final baseUrl =
+        "https://www.kamm-group.com:8070/fapi/checkfirebase?key=$key";
+
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'cust_id': custId,
+        'id_firebase': fToken,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      if (jsonResponse.isNotEmpty && jsonResponse[0]['status'] == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      debugPrint('Request failed with status: ${response.statusCode}');
+      return false;
+    }
   }
 
   // funtion to handle received messages

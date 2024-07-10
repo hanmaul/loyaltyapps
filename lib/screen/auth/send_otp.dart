@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
+import 'package:loyalty/screen/terms_of_use.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:pinput/pinput.dart';
@@ -40,12 +41,12 @@ class _SendOtpState extends State<SendOtp> {
       // Show loading dialog
       showLoadingDialog();
 
-      final response = await manageOtp.sendOtp(otp);
+      Map<String, dynamic> result = await manageOtp.sendOtp(otp);
 
       // Dismiss loading dialog
       Navigator.pop(context);
 
-      if (response.body == 'otp salah') {
+      if (result['status'] == 'failed') {
         if (mounted) {
           showAlert(
             context: context,
@@ -55,7 +56,13 @@ class _SendOtpState extends State<SendOtp> {
           );
         }
       } else {
-        nextPage();
+        DatabaseRepository databaseRepository = DatabaseRepository();
+        String keyExist = await databaseRepository.loadUser(field: "key");
+        if (keyExist != '') {
+          nextPage();
+        } else {
+          openTermsOfUse(data: result);
+        }
       }
     } catch (e) {
       debugPrint('$e');
@@ -65,15 +72,43 @@ class _SendOtpState extends State<SendOtp> {
   Future<void> nextPage() async {
     DatabaseRepository databaseRepository = DatabaseRepository();
     String nama = await databaseRepository.loadUser(field: 'nama');
+    if (nama != "") {
+      goToDashboard();
+    } else {
+      goToRegister();
+    }
+  }
+
+  Future<void> openTermsOfUse({required Map<String, dynamic> data}) async {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) {
-          if (nama != "") {
-            return Dashboard(page: 0);
-          } else {
-            return Register();
-          }
+          return TermsOfUse(data: data);
+        },
+      ),
+      (route) => false,
+    );
+  }
+
+  void goToDashboard() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return const Dashboard(page: 0);
+        },
+      ),
+      (route) => false,
+    );
+  }
+
+  void goToRegister() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return const Register();
         },
       ),
       (route) => false,
