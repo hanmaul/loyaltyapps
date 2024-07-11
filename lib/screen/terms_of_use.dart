@@ -4,6 +4,7 @@ import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/terms_of_use.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TermsOfUse extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -14,8 +15,44 @@ class TermsOfUse extends StatefulWidget {
 }
 
 class _TermsOfUseState extends State<TermsOfUse> {
+  late final WebViewController controller;
   final TermsService termsService = TermsService();
   final DatabaseRepository databaseRepository = DatabaseRepository();
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final urlTerms = termsService.getUrlTerms();
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0xff0B60B0))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {
+            setState(() {
+              isLoading =
+                  true; // Show the loading indicator when page starts loading
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              isLoading =
+                  false; // Hide the loading indicator when page finishes loading
+            });
+          },
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              isLoading = false; // Hide the loading indicator on error
+            });
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(urlTerms));
+  }
 
   Future<void> agree() async {
     await databaseRepository.saveUser(userData: widget.data, newDevice: true);
@@ -64,44 +101,38 @@ class _TermsOfUseState extends State<TermsOfUse> {
           title: const Text(
             "Terms of use",
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
           ),
           backgroundColor: const Color(0xff0B60B0),
         ),
-        body: FutureBuilder<Map<String, dynamic>>(
-          future: termsService.listTerms(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData ||
-                snapshot.data!['term'] == 'failed') {
-              return const Center(child: Text('No terms available'));
-            } else {
-              final terms = snapshot.data!['term'];
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(terms),
-                      ),
-                    ),
-                    ElevatedButton(
+        body: Stack(
+          children: [
+            WebViewWidget(controller: controller),
+            if (isLoading) // Show the loading indicator if isLoading is true
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xff0B60B0),
+                ),
+              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
                       onPressed: () async {
                         await agree();
                       },
                       child: const Text('Setuju'),
                     ),
-                  ],
+                  ),
                 ),
-              );
-            }
-          },
+              ],
+            ),
+          ],
         ),
       ),
     );
