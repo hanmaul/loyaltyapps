@@ -72,10 +72,10 @@ class _HistoryState extends State<History> {
                       onWebViewCreated: (InAppWebViewController controller) {
                         _webViewController = controller;
                       },
-                      onReceivedError: (controller, request, error) {
-                        controller.loadUrl(
-                            urlRequest: URLRequest(url: WebUri("about:blank")));
-                      },
+                      // onReceivedError: (controller, request, error) {
+                      //   controller.loadUrl(
+                      //       urlRequest: URLRequest(url: WebUri("about:blank")));
+                      // },
                       onProgressChanged:
                           (InAppWebViewController controller, int progress) {
                         setState(() {

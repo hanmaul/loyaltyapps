@@ -139,10 +139,10 @@ class _AkunkuState extends State<Akunku> {
                           },
                         );
                       },
-                      onReceivedError: (controller, request, error) {
-                        controller.loadUrl(
-                            urlRequest: URLRequest(url: WebUri("about:blank")));
-                      },
+                      // onReceivedError: (controller, request, error) {
+                      //   controller.loadUrl(
+                      //       urlRequest: URLRequest(url: WebUri("about:blank")));
+                      // },
                       onLoadStop: (controller, url) async {
                         String script = _injectVersionIntoWebView();
                         await controller.evaluateJavascript(source: script);

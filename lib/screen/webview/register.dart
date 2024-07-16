@@ -111,11 +111,11 @@ class _RegisterState extends State<Register> {
                           },
                         );
                       },
-                      onReceivedError: (controller, request, error) {
-                        controller.loadUrl(
-                          urlRequest: URLRequest(url: WebUri("about:blank")),
-                        );
-                      },
+                      // onReceivedError: (controller, request, error) {
+                      //   controller.loadUrl(
+                      //     urlRequest: URLRequest(url: WebUri("about:blank")),
+                      //   );
+                      // },
                       onLoadStop: (controller, url) async {
                         await controller.evaluateJavascript(source: """ 
                           const Flutter = {

@@ -102,10 +102,10 @@ class _NotificationsState extends State<Notifications> {
                           },
                         );
                       },
-                      onReceivedError: (controller, request, error) {
-                        controller.loadUrl(
-                            urlRequest: URLRequest(url: WebUri("about:blank")));
-                      },
+                      // onReceivedError: (controller, request, error) {
+                      //   controller.loadUrl(
+                      //       urlRequest: URLRequest(url: WebUri("about:blank")));
+                      // },
                       onLoadStop: (controller, url) async {
                         await controller.evaluateJavascript(source: """ 
                         document.body.style.minHeight = '101vh';

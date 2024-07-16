@@ -147,12 +147,6 @@ class _HomePageState extends State<HomePage> {
                 );
               }
               if (state is LoadingState) {
-                // return Center(
-                //   child: LoadingAnimationWidget.waveDots(
-                //     color: const Color(0xff0B60B0),
-                //     size: 32,
-                //   ),
-                // );
                 return const ShimmerHome();
               }
               if (state is FailureLoadState) {

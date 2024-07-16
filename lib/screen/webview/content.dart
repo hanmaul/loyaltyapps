@@ -27,6 +27,15 @@ class _ContentState extends State<Content> {
     super.initState();
   }
 
+  Future<void> back() async {
+    var isLastPage = await _webViewController.canGoBack();
+    if (isLastPage) {
+      _webViewController.goBack();
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
   Future<void> dashboard() async {
     Navigator.pop(context);
   }
@@ -61,7 +70,7 @@ class _ContentState extends State<Content> {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.pop(context);
+                back();
               },
             ),
             backgroundColor: const Color(0xff0B60B0),
@@ -85,10 +94,10 @@ class _ContentState extends State<Content> {
                     },
                   );
                 },
-                onReceivedError: (controller, request, error) {
-                  controller.loadUrl(
-                      urlRequest: URLRequest(url: WebUri("about:blank")));
-                },
+                // onReceivedError: (controller, request, error) {
+                //   controller.loadUrl(
+                //       urlRequest: URLRequest(url: WebUri("about:blank")));
+                // },
                 onLoadStop: (controller, url) async {
                   await controller.evaluateJavascript(source: """ 
                     const Flutter = {
