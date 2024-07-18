@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
+import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
 
 class ContentKeuangan extends StatefulWidget {
@@ -9,6 +10,7 @@ class ContentKeuangan extends StatefulWidget {
   final String title;
   final String total;
   final String url;
+  final double fontSize;
 
   const ContentKeuangan({
     Key? key,
@@ -16,6 +18,7 @@ class ContentKeuangan extends StatefulWidget {
     required this.title,
     required this.total,
     required this.url,
+    required this.fontSize,
   }) : super(key: key);
 
   @override
@@ -24,20 +27,23 @@ class ContentKeuangan extends StatefulWidget {
 
 class _ContentKeuanganState extends State<ContentKeuangan> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    if (urlWeb != "" && urlWeb != "#") {
+    final custId = await DatabaseRepository().loadUser(field: "custId");
+    if (urlWeb.isNotEmpty) {
       Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => Content(title: urlTitle, url: urlWeb),
+          builder: (context) => Content(title: urlTitle, url: urlWeb + custId),
         ),
       );
     } else {
-      showAlert(
-        context: context,
-        title: 'Akses Gagal!',
-        content: 'Mohon maaf saat ini menu tidak dapat diakses.',
-        type: 'error',
-      );
+      if (mounted) {
+        showAlert(
+          context: context,
+          title: 'Dalam Pengembangan..',
+          content: 'Mohon maaf saat ini menu sedang dalam pengembangan.',
+          type: 'info',
+        );
+      }
     }
   }
 
@@ -58,8 +64,6 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    // color: Colors.amber,
-                    // width: 36,
                     height: 26,
                     child: CachedNetworkImage(
                       imageUrl: widget.icon,
@@ -82,8 +86,8 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
               const SizedBox(height: 2),
               Text(
                 'Rp${widget.total}',
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: widget.fontSize,
                   fontWeight: FontWeight.bold,
                 ),
               ),

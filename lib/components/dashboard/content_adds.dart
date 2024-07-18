@@ -34,9 +34,9 @@ class _ContentAddsState extends State<ContentAdds> {
     } else {
       showAlert(
         context: context,
-        title: 'Akses Gagal!',
-        content: 'Mohon maaf saat ini menu tidak dapat diakses.',
-        type: 'error',
+        title: 'Dalam Pengembangan..',
+        content: 'Mohon maaf saat ini menu sedang dalam pengembangan.',
+        type: 'info',
       );
     }
   }

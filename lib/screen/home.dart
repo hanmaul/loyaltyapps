@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       const SizedBox(height: 8),
-                                      _buildHighligt(state.highlight),
+                                      _buildHighlight(state.highlight),
                                       const SizedBox(height: 8),
                                       GestureDetector(
                                         onTap: () {},
@@ -187,29 +187,26 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHighligt(List<dynamic> highlight) {
+  Widget _buildHighlight(List<dynamic> highlight) {
+    // Calculate the maximum length of the total values
+    int maxLength = highlight
+        .map((h) => h.keterangan.length)
+        .reduce((a, b) => a > b ? a : b);
+
+    // Determine the font size based on the maximum length
+    double fontSize = maxLength > 11 ? 12 : (maxLength > 9 ? 14 : 16);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ContentKeuangan(
-          icon: highlight[0].gambar,
-          title: highlight[0].judul,
-          total: highlight[0].keterangan,
-          url: highlight[0].link,
-        ),
-        ContentKeuangan(
-          icon: highlight[1].gambar,
-          title: highlight[1].judul,
-          total: highlight[1].keterangan,
-          url: highlight[1].link,
-        ),
-        ContentKeuangan(
-          icon: highlight[2].gambar,
-          title: highlight[2].judul,
-          total: highlight[2].keterangan,
-          url: highlight[2].link,
-        ),
-      ],
+      children: highlight
+          .map((h) => ContentKeuangan(
+                icon: h.gambar,
+                title: h.judul,
+                total: h.keterangan,
+                url: h.link,
+                fontSize: fontSize, // Pass the calculated fontSize
+              ))
+          .toList(),
     );
   }
 
@@ -232,20 +229,14 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPromo(List<dynamic> promo) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ContentAdds(
-          gambar: promo[0].gambar,
-          judul: promo[0].judul,
-          isi: promo[0].keterangan,
-          url: promo[0].link,
-        ),
-        ContentAdds(
-          gambar: promo[1].gambar,
-          judul: promo[1].judul,
-          isi: promo[1].keterangan,
-          url: promo[1].link,
-        ),
-      ],
+      children: promo
+          .map((p) => ContentAdds(
+                gambar: p.gambar,
+                judul: p.judul,
+                isi: p.keterangan,
+                url: p.link,
+              ))
+          .toList(),
     );
   }
 }

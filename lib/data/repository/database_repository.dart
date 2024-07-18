@@ -248,7 +248,7 @@ class DatabaseRepository {
             .map((item) => Highlight(
                   gambar: item['mGambar'] ?? '',
                   judul: item['mJudul'] ?? '',
-                  keterangan: item['mKeterangan'] ?? '',
+                  keterangan: item['nominal'] ?? '0',
                   link: item['mLink'] ?? '',
                 ))
             .toList();
