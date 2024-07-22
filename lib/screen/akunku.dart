@@ -67,7 +67,10 @@ class _AkunkuState extends State<Akunku> {
   }
 
   Future<void> signOut() async {
-    await DatabaseRepository().clearDatabase();
+    await InAppWebViewController
+        .clearAllCache(); // Clear all cached resources in webview
+    await CookieManager().deleteAllCookies(); // Delete all cookies in webview
+    await DatabaseRepository().clearDatabase(); // Clear user data from storage
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Content extends StatefulWidget {
@@ -19,17 +21,19 @@ class Content extends StatefulWidget {
 
 class _ContentState extends State<Content> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
-  late final InAppWebViewController _webViewController;
+  late InAppWebViewController _webViewController;
   double _progress = 0;
+  String currentUrl = '';
 
   @override
   void initState() {
     super.initState();
+    currentUrl = widget.url;
   }
 
   Future<void> back() async {
-    var isLastPage = await _webViewController.canGoBack();
-    if (isLastPage) {
+    bool canGoBack = await _webViewController.canGoBack();
+    if (canGoBack) {
       _webViewController.goBack();
     } else {
       Navigator.pop(context);
@@ -40,14 +44,90 @@ class _ContentState extends State<Content> {
     Navigator.pop(context);
   }
 
+  void openScanner() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              AppBar(
+                title: const Text('Scan Kode Referral '),
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                leading: GestureDetector(
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.black,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: MobileScanner(
+                      controller: MobileScannerController(
+                        detectionSpeed: DetectionSpeed.noDuplicates,
+                        returnImage: false,
+                      ),
+                      onDetect: (capture) {
+                        final List<Barcode> barcodes = capture.barcodes;
+                        for (final barcode in barcodes) {
+                          if (barcode.rawValue != null) {
+                            try {
+                              final Map<String, dynamic> barcodeData =
+                                  json.decode(barcode.rawValue!);
+                              final String custId = barcodeData['cust_id'];
+                              Navigator.pop(context); // Close the scanner
+                              setState(() {
+                                currentUrl =
+                                    "${widget.url}&kode_referal=$custId";
+                              });
+                              _webViewController.loadUrl(
+                                urlRequest: URLRequest(url: WebUri(currentUrl)),
+                              );
+                              break; // Exit the loop after processing the first barcode
+                            } catch (e) {
+                              debugPrint('Failed to parse barcode data: $e');
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InternetAwareWidget(
       child: WillPopScope(
         onWillPop: () async {
-          var isLastPage = await _webViewController.canGoBack();
-
-          if (isLastPage) {
+          bool canGoBack = await _webViewController.canGoBack();
+          if (canGoBack) {
             _webViewController.goBack();
             return false;
           } else {
@@ -57,13 +137,7 @@ class _ContentState extends State<Content> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text(
-              widget.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-            ),
+            backgroundColor: const Color(0xff0B60B0),
             leading: IconButton(
               icon: const Icon(
                 Icons.arrow_back,
@@ -73,14 +147,32 @@ class _ContentState extends State<Content> {
                 back();
               },
             ),
-            backgroundColor: const Color(0xff0B60B0),
+            title: Text(
+              widget.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              if (widget.url.contains('datun'))
+                IconButton(
+                  icon: const Icon(
+                    Icons.qr_code_scanner,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    openScanner();
+                  },
+                ),
+            ],
           ),
           backgroundColor: Colors.white,
           body: Stack(
             children: [
               InAppWebView(
                 initialUrlRequest: URLRequest(
-                  url: WebUri(widget.url),
+                  url: WebUri(currentUrl),
                 ),
                 initialSettings: InAppWebViewSettings(
                   supportZoom: false,
@@ -94,10 +186,6 @@ class _ContentState extends State<Content> {
                     },
                   );
                 },
-                // onReceivedError: (controller, request, error) {
-                //   controller.loadUrl(
-                //       urlRequest: URLRequest(url: WebUri("about:blank")));
-                // },
                 onLoadStop: (controller, url) async {
                   await controller.evaluateJavascript(source: """ 
                     const Flutter = {
