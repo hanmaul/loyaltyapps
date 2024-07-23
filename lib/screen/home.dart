@@ -189,7 +189,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHighlight(List<dynamic> highlight) {
     double screenWidth = MediaQuery.of(context).size.width;
-    print(screenWidth);
 
     // Calculate the maximum length of the total values
     int maxLength = highlight
