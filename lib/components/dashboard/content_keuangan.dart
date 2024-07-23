@@ -90,6 +90,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                   fontSize: widget.fontSize,
                   fontWeight: FontWeight.bold,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

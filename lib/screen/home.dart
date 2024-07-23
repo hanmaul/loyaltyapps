@@ -188,13 +188,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildHighlight(List<dynamic> highlight) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    print(screenWidth);
+
     // Calculate the maximum length of the total values
     int maxLength = highlight
         .map((h) => h.keterangan.length)
         .reduce((a, b) => a > b ? a : b);
 
-    // Determine the font size based on the maximum length
-    double fontSize = maxLength > 11 ? 12 : (maxLength > 9 ? 14 : 16);
+    // Determine the font size based on the maximum length and screen width
+    double fontSize;
+    if (maxLength > 11) {
+      fontSize = screenWidth < 400 ? 8 : (screenWidth < 500 ? 10 : 12);
+    } else if (maxLength > 9) {
+      fontSize = screenWidth < 400 ? 10 : (screenWidth < 500 ? 12 : 14);
+    } else {
+      fontSize = screenWidth < 400 ? 12 : (screenWidth < 500 ? 14 : 16);
+    }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
