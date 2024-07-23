@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Container(
                                   color: Colors.white,
-                                  height: 350,
+                                  height: 346,
                                   width: double.infinity,
                                 ),
                                 _buildCarousel(state.banner),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                                       )
                                     ],
                                   ),
-                                  height: 140,
+                                  height: 126,
                                   width: double.infinity,
                                   child: Column(
                                     mainAxisAlignment:
@@ -92,31 +92,31 @@ class _HomePageState extends State<HomePage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 4),
                                       _buildHighlight(state.highlight),
                                       const SizedBox(height: 8),
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: const Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Informasi lebih lanjut',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4),
-                                            Icon(
-                                              Icons.arrow_right_alt,
-                                              size: 14,
-                                              color: Colors.black,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      // GestureDetector(
+                                      //   onTap: () {},
+                                      //   child: const Row(
+                                      //     mainAxisAlignment:
+                                      //         MainAxisAlignment.center,
+                                      //     children: [
+                                      //       Text(
+                                      //         'Informasi lebih lanjut',
+                                      //         style: TextStyle(
+                                      //           fontSize: 12,
+                                      //           fontWeight: FontWeight.normal,
+                                      //         ),
+                                      //       ),
+                                      //       SizedBox(width: 4),
+                                      //       Icon(
+                                      //         Icons.arrow_right_alt,
+                                      //         size: 14,
+                                      //         color: Colors.black,
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),

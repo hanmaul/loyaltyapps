@@ -19,7 +19,7 @@ class WebviewRepository {
 
   Future<String> getUrlHistory() async {
     String custId = await DatabaseRepository().loadUser(field: "custId");
-    String url = "https://www.kamm-group.com:8070/mls/kp/";
+    String url = "https://www.kamm-group.com:8070/mls/mobile/kp/";
     String urlHistory = url + custId;
     return urlHistory;
   }
