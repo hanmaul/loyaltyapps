@@ -67,6 +67,13 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                     height: 26,
                     child: CachedNetworkImage(
                       imageUrl: widget.icon,
+                      placeholder: (context, url) => const SizedBox(
+                        height: 26,
+                        width: 26,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Container(
                                   color: Colors.white,
-                                  height: 346,
+                                  height: 340,
                                   width: double.infinity,
                                 ),
                                 _buildCarousel(state.banner),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                                       )
                                     ],
                                   ),
-                                  height: 126,
+                                  height: 120,
                                   width: double.infinity,
                                   child: Column(
                                     mainAxisAlignment:
@@ -84,15 +84,19 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        'Keuangan Anda',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: const Text(
+                                          'Keuangan Anda',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 8),
                                       _buildHighlight(state.highlight),
                                       const SizedBox(height: 8),
                                       // GestureDetector(
