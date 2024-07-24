@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                                       top: 190, left: 16, right: 16),
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 14,
-                                    horizontal: 20,
+                                    horizontal: 16,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
+                                            horizontal: 14.0),
                                         child: const Text(
                                           'Keuangan Anda',
                                           style: TextStyle(

@@ -55,7 +55,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
           getUrl(widget.url, widget.title);
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
