@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 14.0),
+                                            horizontal: 10.0),
                                         child: const Text(
                                           'Keuangan Anda',
                                           style: TextStyle(
