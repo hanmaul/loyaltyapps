@@ -41,29 +41,33 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) => DatabaseRepository()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'KAMM Loyalty',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
-          primaryColor: const Color(0xFF0B60B0),
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: Colors.grey.shade400,
-            selectionColor: Colors.grey.shade300,
-            selectionHandleColor: Colors.blue,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(create: (context) => DatabaseRepository()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'KAMM Loyalty',
+          theme: ThemeData(
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
+            primaryColor: const Color(0xFF0B60B0),
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.grey.shade400,
+              selectionColor: Colors.grey.shade300,
+              selectionHandleColor: Colors.blue,
+            ),
+            useMaterial3: true,
           ),
-          useMaterial3: true,
+          navigatorKey: navigatorKey,
+          initialRoute: '/',
+          onGenerateInitialRoutes: (String initialRoute) {
+            return [generateRoute(RouteSettings(name: initialRoute))];
+          },
+          onGenerateRoute: generateRoute,
         ),
-        navigatorKey: navigatorKey,
-        initialRoute: '/',
-        onGenerateInitialRoutes: (String initialRoute) {
-          return [generateRoute(RouteSettings(name: initialRoute))];
-        },
-        onGenerateRoute: generateRoute,
       ),
     );
   }
