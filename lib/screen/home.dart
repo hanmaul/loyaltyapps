@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                   child: CustomScrollView(
                     slivers: <Widget>[
                       SliverPadding(
-                        padding: EdgeInsets.only(
+                        padding: EdgeInsets.only( 
                             top: MediaQuery.of(context).padding.top),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
