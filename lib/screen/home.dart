@@ -213,7 +213,7 @@ class _HomePageState extends State<HomePage> {
         mobile ? cardSize * 0.7 : (cardSize * 0.7) / 1.5;
     final double padding = (cardSize - serviceWidth) / 2;
     return GridView.count(
-      crossAxisCount: 3,
+      crossAxisCount: mobile ? 3 : 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: padding),
