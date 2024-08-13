@@ -242,18 +242,22 @@ class _HomePageState extends State<HomePage> {
             .toList(),
       );
     } else {
-      return GridView.count(
-        crossAxisCount: 2,
+      return GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75, // Adjust as needed
+        ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        children: promo
-            .map((p) => ContentAdds(
-                  gambar: p.gambar,
-                  judul: p.judul,
-                  isi: p.keterangan,
-                  url: p.link,
-                ))
-            .toList(),
+        itemCount: promo.length,
+        itemBuilder: (context, index) {
+          return ContentAdds(
+            gambar: promo[index].gambar,
+            judul: promo[index].judul,
+            isi: promo[index].keterangan,
+            url: promo[index].link,
+          );
+        },
       );
     }
   }
