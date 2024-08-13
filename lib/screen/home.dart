@@ -94,26 +94,18 @@ class _HomePageState extends State<HomePage> {
                                     width: highlightWidth,
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: (mediaQueryWidth -
-                                                      highlightWidth) /
-                                                  2),
-                                          child: const Text(
-                                            "Keuangan Anda",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: highlightHeight * 0.13,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                        const Text(
+                                          "Keuangan Anda",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: highlightHeight * 0.13,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: highlightHeight * 0.07),
                                         _buildHighlight(state.highlight,
                                             mediaQueryWidth, highlightHeight),
                                       ],
