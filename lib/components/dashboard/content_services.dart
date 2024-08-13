@@ -9,12 +9,14 @@ class ContentServices extends StatefulWidget {
   final String icon;
   final String title;
   final String url;
+  final double cardSize;
 
   const ContentServices({
     Key? key,
     required this.icon,
     required this.title,
     required this.url,
+    required this.cardSize,
   }) : super(key: key);
 
   @override
@@ -45,11 +47,15 @@ class _ContentServicesState extends State<ContentServices> {
 
   @override
   Widget build(BuildContext context) {
+    final double imgSize = widget.cardSize / 4;
+    final double boxSize = imgSize * 0.70;
+    final double lableSize = boxSize * 0.22;
     return GestureDetector(
       onTap: () {
         getUrl(widget.url, widget.title);
       },
       child: Container(
+        color: Colors.transparent,
         child: Column(
           children: [
             Stack(
@@ -77,13 +83,13 @@ class _ContentServicesState extends State<ContentServices> {
                       )
                     ],
                   ),
-                  width: 58,
-                  height: 58,
+                  width: boxSize,
+                  height: boxSize,
                 ),
                 Container(
                   // color: Colors.amber,
-                  width: 80,
-                  height: 80,
+                  width: imgSize,
+                  height: imgSize,
                   child: CachedNetworkImage(
                     imageUrl: widget.icon,
                     fit: BoxFit.cover,
@@ -93,8 +99,8 @@ class _ContentServicesState extends State<ContentServices> {
             ),
             Text(
               widget.title,
-              style: const TextStyle(
-                fontSize: 12,
+              style: TextStyle(
+                fontSize: lableSize,
               ),
             ),
           ],

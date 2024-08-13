@@ -26,12 +26,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQueryHeight = MediaQuery.of(context).size.height;
+    final mediaQueryWidth = MediaQuery.of(context).size.width;
+    final appBarHeight = AppBar().preferredSize.height;
+
+    final bodyHeight =
+        mediaQueryHeight - appBarHeight - MediaQuery.of(context).padding.top;
+
+    final firstLayer = bodyHeight * 0.35;
+    final carouselHeight = firstLayer * 0.65;
+
+    final keuanganHeight = firstLayer * 0.35;
+    final keuanganWidth = mediaQueryWidth * 0.9;
+
+    final promoWidth = mediaQueryWidth * 0.95;
+
+    final bool mobile = mediaQueryWidth < 500;
+
     return InternetAwareWidget(
       child: BlocProvider(
         create: (context) => ContentBloc(
           databaseRepository: DatabaseRepository(),
         )..add(LoadEvent()),
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: BlocBuilder<ContentBloc, ContentState>(
             builder: (context, state) {
               if (state is LoadedState) {
@@ -39,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                   child: CustomScrollView(
                     slivers: <Widget>[
                       SliverPadding(
-                        padding: EdgeInsets.only( 
+                        padding: EdgeInsets.only(
                             top: MediaQuery.of(context).padding.top),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
@@ -47,98 +65,81 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Container(
                                   color: Colors.white,
-                                  height: 340,
-                                  width: double.infinity,
+                                  height: firstLayer,
+                                  width: mediaQueryWidth,
                                 ),
-                                _buildCarousel(state.banner),
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                      top: 190, left: 16, right: 16),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14,
-                                    horizontal: 16,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      width: 0.1,
-                                      color: Colors.grey,
+                                _buildCarousel(state.banner, carouselHeight),
+                                Positioned(
+                                  bottom: firstLayer * 0.05,
+                                  left: (mediaQueryWidth - keuanganWidth) / 2,
+                                  right: (mediaQueryWidth - keuanganWidth) / 2,
+                                  child: Container(
+                                    padding: EdgeInsets.all(
+                                      keuanganHeight * 0.12,
                                     ),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        width: 0.1,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(15),
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          spreadRadius: 4,
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 2),
+                                        )
+                                      ],
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.2),
-                                        spreadRadius: 4,
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 2),
-                                      )
-                                    ],
-                                  ),
-                                  height: 120,
-                                  width: double.infinity,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0),
-                                        child: const Text(
-                                          'Keuangan Anda',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
+                                    height: keuanganHeight,
+                                    width: keuanganWidth,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: (mediaQueryWidth -
+                                                      keuanganWidth) /
+                                                  2),
+                                          child: Text(
+                                            "Keuangan Anda",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: keuanganHeight * 0.14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      _buildHighlight(state.highlight),
-                                      const SizedBox(height: 8),
-                                      // GestureDetector(
-                                      //   onTap: () {},
-                                      //   child: const Row(
-                                      //     mainAxisAlignment:
-                                      //         MainAxisAlignment.center,
-                                      //     children: [
-                                      //       Text(
-                                      //         'Informasi lebih lanjut',
-                                      //         style: TextStyle(
-                                      //           fontSize: 12,
-                                      //           fontWeight: FontWeight.normal,
-                                      //         ),
-                                      //       ),
-                                      //       SizedBox(width: 4),
-                                      //       Icon(
-                                      //         Icons.arrow_right_alt,
-                                      //         size: 14,
-                                      //         color: Colors.black,
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
-                                    ],
+                                        SizedBox(height: keuanganHeight * 0.07),
+                                        _buildHighlight(state.highlight,
+                                            mediaQueryWidth, keuanganHeight),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 40),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: keuanganHeight * 0.20),
                               color: Colors.white,
-                              width: double.infinity,
-                              child: _buildServices(state.service),
+                              width: mediaQueryWidth,
+                              child: _buildServices(
+                                  state.service, mediaQueryWidth),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              color: Colors.white,
-                              width: double.infinity,
-                              child: _buildPromo(state.promo),
+                            Center(
+                              child: Container(
+                                color: Colors.white,
+                                width: promoWidth,
+                                child: _buildPromo(state.promo, mobile),
+                              ),
                             ),
                           ]),
                         ),
@@ -169,7 +170,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCarousel(List<dynamic> banners) {
+  Widget _buildCarousel(List<dynamic> banners, double carouselHeight) {
     return CarouselSlider(
       items: banners.map<Widget>((item) {
         return Container(
@@ -179,7 +180,7 @@ class _HomePageState extends State<HomePage> {
         );
       }).toList(),
       options: CarouselOptions(
-        height: 212.0, // Adjust the height as needed
+        height: carouselHeight, // Adjust the height as needed
         enlargeCenterPage: true,
         autoPlay: true,
         aspectRatio: 16 / 9,
@@ -191,9 +192,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHighlight(List<dynamic> highlight) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
+  Widget _buildHighlight(
+      List<dynamic> highlight, double screenWidth, double cardSize) {
     // Calculate the maximum length of the total values
     int maxLength = highlight
         .map((h) => h.keterangan.length)
@@ -202,11 +202,11 @@ class _HomePageState extends State<HomePage> {
     // Determine the font size based on the maximum length and screen width
     double fontSize;
     if (maxLength > 11) {
-      fontSize = screenWidth < 400 ? 8 : (screenWidth < 500 ? 10 : 12);
+      fontSize = screenWidth < 400 ? 8 : (screenWidth < 500 ? 10 : 16);
     } else if (maxLength > 9) {
-      fontSize = screenWidth < 400 ? 10 : (screenWidth < 500 ? 12 : 14);
+      fontSize = screenWidth < 400 ? 10 : (screenWidth < 500 ? 12 : 18);
     } else {
-      fontSize = screenWidth < 400 ? 12 : (screenWidth < 500 ? 14 : 16);
+      fontSize = screenWidth < 400 ? 12 : (screenWidth < 500 ? 14 : 20);
     }
 
     return Row(
@@ -218,38 +218,58 @@ class _HomePageState extends State<HomePage> {
                 total: h.keterangan,
                 url: h.link,
                 fontSize: fontSize, // Pass the calculated fontSize
+                cardSize: cardSize,
               ))
           .toList(),
     );
   }
 
-  Widget _buildServices(List<dynamic> service) {
+  Widget _buildServices(List<dynamic> service, double cardSize) {
+    final double serviceWidth = cardSize * 0.7;
+    final double padding = (cardSize - serviceWidth) / 2;
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(horizontal: padding),
       children: service.map((menuItem) {
         return ContentServices(
           icon: menuItem.gambar,
           title: menuItem.judul,
           url: menuItem.link!,
+          cardSize: serviceWidth,
         );
       }).toList(),
     );
   }
 
-  Widget _buildPromo(List<dynamic> promo) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: promo
-          .map((p) => ContentAdds(
-                gambar: p.gambar,
-                judul: p.judul,
-                isi: p.keterangan,
-                url: p.link,
-              ))
-          .toList(),
-    );
+  Widget _buildPromo(List<dynamic> promo, bool mobile) {
+    if (mobile) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: promo
+            .map((p) => ContentAdds(
+                  gambar: p.gambar,
+                  judul: p.judul,
+                  isi: p.keterangan,
+                  url: p.link,
+                ))
+            .toList(),
+      );
+    } else {
+      return GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: promo
+            .map((p) => ContentAdds(
+                  gambar: p.gambar,
+                  judul: p.judul,
+                  isi: p.keterangan,
+                  url: p.link,
+                ))
+            .toList(),
+      );
+    }
   }
 }

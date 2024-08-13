@@ -48,7 +48,7 @@ class _ContentAddsState extends State<ContentAdds> {
         getUrl(widget.url, widget.judul);
       },
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 12),
+        margin: const EdgeInsets.all(12.0),
         color: Colors.white,
         surfaceTintColor: Colors.white,
         elevation: 2, // Adjust the elevation as needed

@@ -11,6 +11,7 @@ class ContentKeuangan extends StatefulWidget {
   final String total;
   final String url;
   final double fontSize;
+  final double cardSize;
 
   const ContentKeuangan({
     Key? key,
@@ -19,6 +20,7 @@ class ContentKeuangan extends StatefulWidget {
     required this.total,
     required this.url,
     required this.fontSize,
+    required this.cardSize,
   }) : super(key: key);
 
   @override
@@ -49,53 +51,64 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
 
   @override
   Widget build(BuildContext context) {
+    final iconSize = widget.cardSize * 0.24;
+    final titleSize = iconSize * 0.46;
+
+    // Split the title into a list of words
+    final List<String> titleWords = widget.title.split(' ');
+
     return Expanded(
       child: GestureDetector(
         onTap: () {
           getUrl(widget.url, widget.title);
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: 26,
+                    height: iconSize,
                     child: CachedNetworkImage(
                       imageUrl: widget.icon,
-                      placeholder: (context, url) => const SizedBox(
-                        height: 26,
-                        width: 26,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                      placeholder: (context, url) => SizedBox(
+                        height: iconSize,
+                        width: iconSize,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
                       ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                       fit: BoxFit.cover,
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      widget.title,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.2,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
+                  SizedBox(width: titleSize * 0.5),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: titleWords.map((word) {
+                      return Text(
+                        word,
+                        style: TextStyle(
+                          fontSize: titleSize,
+                          fontWeight: FontWeight.normal,
+                          height: 1.2,
+                        ),
+                        textAlign: TextAlign.start,
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
-              const SizedBox(height: 2),
+              SizedBox(height: titleSize * 0.5),
               Text(
                 'Rp${widget.total}',
                 style: TextStyle(
                   fontSize: widget.fontSize,
                   fontWeight: FontWeight.bold,
+                  height: 0,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
