@@ -210,10 +210,10 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildServices(List<dynamic> service, double cardSize, bool mobile) {
     final double serviceWidth =
-        mobile ? cardSize * 0.7 : (cardSize * 0.7) / 1.5;
+        mobile ? cardSize * 0.7 : (cardSize * 0.7) / 1.7;
     final double padding = (cardSize - serviceWidth) / 2;
     return GridView.count(
-      crossAxisCount: mobile ? 3 : 4,
+      crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.symmetric(horizontal: padding),
