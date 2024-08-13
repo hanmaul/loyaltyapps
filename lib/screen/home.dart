@@ -106,8 +106,14 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        _buildHighlight(state.highlight,
-                                            mediaQueryWidth, highlightHeight),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: highlightHeight * 0.02),
+                                          child: _buildHighlight(
+                                              state.highlight,
+                                              mediaQueryWidth,
+                                              highlightHeight),
+                                        ),
                                       ],
                                     ),
                                   ),
