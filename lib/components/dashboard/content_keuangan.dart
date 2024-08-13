@@ -51,7 +51,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
   Widget build(BuildContext context) {
     final iconSize = widget.cardSize * 0.20;
     final titleSize = iconSize * 0.50;
-    final amountSize = titleSize * 1.2;
+    final amountSize = titleSize * 1.1;
 
     // Split the title into a list of words
     final List<String> titleWords = widget.title.split(' ');
