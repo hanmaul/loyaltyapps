@@ -238,6 +238,7 @@ class _HomePageState extends State<HomePage> {
                   judul: p.judul,
                   isi: p.keterangan,
                   url: p.link,
+                  mobile: mobile,
                 ))
             .toList(),
       );
@@ -245,7 +246,7 @@ class _HomePageState extends State<HomePage> {
       return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.75, // Adjust as needed
+          childAspectRatio: 1.5,
         ),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -256,6 +257,7 @@ class _HomePageState extends State<HomePage> {
             judul: promo[index].judul,
             isi: promo[index].keterangan,
             url: promo[index].link,
+            mobile: mobile,
           );
         },
       );

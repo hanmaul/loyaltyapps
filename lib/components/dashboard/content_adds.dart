@@ -9,6 +9,7 @@ class ContentAdds extends StatefulWidget {
   final String judul;
   final String isi;
   final String url;
+  final bool mobile;
 
   const ContentAdds({
     Key? key,
@@ -16,6 +17,7 @@ class ContentAdds extends StatefulWidget {
     required this.judul,
     required this.isi,
     required this.url,
+    required this.mobile,
   }) : super(key: key);
 
   @override
@@ -48,7 +50,7 @@ class _ContentAddsState extends State<ContentAdds> {
         getUrl(widget.url, widget.judul);
       },
       child: Card(
-        margin: const EdgeInsets.all(12.0),
+        margin: (widget.mobile) ? EdgeInsets.all(12.0) : EdgeInsets.all(24.0),
         color: Colors.white,
         surfaceTintColor: Colors.white,
         elevation: 2, // Adjust the elevation as needed
