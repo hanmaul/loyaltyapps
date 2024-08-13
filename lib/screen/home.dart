@@ -26,18 +26,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQueryHeight = MediaQuery.of(context).size.height;
     final mediaQueryWidth = MediaQuery.of(context).size.width;
-    final appBarHeight = AppBar().preferredSize.height;
 
-    final bodyHeight =
-        mediaQueryHeight - appBarHeight - MediaQuery.of(context).padding.top;
+    const double firstLayer = 297.0;
+    const double carouselHeight = 190.0;
 
-    final firstLayer = bodyHeight * 0.35;
-    final carouselHeight = firstLayer * 0.65;
-
-    final keuanganHeight = firstLayer * 0.35;
-    final keuanganWidth = mediaQueryWidth * 0.9;
+    const double highlightHeight = 104;
+    final highlightWidth = mediaQueryWidth * 0.9;
 
     final promoWidth = mediaQueryWidth * 0.95;
 
@@ -71,11 +66,11 @@ class _HomePageState extends State<HomePage> {
                                 _buildCarousel(state.banner, carouselHeight),
                                 Positioned(
                                   bottom: firstLayer * 0.05,
-                                  left: (mediaQueryWidth - keuanganWidth) / 2,
-                                  right: (mediaQueryWidth - keuanganWidth) / 2,
+                                  left: (mediaQueryWidth - highlightWidth) / 2,
+                                  right: (mediaQueryWidth - highlightWidth) / 2,
                                   child: Container(
-                                    padding: EdgeInsets.all(
-                                      keuanganHeight * 0.12,
+                                    padding: const EdgeInsets.all(
+                                      highlightHeight * 0.12,
                                     ),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -95,8 +90,8 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       ],
                                     ),
-                                    height: keuanganHeight,
-                                    width: keuanganWidth,
+                                    height: highlightHeight,
+                                    width: highlightWidth,
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -106,20 +101,21 @@ class _HomePageState extends State<HomePage> {
                                         Padding(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: (mediaQueryWidth -
-                                                      keuanganWidth) /
+                                                      highlightWidth) /
                                                   2),
-                                          child: Text(
+                                          child: const Text(
                                             "Keuangan Anda",
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: keuanganHeight * 0.13,
+                                              fontSize: highlightHeight * 0.13,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: keuanganHeight * 0.07),
+                                        const SizedBox(
+                                            height: highlightHeight * 0.07),
                                         _buildHighlight(state.highlight,
-                                            mediaQueryWidth, keuanganHeight),
+                                            mediaQueryWidth, highlightHeight),
                                       ],
                                     ),
                                   ),
@@ -127,8 +123,8 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: keuanganHeight * 0.20),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: highlightHeight * 0.20),
                               color: Colors.white,
                               width: mediaQueryWidth,
                               child: _buildServices(
@@ -174,6 +170,7 @@ class _HomePageState extends State<HomePage> {
     return CarouselSlider(
       items: banners.map<Widget>((item) {
         return Container(
+          color: Colors.transparent,
           child: CachedNetworkImage(
             imageUrl: item.gambar,
           ),

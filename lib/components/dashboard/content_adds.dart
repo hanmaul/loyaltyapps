@@ -50,7 +50,9 @@ class _ContentAddsState extends State<ContentAdds> {
         getUrl(widget.url, widget.judul);
       },
       child: Card(
-        margin: (widget.mobile) ? EdgeInsets.all(12.0) : EdgeInsets.all(24.0),
+        margin: (widget.mobile)
+            ? const EdgeInsets.all(12.0)
+            : const EdgeInsets.all(24.0),
         color: Colors.white,
         surfaceTintColor: Colors.white,
         elevation: 2, // Adjust the elevation as needed
@@ -68,10 +70,6 @@ class _ContentAddsState extends State<ContentAdds> {
               child: Container(
                 height: 190,
                 width: double.infinity,
-                // child: Image.asset(
-                //   widget.gambar,
-                //   fit: BoxFit.cover,
-                // ),
                 child: CachedNetworkImage(
                   imageUrl: widget.gambar,
                   fit: BoxFit.cover,

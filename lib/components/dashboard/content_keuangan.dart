@@ -49,9 +49,9 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = widget.cardSize * 0.20;
+    final iconSize = widget.cardSize * 0.22;
     final titleSize = iconSize * 0.50;
-    final amountSize = titleSize * 1.1;
+    final amountSize = titleSize * 1.2;
 
     // Split the title into a list of words
     final List<String> titleWords = widget.title.split(' ');
@@ -62,6 +62,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
           getUrl(widget.url, widget.title);
         },
         child: Container(
+          color: Colors.transparent,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,6 +71,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
+                    color: Colors.transparent,
                     height: iconSize,
                     child: CachedNetworkImage(
                       imageUrl: widget.icon,
