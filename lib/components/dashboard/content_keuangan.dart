@@ -10,7 +10,6 @@ class ContentKeuangan extends StatefulWidget {
   final String title;
   final String total;
   final String url;
-  final double fontSize;
   final double cardSize;
 
   const ContentKeuangan({
@@ -19,7 +18,6 @@ class ContentKeuangan extends StatefulWidget {
     required this.title,
     required this.total,
     required this.url,
-    required this.fontSize,
     required this.cardSize,
   }) : super(key: key);
 
@@ -51,8 +49,9 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = widget.cardSize * 0.24;
-    final titleSize = iconSize * 0.46;
+    final iconSize = widget.cardSize * 0.20;
+    final titleSize = iconSize * 0.50;
+    final amountSize = titleSize * 1.2;
 
     // Split the title into a list of words
     final List<String> titleWords = widget.title.split(' ');
@@ -106,7 +105,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
               Text(
                 'Rp${widget.total}',
                 style: TextStyle(
-                  fontSize: widget.fontSize,
+                  fontSize: amountSize,
                   fontWeight: FontWeight.bold,
                   height: 0,
                 ),

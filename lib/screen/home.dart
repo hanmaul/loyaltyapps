@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
 
     final promoWidth = mediaQueryWidth * 0.95;
 
-    final bool mobile = mediaQueryWidth < 500;
+    final bool mobile = mediaQueryWidth < 600;
 
     return InternetAwareWidget(
       child: BlocProvider(
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                             "Keuangan Anda",
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: keuanganHeight * 0.14,
+                                              fontSize: keuanganHeight * 0.13,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -194,21 +194,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHighlight(
       List<dynamic> highlight, double screenWidth, double cardSize) {
-    // Calculate the maximum length of the total values
-    int maxLength = highlight
-        .map((h) => h.keterangan.length)
-        .reduce((a, b) => a > b ? a : b);
-
-    // Determine the font size based on the maximum length and screen width
-    double fontSize;
-    if (maxLength > 11) {
-      fontSize = screenWidth < 400 ? 8 : (screenWidth < 500 ? 10 : 16);
-    } else if (maxLength > 9) {
-      fontSize = screenWidth < 400 ? 10 : (screenWidth < 500 ? 12 : 18);
-    } else {
-      fontSize = screenWidth < 400 ? 12 : (screenWidth < 500 ? 14 : 20);
-    }
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: highlight
@@ -217,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                 title: h.judul,
                 total: h.keterangan,
                 url: h.link,
-                fontSize: fontSize, // Pass the calculated fontSize
                 cardSize: cardSize,
               ))
           .toList(),
