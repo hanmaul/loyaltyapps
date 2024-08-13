@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                               width: mediaQueryWidth,
                               child: _buildServices(
-                                  state.service, mediaQueryWidth),
+                                  state.service, mediaQueryWidth, mobile),
                             ),
                             Center(
                               child: Container(
@@ -208,8 +208,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildServices(List<dynamic> service, double cardSize) {
-    final double serviceWidth = cardSize * 0.7;
+  Widget _buildServices(List<dynamic> service, double cardSize, bool mobile) {
+    final double serviceWidth =
+        mobile ? cardSize * 0.7 : (cardSize * 0.7) / 1.5;
     final double padding = (cardSize - serviceWidth) / 2;
     return GridView.count(
       crossAxisCount: 3,
