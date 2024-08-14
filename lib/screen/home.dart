@@ -91,7 +91,6 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                     ),
                                     height: highlightHeight,
-                                    width: highlightWidth,
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,

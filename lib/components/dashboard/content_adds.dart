@@ -26,7 +26,7 @@ class ContentAdds extends StatefulWidget {
 
 class _ContentAddsState extends State<ContentAdds> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    if (urlWeb.isNotEmpty) {
+    if (urlWeb != "") {
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -49,66 +49,60 @@ class _ContentAddsState extends State<ContentAdds> {
       onTap: () {
         getUrl(widget.url, widget.judul);
       },
-      child: Container(
-        height: widget.mobile ? 250 : 200, // Adjust the height as needed
-        child: Card(
-          margin: widget.mobile
-              ? const EdgeInsets.all(12.0)
-              : const EdgeInsets.all(24.0),
-          color: Colors.white,
-          surfaceTintColor: Colors.white,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
+      child: Card(
+        margin: (widget.mobile)
+            ? const EdgeInsets.all(12.0)
+            : const EdgeInsets.all(24.0),
+        color: Colors.white,
+        surfaceTintColor: Colors.white,
+        elevation: 2, // Adjust the elevation as needed
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          children: [
+            ClipRRect(
+              // ClipRRect widget is used to clip the child widget with rounded corners
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+              child: Container(
+                color: Colors.white,
+                height: 170,
+                width: double.infinity,
+                child: CachedNetworkImage(
+                  imageUrl: widget.gambar,
+                  fit: BoxFit.cover,
                 ),
-                child: Container(
-                  color: Colors.white,
-                  height: 120,
-                  width: double.infinity,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.gambar,
-                    fit: BoxFit.cover,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.judul,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.judul,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.isi,
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 12,
                     ),
-                    const SizedBox(height: 4),
-                    Expanded(
-                      child: Text(
-                        widget.isi,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 12,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
