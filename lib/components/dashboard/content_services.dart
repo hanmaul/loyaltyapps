@@ -45,7 +45,7 @@ class _ContentServicesState extends State<ContentServices> {
   Widget build(BuildContext context) {
     final int gridCount = widget.mobile ? 3 : 6;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double itemsWidth = 100 * gridCount.toDouble();
+    final double itemsWidth = 110 * gridCount.toDouble();
     final double padding = (screenWidth - itemsWidth) / 2;
 
     return GridView.count(

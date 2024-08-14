@@ -62,7 +62,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
           getUrl(widget.url, widget.title);
         },
         child: Container(
-          color: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 6),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +85,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(width: titleSize * 0.5),
+                  const SizedBox(width: titleSize * 0.5),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,

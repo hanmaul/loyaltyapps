@@ -98,10 +98,10 @@ class _HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${mediaQueryWidth / 76}",
+                                          "Keuangan Anda",
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: highlightHeight * 0.13,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
