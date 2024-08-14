@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${mediaQueryWidth / 72}",
+                                          "${mediaQueryWidth / 76}",
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: highlightHeight * 0.13,
@@ -122,8 +122,10 @@ class _HomePageState extends State<HomePage> {
                                   vertical: highlightHeight * 0.20),
                               color: Colors.white,
                               width: mediaQueryWidth,
-                              child: _buildServices(
-                                  state.service, mediaQueryWidth, mobile),
+                              child: ContentServices(
+                                service: state.service,
+                                mobile: mobile,
+                              ),
                             ),
                             Center(
                               child: Container(
@@ -196,25 +198,6 @@ class _HomePageState extends State<HomePage> {
                 cardSize: cardSize,
               ))
           .toList(),
-    );
-  }
-
-  Widget _buildServices(List<dynamic> service, double cardSize, bool mobile) {
-    final double serviceWidth =
-        mobile ? cardSize * 0.7 : (cardSize * 0.7) / 1.7;
-    final double padding = (cardSize - serviceWidth) / 2;
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      children: service.map((menuItem) {
-        return ContentServices(
-          icon: menuItem.gambar,
-          title: menuItem.judul,
-          url: menuItem.link!,
-        );
-      }).toList(),
     );
   }
 

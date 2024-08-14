@@ -49,9 +49,9 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = widget.cardSize * 0.22;
-    final titleSize = iconSize * 0.52;
-    final amountSize = titleSize * 1.1;
+    const double iconSize = 24;
+    const double titleSize = 11;
+    const double amountSize = 13;
 
     // Split the title into a list of words
     final List<String> titleWords = widget.title.split(' ');
@@ -75,10 +75,10 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                     height: iconSize,
                     child: CachedNetworkImage(
                       imageUrl: widget.icon,
-                      placeholder: (context, url) => SizedBox(
+                      placeholder: (context, url) => const SizedBox(
                         height: iconSize,
                         width: iconSize,
-                        child: const CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),

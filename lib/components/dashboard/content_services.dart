@@ -6,15 +6,13 @@ import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
 
 class ContentServices extends StatefulWidget {
-  final String icon;
-  final String title;
-  final String url;
+  final List<dynamic> service;
+  final bool mobile;
 
   const ContentServices({
     Key? key,
-    required this.icon,
-    required this.title,
-    required this.url,
+    required this.service,
+    required this.mobile,
   }) : super(key: key);
 
   @override
@@ -45,65 +43,75 @@ class _ContentServicesState extends State<ContentServices> {
 
   @override
   Widget build(BuildContext context) {
-    const double imgSize = 72;
-    const double boxSize = 50;
-    const double lableSize = 11;
-    return GestureDetector(
-      onTap: () {
-        getUrl(widget.url, widget.title);
-      },
-      child: Container(
-        color: Colors.transparent,
-        child: Column(
-          children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xffFFFFFF),
-                        Color(0xff8CC2E6),
+    final int gridCount = widget.mobile ? 3 : 6;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double itemsWidth = 100 * gridCount.toDouble();
+    final double padding = (screenWidth - itemsWidth) / 2;
+
+    return GridView.count(
+      crossAxisCount: gridCount,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: padding),
+      children: widget.service.map((menuItem) {
+        return GestureDetector(
+          onTap: () {
+            getUrl(menuItem.link, menuItem.judul);
+          },
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Color(0xffFFFFFF),
+                          Color(0xff8CC2E6),
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 0,
+                          blurRadius: 10,
+                          offset: const Offset(0, 6),
+                        )
                       ],
                     ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(15),
+                    width: 52,
+                    height: 52,
+                  ),
+                  Container(
+                    color: Colors.transparent,
+                    width: 74,
+                    height: 74,
+                    child: CachedNetworkImage(
+                      imageUrl: menuItem.gambar,
+                      fit: BoxFit.cover,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 10,
-                        offset: const Offset(0, 6),
-                      )
-                    ],
                   ),
-                  width: boxSize,
-                  height: boxSize,
-                ),
-                Container(
-                  // color: Colors.amber,
-                  width: imgSize,
-                  height: imgSize,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.icon,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: lableSize,
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+              Flexible(
+                child: Text(
+                  menuItem.judul,
+                  style: const TextStyle(
+                    fontSize: 11,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
     );
   }
 }
