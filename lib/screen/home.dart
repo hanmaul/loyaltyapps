@@ -110,9 +110,7 @@ class _HomePageState extends State<HomePage> {
                                           padding: const EdgeInsets.only(
                                               bottom: highlightHeight * 0.02),
                                           child: _buildHighlight(
-                                              state.highlight,
-                                              mediaQueryWidth,
-                                              highlightHeight),
+                                              state.highlight, highlightHeight),
                                         ),
                                       ],
                                     ),
@@ -187,8 +185,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHighlight(
-      List<dynamic> highlight, double screenWidth, double cardSize) {
+  Widget _buildHighlight(List<dynamic> highlight, double cardSize) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: highlight

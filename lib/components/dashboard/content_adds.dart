@@ -68,7 +68,8 @@ class _ContentAddsState extends State<ContentAdds> {
                 topRight: Radius.circular(15),
               ),
               child: Container(
-                height: 190,
+                color: Colors.white,
+                height: 170,
                 width: double.infinity,
                 child: CachedNetworkImage(
                   imageUrl: widget.gambar,
@@ -86,7 +87,7 @@ class _ContentAddsState extends State<ContentAdds> {
                     widget.judul,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -95,7 +96,7 @@ class _ContentAddsState extends State<ContentAdds> {
                     style: const TextStyle(
                       color: Colors.black54,
                       fontWeight: FontWeight.normal,
-                      fontSize: 14,
+                      fontSize: 12,
                     ),
                   ),
                 ],
