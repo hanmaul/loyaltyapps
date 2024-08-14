@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              bottom: highlightHeight * 0.02),
+                                              bottom: highlightHeight * 0.04),
                                           child: _buildHighlight(
                                               state.highlight, highlightHeight),
                                         ),
