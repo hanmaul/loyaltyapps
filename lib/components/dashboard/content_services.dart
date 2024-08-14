@@ -9,14 +9,12 @@ class ContentServices extends StatefulWidget {
   final String icon;
   final String title;
   final String url;
-  final double cardSize;
 
   const ContentServices({
     Key? key,
     required this.icon,
     required this.title,
     required this.url,
-    required this.cardSize,
   }) : super(key: key);
 
   @override
@@ -47,9 +45,9 @@ class _ContentServicesState extends State<ContentServices> {
 
   @override
   Widget build(BuildContext context) {
-    final double imgSize = widget.cardSize / 4;
-    final double boxSize = imgSize * 0.70;
-    final double lableSize = boxSize * 0.22;
+    const double imgSize = 72;
+    const double boxSize = 50;
+    const double lableSize = 11;
     return GestureDetector(
       onTap: () {
         getUrl(widget.url, widget.title);

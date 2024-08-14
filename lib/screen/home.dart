@@ -97,8 +97,8 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        const Text(
-                                          "Keuangan Anda",
+                                        Text(
+                                          "${mediaQueryWidth / 72}",
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: highlightHeight * 0.13,
@@ -213,7 +213,6 @@ class _HomePageState extends State<HomePage> {
           icon: menuItem.gambar,
           title: menuItem.judul,
           url: menuItem.link!,
-          cardSize: serviceWidth,
         );
       }).toList(),
     );
