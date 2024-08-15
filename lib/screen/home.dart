@@ -28,15 +28,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final mediaQueryWidth = MediaQuery.of(context).size.width;
 
-    const double firstLayer = 297.0;
-    const double carouselHeight = 190.0;
+    final bool mobile = mediaQueryWidth < 600;
+    final double carouselHeight = mobile ? 190.0 : 285.0;
 
     const double highlightHeight = 104;
-    final highlightWidth = mediaQueryWidth * 0.9;
+    final double highlightWidth =
+        mobile ? mediaQueryWidth * 0.9 : mediaQueryWidth * 0.5;
 
-    final promoWidth = mediaQueryWidth * 0.95;
-
-    final bool mobile = mediaQueryWidth < 600;
+    final double promoWidth = mediaQueryWidth * 0.95;
 
     return InternetAwareWidget(
       child: BlocProvider(
@@ -60,12 +59,12 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 Container(
                                   color: Colors.white,
-                                  height: firstLayer,
                                   width: mediaQueryWidth,
+                                  height: carouselHeight + highlightHeight,
                                 ),
                                 _buildCarousel(state.banner, carouselHeight),
                                 Positioned(
-                                  bottom: firstLayer * 0.05,
+                                  top: carouselHeight * 0.95,
                                   left: (mediaQueryWidth - highlightWidth) / 2,
                                   right: (mediaQueryWidth - highlightWidth) / 2,
                                   child: Container(
@@ -174,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         );
       }).toList(),
       options: CarouselOptions(
-        height: carouselHeight, // Adjust the height as needed
+        height: carouselHeight,
         enlargeCenterPage: true,
         autoPlay: true,
         aspectRatio: 16 / 9,
