@@ -10,6 +10,7 @@ class ContentAdds extends StatefulWidget {
   final String isi;
   final String url;
   final bool mobile;
+  final double tabPadding;
 
   const ContentAdds({
     Key? key,
@@ -18,6 +19,7 @@ class ContentAdds extends StatefulWidget {
     required this.isi,
     required this.url,
     required this.mobile,
+    this.tabPadding = 24.0, // Provide a default value
   }) : super(key: key);
 
   @override
@@ -26,7 +28,7 @@ class ContentAdds extends StatefulWidget {
 
 class _ContentAddsState extends State<ContentAdds> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    if (urlWeb != "") {
+    if (urlWeb.isNotEmpty) {
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -52,7 +54,7 @@ class _ContentAddsState extends State<ContentAdds> {
       child: Card(
         margin: (widget.mobile)
             ? const EdgeInsets.all(12.0)
-            : const EdgeInsets.all(24.0),
+            : EdgeInsets.all(widget.tabPadding),
         color: Colors.white,
         surfaceTintColor: Colors.white,
         elevation: 2, // Adjust the elevation as needed
@@ -98,6 +100,7 @@ class _ContentAddsState extends State<ContentAdds> {
                       fontWeight: FontWeight.normal,
                       fontSize: 12,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

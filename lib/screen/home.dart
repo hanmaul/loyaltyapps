@@ -29,7 +29,14 @@ class _HomePageState extends State<HomePage> {
     final mediaQueryWidth = MediaQuery.of(context).size.width;
 
     final bool mobile = mediaQueryWidth < 600;
-    final double carouselHeight = mobile ? 190.0 : 285.0;
+
+    final mediaQueryHeight = MediaQuery.of(context).size.height;
+    final appBarHeight = AppBar().preferredSize.height;
+    final bodyHeight =
+        mediaQueryHeight - appBarHeight - MediaQuery.of(context).padding.top;
+
+    final double carouselHeight =
+        _calculateCarouselHeight(mediaQueryWidth, mobile, bodyHeight);
 
     const double highlightHeight = 104;
     final double highlightWidth =
@@ -97,8 +104,8 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        const Text(
-                                          "Keuangan Anda",
+                                        Text(
+                                          "$mediaQueryWidth",
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 13,
@@ -131,7 +138,8 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                 color: Colors.white,
                                 width: promoWidth,
-                                child: _buildPromo(state.promo, mobile),
+                                child: _buildPromo(
+                                    state.promo, mobile, promoWidth),
                               ),
                             ),
                           ]),
@@ -161,6 +169,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  double _calculateCarouselHeight(
+      double screenWidth, bool mobile, double screenHeight) {
+    if (mobile) {
+      return 190.0;
+    } else {
+      return screenHeight * 0.20;
+    }
   }
 
   Widget _buildCarousel(List<dynamic> banners, double carouselHeight) {
@@ -201,7 +218,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildPromo(List<dynamic> promo, bool mobile) {
+  Widget _buildPromo(List<dynamic> promo, bool mobile, double promoWidth) {
+    final double tabPadding = (promoWidth / 2) * 0.04;
     if (mobile) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -212,20 +230,25 @@ class _HomePageState extends State<HomePage> {
                   isi: p.keterangan,
                   url: p.link,
                   mobile: mobile,
+                  tabPadding: tabPadding,
                 ))
             .toList(),
       );
     } else {
       return LayoutBuilder(
         builder: (context, constraints) {
-          final double itemWidth =
-              constraints.maxWidth / 2 - 24; // Subtracting padding
-          final double itemHeight =
-              itemWidth * 0.75; // Adjust this ratio as needed
+          final double screenWidth = constraints.maxWidth;
+
+          // Adjust these factors based on your design requirements
+          final int crossAxisCount = screenWidth > 900 ? 3 : 2;
+          final double itemWidth = (screenWidth / crossAxisCount) -
+              tabPadding; // Subtracting padding
+          final double itemHeight = itemWidth *
+              (screenWidth > 900 ? 0.90 : 0.76); // Responsive aspect ratio
 
           return GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: crossAxisCount,
               childAspectRatio: itemWidth / itemHeight,
             ),
             shrinkWrap: true,
@@ -238,6 +261,7 @@ class _HomePageState extends State<HomePage> {
                 isi: promo[index].keterangan,
                 url: promo[index].link,
                 mobile: mobile,
+                tabPadding: tabPadding,
               );
             },
           );
