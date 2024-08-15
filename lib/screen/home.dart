@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Keuangan Anda",
                                           style: TextStyle(
                                             color: Colors.black,
@@ -216,21 +216,30 @@ class _HomePageState extends State<HomePage> {
             .toList(),
       );
     } else {
-      return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.6,
-        ),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: promo.length,
-        itemBuilder: (context, index) {
-          return ContentAdds(
-            gambar: promo[index].gambar,
-            judul: promo[index].judul,
-            isi: promo[index].keterangan,
-            url: promo[index].link,
-            mobile: mobile,
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final double itemWidth =
+              constraints.maxWidth / 2 - 24; // Subtracting padding
+          final double itemHeight =
+              itemWidth * 0.75; // Adjust this ratio as needed
+
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: itemWidth / itemHeight,
+            ),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: promo.length,
+            itemBuilder: (context, index) {
+              return ContentAdds(
+                gambar: promo[index].gambar,
+                judul: promo[index].judul,
+                isi: promo[index].keterangan,
+                url: promo[index].link,
+                mobile: mobile,
+              );
+            },
           );
         },
       );
