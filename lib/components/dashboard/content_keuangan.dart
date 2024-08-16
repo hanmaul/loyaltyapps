@@ -92,7 +92,7 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                     children: titleWords.map((word) {
                       return Text(
                         word,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: titleSize,
                           fontWeight: FontWeight.normal,
                           height: 1.2,
@@ -103,10 +103,10 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                   ),
                 ],
               ),
-              SizedBox(height: titleSize * 0.5),
+              const SizedBox(height: titleSize * 0.5),
               Text(
                 'Rp${widget.total}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: amountSize,
                   fontWeight: FontWeight.bold,
                   height: 0,
