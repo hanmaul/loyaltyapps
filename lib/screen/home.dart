@@ -42,8 +42,6 @@ class _HomePageState extends State<HomePage> {
     final double highlightWidth =
         mobile ? mediaQueryWidth * 0.9 : mediaQueryWidth * 0.5;
 
-    final double promoWidth = mediaQueryWidth * 0.95;
-
     return InternetAwareWidget(
       child: BlocProvider(
         create: (context) => ContentBloc(
@@ -126,25 +124,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                             ContentServices(
                               service: state.service,
-                              mobile: mobile,
                             ),
-                            // Container(
-                            //   padding: const EdgeInsets.symmetric(
-                            //       vertical: highlightHeight * 0.20),
-                            //   color: Colors.white,
-                            //   width: mediaQueryWidth,
-                            //   child: ContentServices(
-                            //     service: state.service,
-                            //     mobile: mobile,
-                            //   ),
-                            // ),
-                            Center(
-                              child: Container(
-                                color: Colors.white,
-                                width: promoWidth,
-                                child: _buildPromo(
-                                    state.promo, mobile, promoWidth),
-                              ),
+                            ContentAdds(
+                              adds: state.promo,
+                              mobile: mobile,
                             ),
                           ]),
                         ),
@@ -220,57 +203,5 @@ class _HomePageState extends State<HomePage> {
               ))
           .toList(),
     );
-  }
-
-  Widget _buildPromo(List<dynamic> promo, bool mobile, double promoWidth) {
-    final double tabPadding = (promoWidth / 2) * 0.04;
-    if (mobile) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: promo
-            .map((p) => ContentAdds(
-                  gambar: p.gambar,
-                  judul: p.judul,
-                  isi: p.keterangan,
-                  url: p.link,
-                  mobile: mobile,
-                  tabPadding: tabPadding,
-                ))
-            .toList(),
-      );
-    } else {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final double screenWidth = constraints.maxWidth;
-
-          // Adjust these factors based on your design requirements
-          final int crossAxisCount = screenWidth > 900 ? 3 : 2;
-          final double itemWidth = (screenWidth / crossAxisCount) -
-              tabPadding; // Subtracting padding
-          final double itemHeight = itemWidth *
-              (screenWidth > 900 ? 0.90 : 0.76); // Responsive aspect ratio
-
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              childAspectRatio: itemWidth / itemHeight,
-            ),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: promo.length,
-            itemBuilder: (context, index) {
-              return ContentAdds(
-                gambar: promo[index].gambar,
-                judul: promo[index].judul,
-                isi: promo[index].keterangan,
-                url: promo[index].link,
-                mobile: mobile,
-                tabPadding: tabPadding,
-              );
-            },
-          );
-        },
-      );
-    }
   }
 }
