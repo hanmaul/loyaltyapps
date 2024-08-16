@@ -39,14 +39,18 @@ class _ContentAddsState extends State<ContentAdds> {
 
   @override
   Widget build(BuildContext context) {
-    // layout size
+    // Layout size
     final double mediaQueryWidth = MediaQuery.of(context).size.width;
     final double addWidth = mediaQueryWidth * 0.9;
 
-    // size
-    final double itemWidth =
-        widget.mobile ? mediaQueryWidth * 0.9 : (mediaQueryWidth * 0.9) / 2;
-    final double itemDistance = mediaQueryWidth * 0.05;
+    // Size calculations
+    final double itemWidth = widget.mobile
+        ? mediaQueryWidth * 0.9
+        : mediaQueryWidth < 900
+            ? (addWidth / 2) - (addWidth * 0.05)
+            : (addWidth / 3) - (addWidth * 0.025);
+    final double itemDistance =
+        mediaQueryWidth < 900 ? addWidth * 0.05 : addWidth * 0.025;
 
     return Center(
       child: Container(
@@ -63,7 +67,8 @@ class _ContentAddsState extends State<ContentAdds> {
                 getUrl(menuItem.link, menuItem.judul);
               },
               child: SizedBox(
-                width: itemWidth, // Ensure each item has a consistent width
+                width: itemWidth,
+                height: 260, // Ensure each item has a consistent width
                 child: Card(
                   color: Colors.white,
                   surfaceTintColor: Colors.white,
@@ -111,8 +116,8 @@ class _ContentAddsState extends State<ContentAdds> {
                                 fontWeight: FontWeight.normal,
                                 fontSize: 12,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2, // Limit to 2 lines
+                              overflow:
+                                  TextOverflow.ellipsis, // Limit to 2 lines
                             ),
                           ],
                         ),
