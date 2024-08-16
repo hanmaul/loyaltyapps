@@ -61,7 +61,7 @@ class _ContentServicesState extends State<ContentServices> {
 
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 20.0),
+        margin: const EdgeInsets.symmetric(vertical: 18.0),
         color: Colors.white,
         width: serviceWidth, // Adjust the width as needed
         child: Wrap(
