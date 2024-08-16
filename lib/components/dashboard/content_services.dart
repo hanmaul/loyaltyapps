@@ -43,75 +43,160 @@ class _ContentServicesState extends State<ContentServices> {
 
   @override
   Widget build(BuildContext context) {
-    final int gridCount = widget.mobile ? 3 : 6;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double itemsWidth = 110 * gridCount.toDouble();
-    final double padding = (screenWidth - itemsWidth) / 2;
+    // size
+    const double imgSize = 74;
+    const double boxSize = 52;
+    const double lableSize = 11;
 
-    return GridView.count(
-      crossAxisCount: gridCount,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: padding),
-      children: widget.service.map((menuItem) {
-        return GestureDetector(
-          onTap: () {
-            getUrl(menuItem.link, menuItem.judul);
-          },
-          child: Column(
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xffFFFFFF),
-                          Color(0xff8CC2E6),
-                        ],
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 0,
-                          blurRadius: 10,
-                          offset: const Offset(0, 6),
-                        )
+    // layout size
+    final double mediaQueryWidth = MediaQuery.of(context).size.width;
+    final double serviceWidth = mediaQueryWidth * 0.7;
+
+    //final int itemLength = widget.service.length;
+    //final int itemCount = widget.mobile ? 3 : 6;
+    //final int gridCount = itemLength < itemCount ? itemLength : itemCount;
+    //final double screenWidth = MediaQuery.of(context).size.width;
+    //final double serviceWidth = 110 * gridCount.toDouble();
+    //final double padding = (screenWidth - serviceWidth) / 2;
+
+    return Center(
+      child: Container(
+        color: Colors.white,
+        width: serviceWidth, // Adjust the width as needed
+        child: Wrap(
+          spacing: 26.0, // Adjust spacing between items
+          runSpacing: 26.0, // Adjust spacing between lines
+          alignment: WrapAlignment.center, // Center align items
+          children: widget.service.map((menuItem) {
+            return GestureDetector(
+              onTap: () {
+                getUrl(menuItem.link, menuItem.judul);
+              },
+              child: Container(
+                width: imgSize,
+                color: Colors.transparent,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Color(0xffFFFFFF),
+                                Color(0xff8CC2E6),
+                              ],
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(15),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 0,
+                                blurRadius: 10,
+                                offset: const Offset(0, 6),
+                              )
+                            ],
+                          ),
+                          width: boxSize,
+                          height: boxSize,
+                        ),
+                        Container(
+                          color: Colors.transparent,
+                          width: imgSize,
+                          height: imgSize,
+                          child: CachedNetworkImage(
+                            imageUrl: menuItem.gambar,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ],
                     ),
-                    width: 52,
-                    height: 52,
-                  ),
-                  Container(
-                    color: Colors.transparent,
-                    width: 74,
-                    height: 74,
-                    child: CachedNetworkImage(
-                      imageUrl: menuItem.gambar,
-                      fit: BoxFit.cover,
+                    Text(
+                      menuItem.judul,
+                      style: const TextStyle(
+                        fontSize: lableSize,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
-              Flexible(
-                child: Text(
-                  menuItem.judul,
-                  style: const TextStyle(
-                    fontSize: 11,
-                  ),
-                  textAlign: TextAlign.center,
+                  ],
                 ),
               ),
-            ],
-          ),
-        );
-      }).toList(),
+            );
+          }).toList(),
+        ),
+      ),
     );
+
+    // return GridView.count(
+    //   crossAxisCount: gridCount,
+    //   shrinkWrap: true,
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   padding: EdgeInsets.symmetric(horizontal: padding),
+    //   children: widget.service.map((menuItem) {
+    //     return GestureDetector(
+    //       onTap: () {
+    //         getUrl(menuItem.link, menuItem.judul);
+    //       },
+    //       child: Column(
+    //         children: [
+    //           Stack(
+    //             alignment: Alignment.center,
+    //             children: [
+    //               Container(
+    //                 decoration: BoxDecoration(
+    //                   gradient: const LinearGradient(
+    //                     begin: Alignment.topLeft,
+    //                     end: Alignment.bottomRight,
+    //                     colors: [
+    //                       Color(0xffFFFFFF),
+    //                       Color(0xff8CC2E6),
+    //                     ],
+    //                   ),
+    //                   borderRadius: const BorderRadius.all(
+    //                     Radius.circular(15),
+    //                   ),
+    //                   boxShadow: [
+    //                     BoxShadow(
+    //                       color: Colors.grey.withOpacity(0.5),
+    //                       spreadRadius: 0,
+    //                       blurRadius: 10,
+    //                       offset: const Offset(0, 6),
+    //                     )
+    //                   ],
+    //                 ),
+    //                 width: 52,
+    //                 height: 52,
+    //               ),
+    //               Container(
+    //                 color: Colors.transparent,
+    //                 width: 74,
+    //                 height: 74,
+    //                 child: CachedNetworkImage(
+    //                   imageUrl: menuItem.gambar,
+    //                   fit: BoxFit.cover,
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //           Flexible(
+    //             child: Text(
+    //               menuItem.judul,
+    //               style: const TextStyle(
+    //                 fontSize: 11,
+    //               ),
+    //               textAlign: TextAlign.center,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   }).toList(),
+    // );
   }
 }

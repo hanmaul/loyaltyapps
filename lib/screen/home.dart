@@ -124,16 +124,20 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: highlightHeight * 0.20),
-                              color: Colors.white,
-                              width: mediaQueryWidth,
-                              child: ContentServices(
-                                service: state.service,
-                                mobile: mobile,
-                              ),
+                            ContentServices(
+                              service: state.service,
+                              mobile: mobile,
                             ),
+                            // Container(
+                            //   padding: const EdgeInsets.symmetric(
+                            //       vertical: highlightHeight * 0.20),
+                            //   color: Colors.white,
+                            //   width: mediaQueryWidth,
+                            //   child: ContentServices(
+                            //     service: state.service,
+                            //     mobile: mobile,
+                            //   ),
+                            // ),
                             Center(
                               child: Container(
                                 color: Colors.white,
