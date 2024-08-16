@@ -41,11 +41,12 @@ class _ContentAddsState extends State<ContentAdds> {
   Widget build(BuildContext context) {
     // Layout size
     final double mediaQueryWidth = MediaQuery.of(context).size.width;
-    final double addWidth = mediaQueryWidth * 0.9;
+    final double addWidth =
+        mediaQueryWidth < 900 ? mediaQueryWidth * 0.9 : mediaQueryWidth * 0.95;
 
     // Size calculations
     final double itemWidth = widget.mobile
-        ? mediaQueryWidth * 0.9
+        ? addWidth
         : mediaQueryWidth < 900
             ? (addWidth / 2) - (addWidth * 0.05)
             : (addWidth / 3) - (addWidth * 0.025);
