@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white,
                                   width: mediaQueryWidth,
                                   height:
-                                      carouselHeight + (highlightHeight * 1.1),
+                                      carouselHeight + (highlightHeight * 1.05),
                                 ),
                                 _buildCarousel(state.banner, carouselHeight),
                                 Positioned(
