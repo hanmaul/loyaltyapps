@@ -49,7 +49,6 @@ class _NotificationsState extends State<Notifications> {
       canGoBack = false;
     }
 
-    print("Can go back: $canGoBack"); // Debug log
     widget.updateBackButton(canGoBack, canGoBack ? _handleBackPress : null);
   }
 
@@ -105,7 +104,7 @@ class _NotificationsState extends State<Notifications> {
                       _webViewController = controller;
                     },
                     onLoadStop: (controller, url) async {
-                      print("Page loaded: $url"); // Debug log
+                      //("Page loaded: $url"); // Debug log
                       _initialUrl ??= url
                           .toString(); // Set the initial URL if it's not already set
                       await controller.evaluateJavascript(source: """
@@ -122,7 +121,6 @@ class _NotificationsState extends State<Notifications> {
                     },
                     onUpdateVisitedHistory: (controller, url, isReload) {
                       // Renamed parameter
-                      print("History updated: $url"); // Debug log
                       _updateBackButtonStatus(
                           currentUrl: url
                               .toString()); // Update back button status when history changes
@@ -130,7 +128,6 @@ class _NotificationsState extends State<Notifications> {
                     shouldOverrideUrlLoading:
                         (controller, navigationAction) async {
                       var uri = navigationAction.request.url;
-                      print("Navigating to: $uri"); // Debug log
                       _updateBackButtonStatus(currentUrl: uri.toString());
                       return NavigationActionPolicy.ALLOW;
                     },
