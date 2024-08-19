@@ -6,6 +6,8 @@ class DashboardWidget extends StatelessWidget {
   final Function(int) onPageSelected;
   final List<Widget> pages;
   final List<String> appBars;
+  final bool showBackButton;
+  final VoidCallback? onBackPressed;
 
   const DashboardWidget({
     Key? key,
@@ -13,6 +15,8 @@ class DashboardWidget extends StatelessWidget {
     required this.onPageSelected,
     required this.pages,
     required this.appBars,
+    this.showBackButton = false,
+    this.onBackPressed,
   }) : super(key: key);
 
   @override
@@ -26,6 +30,13 @@ class DashboardWidget extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+        leading: showBackButton
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: onBackPressed,
+                color: Colors.white,
+              )
+            : null,
         backgroundColor: const Color(0xff0B60B0),
       ),
       bottomNavigationBar: Container(
@@ -46,8 +57,8 @@ class DashboardWidget extends StatelessWidget {
           surfaceTintColor: Colors.white,
           indicatorColor: Colors.transparent,
           selectedIndex: currentPageIndex,
-          destinations: <Widget>[
-            const NavigationDestination(
+          destinations: const <Widget>[
+            NavigationDestination(
               selectedIcon: Icon(
                 Icons.home,
                 color: Color(0xff0B60B0),
@@ -55,7 +66,7 @@ class DashboardWidget extends StatelessWidget {
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-            const NavigationDestination(
+            NavigationDestination(
               selectedIcon: Icon(
                 Icons.history_sharp,
                 color: Color(0xff0B60B0),
@@ -64,28 +75,14 @@ class DashboardWidget extends StatelessWidget {
               label: 'History',
             ),
             NavigationDestination(
-              selectedIcon: const Icon(
+              selectedIcon: Icon(
                 Icons.notifications_sharp,
                 color: Color(0xff0B60B0),
               ),
-              icon: FutureBuilder<int>(
-                future: NotifRepository().getUnread(),
-                builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.hasError ||
-                      snapshot.data == 0) {
-                    return const Icon(Icons.notifications_sharp);
-                  } else {
-                    return Badge(
-                      label: Text('${snapshot.data}'),
-                      child: const Icon(Icons.notifications_sharp),
-                    );
-                  }
-                },
-              ),
+              icon: Icon(Icons.notifications_sharp),
               label: 'Notification',
             ),
-            const NavigationDestination(
+            NavigationDestination(
               selectedIcon: Icon(
                 Icons.account_circle,
                 color: Color(0xff0B60B0),

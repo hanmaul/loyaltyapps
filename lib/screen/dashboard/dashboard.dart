@@ -25,6 +25,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentPageIndex = 0;
+  bool _showBackButton = false;
+  VoidCallback? _onBackPressed;
 
   @override
   void initState() {
@@ -33,6 +35,80 @@ class _DashboardState extends State<Dashboard> {
       _currentPageIndex = widget.page;
     }
     welcomeMsg();
+  }
+
+  void _updateBackButton(bool show, VoidCallback? onBackPressed) {
+    setState(() {
+      _showBackButton = show;
+      _onBackPressed = onBackPressed;
+    });
+  }
+
+  List<String> get _appBars => [
+        "Home",
+        "History",
+        "Notification",
+        "My Profile",
+      ];
+
+  List<Widget> get _pages => [
+        const HomePage(),
+        History(onGoToHome: _goToHome),
+        Notifications(
+          onGoToHome: _goToHome,
+          updateBackButton: _updateBackButton,
+        ),
+        Akunku(onGoToHome: _goToHome),
+      ];
+
+  void _goToHome() {
+    setState(() {
+      _currentPageIndex = 0;
+      _showBackButton = false;
+    });
+  }
+
+  void _onPageSelected(int index) {
+    setState(() {
+      _currentPageIndex = index;
+      _showBackButton = false; // Reset back button when changing pages
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InternetAwareWidget(
+      child: BlocProvider(
+        create: (context) => AuthBloc(databaseRepository: DatabaseRepository())
+          ..add(SessionCheck()),
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is SignedIn) {
+              return DashboardWidget(
+                currentPageIndex: _currentPageIndex,
+                onPageSelected: _onPageSelected,
+                pages: _pages,
+                appBars: _appBars,
+                showBackButton: _showBackButton,
+                onBackPressed: _onBackPressed,
+              );
+            }
+            if (state is InRegister) {
+              return const Register();
+            }
+            if (state is UnRegistered) {
+              return const GetOtp();
+            }
+            if (state is FailureLoadState) {
+              return Center(
+                child: Text(state.message),
+              );
+            }
+            return Container();
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> welcomeMsg() async {
@@ -58,65 +134,5 @@ class _DashboardState extends State<Dashboard> {
       await databaseRepository.updateUser(
           field: "firstAccess", data: currentDate);
     }
-  }
-
-  List<String> get _appBars => [
-        "Home",
-        "History",
-        "Notification",
-        "My Profile",
-      ];
-
-  List<Widget> get _pages => [
-        const HomePage(),
-        History(onGoToHome: _goToHome),
-        Notifications(onGoToHome: _goToHome),
-        Akunku(onGoToHome: _goToHome),
-      ];
-
-  void _goToHome() {
-    setState(() {
-      _currentPageIndex = 0;
-    });
-  }
-
-  void _onPageSelected(int index) {
-    setState(() {
-      _currentPageIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InternetAwareWidget(
-      child: BlocProvider(
-        create: (context) => AuthBloc(databaseRepository: DatabaseRepository())
-          ..add(SessionCheck()),
-        child: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is SignedIn) {
-              return DashboardWidget(
-                currentPageIndex: _currentPageIndex,
-                onPageSelected: _onPageSelected,
-                pages: _pages,
-                appBars: _appBars,
-              );
-            }
-            if (state is InRegister) {
-              return const Register();
-            }
-            if (state is UnRegistered) {
-              return const GetOtp();
-            }
-            if (state is FailureLoadState) {
-              return Center(
-                child: Text(state.message),
-              );
-            }
-            return Container();
-          },
-        ),
-      ),
-    );
   }
 }
