@@ -35,10 +35,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Mengizinkan akses lokasi dapat membantu kami menunjukkan promo-promo disekitarmu dan memperlihatkan posko terdekat yang menerima pengajuan Anda.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Mengizinkan akses lokasi dapat membantu kami menunjukkan promo-promo disekitarmu dan memperlihatkan posko terdekat yang menerima pengajuan Anda.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Untuk memberikan pengalaman yang lebih personal dan memungkinkan Anda mengunggah foto profil, aplikasi ini memerlukan akses ke kamera perangkat Anda. Kami berkomitmen untuk menjaga privasi dan keamanan foto Anda, dan tidak akan menggunakan kamera Anda untuk tujuan lain tanpa izin Anda.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
