@@ -176,6 +176,7 @@ class _ContentState extends State<Content> {
                 ),
                 initialSettings: InAppWebViewSettings(
                   supportZoom: false,
+                  transparentBackground: true,
                 ),
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
