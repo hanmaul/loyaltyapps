@@ -5,6 +5,7 @@ import 'package:loyalty/data/model/promo.dart';
 import 'package:loyalty/data/model/service.dart';
 import 'package:meta/meta.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 part 'content_event.dart';
 part 'content_state.dart';
@@ -22,6 +23,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           try {
             if (event is PullToRefreshEvent) {
               await databaseRepository.clearContent();
+              await InAppWebViewController.clearAllCache();
             }
 
             final banners = databaseRepository.loadAllBanner();
