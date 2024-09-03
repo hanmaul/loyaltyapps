@@ -49,7 +49,10 @@ class _ContentServicesState extends State<ContentServices> {
 
     // layout size
     final double mediaQueryWidth = MediaQuery.of(context).size.width;
-    final double serviceWidth = mediaQueryWidth * 0.7;
+    final bool mobile = mediaQueryWidth < 600;
+    const double mobileWidth = (3 * imgSize) + (4 * itemDistance);
+    final double tabWidth = mediaQueryWidth * 0.7;
+    final double serviceWidth = mobile ? mobileWidth : tabWidth;
 
     return Center(
       child: Container(
