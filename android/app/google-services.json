@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:642297853297:android:901fa63cc6c7c94f9d72d0",
+        "android_client_info": {
+          "package_name": "com.idsct.kammloyalty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4fMfM1ab_tyMwzTaz7X-pxoBrPylI9AM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:642297853297:android:6945bf3c204731439d72d0",
         "android_client_info": {
           "package_name": "com.kamm.loyalty"

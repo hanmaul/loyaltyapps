@@ -61,8 +61,8 @@ class _TermsOfUseState extends State<TermsOfUse> {
   }
 
   Future<void> nextPage() async {
-    String nama = await databaseRepository.loadUser(field: 'nama');
-    if (nama != "") {
+    bool isRegistered = await databaseRepository.isRegistered();
+    if (isRegistered) {
       goToDashboard();
     } else {
       goToRegister();

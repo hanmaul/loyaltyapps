@@ -49,6 +49,8 @@ class DatabaseRepository {
     if (validToken || newDevice) {
       final Isar dbInstance = await _db;
       final existingUser = await dbInstance.users.get(1);
+      bool isRegistered = userData['nama'].isNotEmpty;
+
       if (existingUser != null) {
         existingUser.nama = userData['nama'];
         existingUser.custId = userData['Cust_id'];
@@ -56,6 +58,7 @@ class DatabaseRepository {
         existingUser.key = userData['key'];
         existingUser.firebaseToken = fcmToken;
         existingUser.appVersion = appVersion;
+        existingUser.registered = isRegistered;
 
         await dbInstance.writeTxn(() async {
           await dbInstance.users.put(existingUser);
@@ -68,7 +71,8 @@ class DatabaseRepository {
           ..status = userData['status_mediator']
           ..key = userData['key']
           ..firebaseToken = fcmToken
-          ..appVersion = appVersion;
+          ..appVersion = appVersion
+          ..registered = isRegistered;
 
         await dbInstance.writeTxn(() async {
           await dbInstance.users.put(newUser);
@@ -76,6 +80,32 @@ class DatabaseRepository {
       }
     } else {
       return;
+    }
+  }
+
+  Future<bool> isRegistered() async {
+    final Isar dbInstance = await _db;
+    final existingUser = await dbInstance.users.get(1);
+
+    if (existingUser != null) {
+      return existingUser.registered;
+    } else {
+      print('User not found.');
+      return false;
+    }
+  }
+
+  Future<void> registered() async {
+    final Isar dbInstance = await _db;
+    final existingUser = await dbInstance.users.get(1);
+
+    if (existingUser != null) {
+      existingUser.registered = true;
+      await dbInstance.writeTxn(() async {
+        await dbInstance.users.put(existingUser);
+      });
+    } else {
+      print('User not found.');
     }
   }
 

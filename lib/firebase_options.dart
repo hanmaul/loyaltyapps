@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyD4fMfM1ab_tyMwzTaz7X-pxoBrPylI9AM',
-    appId: '1:642297853297:android:6945bf3c204731439d72d0',
+    appId: '1:642297853297:android:901fa63cc6c7c94f9d72d0',
     messagingSenderId: '642297853297',
     projectId: 'loyalty-c0110',
     storageBucket: 'loyalty-c0110.appspot.com',

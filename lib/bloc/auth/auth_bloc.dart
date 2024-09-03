@@ -10,12 +10,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.databaseRepository}) : super(AuthInitial()) {
     on<AuthEvent>((event, emit) async {
       final key = await databaseRepository.loadUser(field: 'key');
-      final nama = await databaseRepository.loadUser(field: 'nama');
+      final isRegistered = await databaseRepository.isRegistered();
       if (event is SessionCheck) {
         try {
-          if (key != "" && nama != "") {
+          if (key != "" && isRegistered) {
             emit(SignedIn(message: 'Selamat Datang kembali'));
-          } else if (key != "" && nama == "") {
+          } else if (key != "" && !isRegistered) {
             emit(InRegister(message: 'Silahkan daftar terlebih dahulu '));
           } else {
             emit(UnRegistered(message: 'Silahkan masukkan nomor anda'));

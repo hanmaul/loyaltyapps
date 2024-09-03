@@ -52,8 +52,13 @@ const UserSchema = CollectionSchema(
       name: r'nomor',
       type: IsarType.string,
     ),
-    r'status': PropertySchema(
+    r'registered': PropertySchema(
       id: 7,
+      name: r'registered',
+      type: IsarType.bool,
+    ),
+    r'status': PropertySchema(
+      id: 8,
       name: r'status',
       type: IsarType.string,
     )
@@ -102,7 +107,8 @@ void _userSerialize(
   writer.writeString(offsets[4], object.key);
   writer.writeString(offsets[5], object.nama);
   writer.writeString(offsets[6], object.nomor);
-  writer.writeString(offsets[7], object.status);
+  writer.writeBool(offsets[7], object.registered);
+  writer.writeString(offsets[8], object.status);
 }
 
 User _userDeserialize(
@@ -120,7 +126,8 @@ User _userDeserialize(
   object.key = reader.readString(offsets[4]);
   object.nama = reader.readString(offsets[5]);
   object.nomor = reader.readString(offsets[6]);
-  object.status = reader.readString(offsets[7]);
+  object.registered = reader.readBool(offsets[7]);
+  object.status = reader.readString(offsets[8]);
   return object;
 }
 
@@ -146,6 +153,8 @@ P _userDeserializeProp<P>(
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
+      return (reader.readBool(offset)) as P;
+    case 8:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1194,6 +1203,16 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
+  QueryBuilder<User, User, QAfterFilterCondition> registeredEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'registered',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> statusEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1412,6 +1431,18 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
     });
   }
 
+  QueryBuilder<User, User, QAfterSortBy> sortByRegistered() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'registered', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByRegisteredDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'registered', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -1522,6 +1553,18 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
     });
   }
 
+  QueryBuilder<User, User, QAfterSortBy> thenByRegistered() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'registered', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByRegisteredDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'registered', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -1586,6 +1629,12 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
     });
   }
 
+  QueryBuilder<User, User, QDistinct> distinctByRegistered() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'registered');
+    });
+  }
+
   QueryBuilder<User, User, QDistinct> distinctByStatus(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1640,6 +1689,12 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, String, QQueryOperations> nomorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nomor');
+    });
+  }
+
+  QueryBuilder<User, bool, QQueryOperations> registeredProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'registered');
     });
   }
 

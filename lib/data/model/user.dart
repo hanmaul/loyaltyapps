@@ -13,4 +13,5 @@ class User {
   late String firebaseToken = '';
   late String firstAccess = '';
   late String appVersion = '';
+  late bool registered = false;
 }

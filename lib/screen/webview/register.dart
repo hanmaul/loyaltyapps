@@ -16,6 +16,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   late final InAppWebViewController _webViewController;
+  final DatabaseRepository databaseRepository = DatabaseRepository();
   double _progress = 0;
   late Future<String> _urlFuture;
 
@@ -26,6 +27,7 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> dashboard() async {
+    registered(); // Change isRegistered to true after user register
     await Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -38,7 +40,11 @@ class _RegisterState extends State<Register> {
   }
 
   Future<void> saveNama(String nama) async {
-    await DatabaseRepository().updateUser(field: 'nama', data: nama);
+    await databaseRepository.updateUser(field: 'nama', data: nama);
+  }
+
+  Future<void> registered() async {
+    await databaseRepository.registered();
   }
 
   @override
