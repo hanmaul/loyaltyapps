@@ -1,22 +1,10 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:loyalty/main.dart';
 import 'package:flutter/material.dart';
 import 'package:loyalty/services/auth_service.dart';
 import 'package:http/http.dart' as http;
-
-// This top-level function will handle messages in the background
-Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
-  if (message.data['action'] == 'logout') {
-    print("Background message received: Logout action triggered");
-    // Ensure the context is provided correctly for navigation or sign out
-    WidgetsFlutterBinding.ensureInitialized();
-    AuthService.signOut(
-        navigatorKey.currentContext!); // Call the logout function
-  }
-}
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -83,7 +71,7 @@ class FirebaseApi {
 
   // Force logout
   void _forceLogout() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       AuthService.signOut(navigatorKey.currentContext!); // Sign out user
     });
   }
