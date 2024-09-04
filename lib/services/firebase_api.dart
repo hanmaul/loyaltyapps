@@ -65,8 +65,8 @@ class FirebaseApi {
       _forceLogout(); // Force the user to log out
     }
 
-    print('Message Title: ${message.notification?.title}');
-    print('Message Body: ${message.notification?.body}');
+    // print('Message Title: ${message.notification?.title}');
+    // print('Message Body: ${message.notification?.body}');
   }
 
   // Force logout
