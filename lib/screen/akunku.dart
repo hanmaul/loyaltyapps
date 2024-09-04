@@ -6,6 +6,7 @@ import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/services/auth_service.dart';
 
 class Akunku extends StatefulWidget {
   final VoidCallback onGoToHome;
@@ -60,22 +61,6 @@ class _AkunkuState extends State<Akunku> {
       MaterialPageRoute(
         builder: (BuildContext context) {
           return const Dashboard(page: 0);
-        },
-      ),
-      (route) => false,
-    );
-  }
-
-  Future<void> signOut() async {
-    await InAppWebViewController
-        .clearAllCache(); // Clear all cached resources in webview
-    await CookieManager().deleteAllCookies(); // Delete all cookies in webview
-    await DatabaseRepository().clearDatabase(); // Clear user data from storage
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) {
-          return const GetOtp();
         },
       ),
       (route) => false,
@@ -138,7 +123,7 @@ class _AkunkuState extends State<Akunku> {
                         controller.addJavaScriptHandler(
                           handlerName: 'logout',
                           callback: (args) {
-                            signOut();
+                            AuthService.signOut(context);
                           },
                         );
                       },

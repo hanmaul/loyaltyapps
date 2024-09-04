@@ -3,7 +3,20 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:loyalty/main.dart';
+import 'package:flutter/material.dart';
+import 'package:loyalty/services/auth_service.dart';
 import 'package:http/http.dart' as http;
+
+// This top-level function will handle messages in the background
+Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
+  if (message.data['action'] == 'logout') {
+    print("Background message received: Logout action triggered");
+    // Ensure the context is provided correctly for navigation or sign out
+    WidgetsFlutterBinding.ensureInitialized();
+    AuthService.signOut(
+        navigatorKey.currentContext!); // Call the logout function
+  }
+}
 
 class FirebaseApi {
   // create an instance of Firebase Messaging
@@ -58,20 +71,21 @@ class FirebaseApi {
 
   // funtion to handle received messages
   void handleMessage(RemoteMessage? message) {
-    // if the message is null, do nothing
+    if (message == null) return;
 
-    if (message == null) {
-      return;
-    } else {
-      print('Title : ${message.notification!.title.toString()}');
-      print('Body : ${message.notification!.body.toString()}');
+    if (message.data['action'] == 'logout') {
+      _forceLogout(); // Force the user to log out
     }
 
-    // navigate to new screen when messages is received and user taps notifications
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      '/notifications',
-      (route) => false,
-    );
+    print('Message Title: ${message.notification?.title}');
+    print('Message Body: ${message.notification?.body}');
+  }
+
+  // Force logout
+  void _forceLogout() {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      AuthService.signOut(navigatorKey.currentContext!); // Sign out user
+    });
   }
 
   // funtion to initialize foreground and background settings
