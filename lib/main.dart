@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loyalty/firebase_options.dart';
 import 'package:loyalty/routes.dart';
+import 'package:loyalty/services/app_observer.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -27,11 +28,22 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final AppLifecycleObserver _lifecycleObserver = AppLifecycleObserver();
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance
+        .addObserver(_lifecycleObserver); // Add lifecycle observer
     initialization();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance
+        .removeObserver(_lifecycleObserver); // Remove observer on dispose
+    super.dispose();
   }
 
   void initialization() async {

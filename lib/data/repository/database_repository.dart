@@ -33,6 +33,13 @@ class DatabaseRepository {
     return Future.value(Isar.getInstance());
   }
 
+  Future<bool> checkUserExists() async {
+    final Isar dbInstance = await _db;
+    final existingUser = await dbInstance.users.get(1);
+    return existingUser !=
+        null; // Return true if the user exists, otherwise false
+  }
+
   Future<void> saveUser({
     required Map<String, dynamic> userData,
     required bool newDevice,

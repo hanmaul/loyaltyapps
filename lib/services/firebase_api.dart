@@ -5,19 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:loyalty/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
-// Background message handler function (must be top-level)
+// Background message handler
 Future<void> firebaseBackgroundMessageHandler(RemoteMessage message) async {
   if (message.data['action'] == 'logout') {
-    print("Background message received: Logout action triggered");
-    // Ensure this part doesn't rely on the navigator or UI context, as it's not available in the background
-    await performBackgroundLogout();
+    await AuthService.clearSession();
   }
-}
-
-// Function to handle logout when in background or terminated
-Future<void> performBackgroundLogout() async {
-  // Perform background logout actions like clearing cache, cookies, etc.
-  await AuthService.signOutInBackground();
 }
 
 class FirebaseApi {
@@ -65,6 +57,7 @@ class FirebaseApi {
     if (message == null) return;
 
     if (message.data['action'] == 'logout') {
+      print("Logout action received. Calling _forceLogout.");
       _forceLogout(); // Force the user to log out
     }
   }
