@@ -34,7 +34,6 @@ class _AuthState extends State<Auth> {
               return const Register();
             }
             if (state is UnRegistered) {
-              //return const OTP(page: 0);
               return const GetOtp();
             }
             if (state is FailureLoadState) {
