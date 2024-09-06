@@ -3,6 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:loyalty/components/square_tile.dart';
 import 'package:loyalty/screen/auth/send_otp.dart';
+import 'package:loyalty/services/auth_service.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/components/alert.dart';
@@ -19,6 +20,13 @@ class _GetOtpState extends State<GetOtp> {
   final phoneController = TextEditingController();
   bool isPhoneNumberValid = false;
   String warningMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Check for a logout session when the app is launched
+    AuthService.checkForLogoutSession(context);
+  }
 
   void generateOTP(String nomor) async {
     String trimmedPhoneNumber = phoneController.text.trim();

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:isar/isar.dart';
 import 'package:loyalty/data/model/banner.dart';
 import 'package:loyalty/data/model/highlight.dart';
+import 'package:loyalty/data/model/logged_out.dart';
 import 'package:loyalty/data/model/promo.dart';
 import 'package:loyalty/data/model/service.dart';
 import 'package:loyalty/data/model/user.dart';
@@ -26,7 +27,8 @@ class DatabaseRepository {
         ServiceSchema,
         HighlightSchema,
         PromoSchema,
-        BannerSchema
+        BannerSchema,
+        LoggedOutSchema,
       ], directory: dir.path);
       return isar;
     }
@@ -114,6 +116,32 @@ class DatabaseRepository {
     } else {
       print('User not found.');
     }
+  }
+
+  // Save logout session data
+  Future<void> saveLogoutSession(String reason) async {
+    final Isar dbInstance = await _db;
+    final logoutSession = LoggedOut()
+      ..reason = reason
+      ..timestamp = DateTime.now();
+
+    await dbInstance.writeTxn(() async {
+      await dbInstance.loggedOuts.put(logoutSession);
+    });
+  }
+
+  // Retrieve logout session
+  Future<LoggedOut?> getLogoutSession() async {
+    final Isar dbInstance = await _db;
+    return await dbInstance.loggedOuts.where().findFirst();
+  }
+
+  // Clear the logout session after the user acknowledges it
+  Future<void> clearLogoutSession() async {
+    final Isar dbInstance = await _db;
+    await dbInstance.writeTxn(() async {
+      await dbInstance.loggedOuts.clear();
+    });
   }
 
   Future<String> loadUser({required String field}) async {
@@ -412,7 +440,11 @@ class DatabaseRepository {
   Future<void> clearDatabase() async {
     final Isar dbInstance = await _db;
     await dbInstance.writeTxn(() async {
-      await dbInstance.clear();
+      await dbInstance.users.clear();
+      await dbInstance.services.clear();
+      await dbInstance.highlights.clear();
+      await dbInstance.promos.clear();
+      await dbInstance.banners.clear();
     });
   }
 
