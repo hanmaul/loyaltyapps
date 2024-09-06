@@ -6,9 +6,12 @@ import 'package:loyalty/screen/auth/get_otp.dart';
 class AuthService {
   // Background logout logic without UI navigation
   static Future<void> clearSession() async {
-    await InAppWebViewController.clearAllCache(); // Clear WebView cache
-    await CookieManager().deleteAllCookies(); // Delete WebView cookies
-    await DatabaseRepository().clearDatabase(); // Clear local user data
+    bool userExists = await DatabaseRepository().checkUserExists();
+    if (userExists) {
+      await InAppWebViewController.clearAllCache(); // Clear WebView cache
+      await CookieManager().deleteAllCookies(); // Delete WebView cookies
+      await DatabaseRepository().clearDatabase(); // Clear local user data
+    }
   }
 
   // Foreground logout logic with navigation

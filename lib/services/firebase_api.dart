@@ -54,11 +54,25 @@ class FirebaseApi {
 
   // Handle received messages
   void handleMessage(RemoteMessage? message) {
-    if (message == null) return;
+    if (message == null || message.data.isEmpty) return;
 
-    if (message.data['action'] == 'logout') {
-      print("Logout action received. Calling _forceLogout.");
-      _forceLogout(); // Force the user to log out
+    final action = message.data['action'];
+
+    switch (action) {
+      case 'logout':
+        _forceLogout();
+        break;
+      case 'home':
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          '/home',
+          (route) => false,
+        );
+        break;
+      default:
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          '/notifications',
+          (route) => false,
+        );
     }
   }
 
