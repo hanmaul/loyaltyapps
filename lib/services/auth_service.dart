@@ -12,7 +12,7 @@ class AuthService {
       await CookieManager().deleteAllCookies(); // Delete WebView cookies
       await DatabaseRepository().clearDatabase(); // Clear local user data
       await DatabaseRepository().saveLogoutSession(
-          "You were logged out because your account was used on another device.");
+          "Anda telah keluar karena akun Anda digunakan di perangkat lain.");
     }
   }
 
@@ -53,12 +53,12 @@ class AuthService {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text("Logged Out"),
+            title: const Text("Keluar Akun"),
             content: Text(reason),
             actions: <Widget>[
               TextButton(
                 onPressed: () async {
-                  // Clear the logout session after the user acknowledges it
+                  // Hapus sesi logout setelah pengguna menekan OK
                   await DatabaseRepository().clearLogoutSession();
                   Navigator.of(context).pop();
                 },
