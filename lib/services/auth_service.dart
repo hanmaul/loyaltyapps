@@ -51,20 +51,36 @@ class AuthService {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text("Keluar Akun"),
-            content: Text(reason),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () async {
-                  // Hapus sesi logout setelah pengguna menekan OK
-                  await DatabaseRepository().clearLogoutSession();
-                  Navigator.of(context).pop();
-                },
-                child: const Text("OK"),
+          return Theme(
+            data: ThemeData(dialogBackgroundColor: Colors.white),
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-            ],
+              title: const Text(
+                "Keluar Akun",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              content: Text(
+                reason,
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'OK',
+                  ),
+                  onPressed: () async {
+                    // Hapus sesi logout setelah pengguna menekan OK
+                    await DatabaseRepository().clearLogoutSession();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
           );
         },
       );
