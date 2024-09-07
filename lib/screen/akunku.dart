@@ -123,7 +123,7 @@ class _AkunkuState extends State<Akunku> {
                         controller.addJavaScriptHandler(
                           handlerName: 'logout',
                           callback: (args) {
-                            AuthService.signOut(context);
+                            AuthService.signOutByUser(context);
                           },
                         );
                       },

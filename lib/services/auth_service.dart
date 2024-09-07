@@ -26,6 +26,17 @@ class AuthService {
     );
   }
 
+  static Future<void> signOutByUser(BuildContext context) async {
+    await InAppWebViewController.clearAllCache(); // Clear WebView cache
+    await CookieManager().deleteAllCookies(); // Delete WebView cookies
+    await DatabaseRepository().clearDatabase();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const GetOtp()),
+      (route) => false,
+    );
+  }
+
   static Future<void> checkForLogoutSession(BuildContext context) async {
     // Check if there is a logout session stored
     final logoutSession = await DatabaseRepository().getLogoutSession();
