@@ -13,18 +13,15 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
 
   // Function to check if the user exists and route is not '/get-otp'
   Future<void> _checkForLogout() async {
-    bool userExists = await DatabaseRepository().checkUserExists();
+    final logoutSession = await DatabaseRepository().getLogoutSession();
+
     ConnectivityResult connectivityResult =
         await (Connectivity().checkConnectivity());
 
     // Only proceed with logout check if the device is connected to the internet
     if (connectivityResult != ConnectivityResult.none) {
-      // Get the current route
-      String? currentRoute =
-          ModalRoute.of(navigatorKey.currentContext!)?.settings.name;
-
-      // If the user doesn't exist and current route is not '/get-otp', navigate to '/get-otp'
-      if (!userExists && currentRoute != '/get-otp') {
+      // If the logout session exist navigate to '/get-otp'
+      if (logoutSession != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushNamedAndRemoveUntil(
             navigatorKey.currentContext!,
