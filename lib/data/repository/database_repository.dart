@@ -51,20 +51,25 @@ class DatabaseRepository {
     String fcmToken = await firebase.fetchFCM();
     String appVersion = await AppVersion().getVersion();
 
+    String key = userData['key'];
+    String custId = userData['Cust_id'];
+    String nama = userData['nama'];
+    String statusMediator = userData['status_mediator'];
+
     // Validate Token
     bool validToken = await firebase.validateToken(
-        key: userData['key'], custId: userData['Cust_id']);
+        key: key, custId: custId, forceLogout: newDevice);
 
     if (validToken || newDevice) {
       final Isar dbInstance = await _db;
       final existingUser = await dbInstance.users.get(1);
-      bool isRegistered = userData['nama'].isNotEmpty;
+      bool isRegistered = nama.isNotEmpty;
 
       if (existingUser != null) {
-        existingUser.nama = userData['nama'];
-        existingUser.custId = userData['Cust_id'];
-        existingUser.status = userData['status_mediator'];
-        existingUser.key = userData['key'];
+        existingUser.nama = nama;
+        existingUser.custId = custId;
+        existingUser.status = statusMediator;
+        existingUser.key = key;
         existingUser.firebaseToken = fcmToken;
         existingUser.appVersion = appVersion;
         existingUser.registered = isRegistered;
@@ -75,10 +80,10 @@ class DatabaseRepository {
       } else {
         final newUser = User()
           ..id = 1
-          ..nama = userData['nama']
-          ..custId = userData['Cust_id']
-          ..status = userData['status_mediator']
-          ..key = userData['key']
+          ..nama = nama
+          ..custId = custId
+          ..status = statusMediator
+          ..key = key
           ..firebaseToken = fcmToken
           ..appVersion = appVersion
           ..registered = isRegistered;

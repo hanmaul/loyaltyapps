@@ -27,7 +27,9 @@ class FirebaseApi {
   }
 
   Future<bool> validateToken(
-      {required String key, required String custId}) async {
+      {required String key,
+      required String custId,
+      required bool forceLogout}) async {
     String fToken = await fetchFCM();
     final baseUrl =
         "https://www.kamm-group.com:8070/fapi/checkfirebase?key=$key";
@@ -40,6 +42,7 @@ class FirebaseApi {
       body: jsonEncode(<String, String>{
         'cust_id': custId,
         'id_firebase': fToken,
+        'force_logout': forceLogout.toString(),
       }),
     );
 
