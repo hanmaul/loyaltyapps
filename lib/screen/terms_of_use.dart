@@ -55,7 +55,8 @@ class _TermsOfUseState extends State<TermsOfUse> {
   }
 
   Future<void> agree() async {
-    await databaseRepository.saveUser(userData: widget.data, newDevice: true);
+    await databaseRepository.saveUser(
+        userData: widget.data, newDevice: true, forceLogout: false);
     await termsService.agreeTerms();
     await nextPage();
   }

@@ -45,6 +45,7 @@ class DatabaseRepository {
   Future<void> saveUser({
     required Map<String, dynamic> userData,
     required bool newDevice,
+    required bool forceLogout,
   }) async {
     // Data from Device
     FirebaseApi firebase = FirebaseApi();
@@ -58,7 +59,7 @@ class DatabaseRepository {
 
     // Validate Token
     bool validToken = await firebase.validateToken(
-        key: key, custId: custId, forceLogout: newDevice);
+        key: key, custId: custId, forceLogout: forceLogout);
 
     if (validToken || newDevice) {
       final Isar dbInstance = await _db;

@@ -59,7 +59,8 @@ class ManageOtp {
       if (response.body != 'otp salah') {
         List<dynamic> output = jsonDecode(response.body);
         Map<String, dynamic> userData = output[0];
-        await databaseRepository.saveUser(userData: userData, newDevice: false);
+        await databaseRepository.saveUser(
+            userData: userData, newDevice: false, forceLogout: true);
         return userData;
       } else {
         return {'status': 'failed'};
