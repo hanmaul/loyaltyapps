@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/auth/auth_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
+import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/services/auth_service.dart';
@@ -45,7 +46,15 @@ class _AuthState extends State<Auth> {
                 child: Text(state.message),
               );
             }
-            return Container();
+            if (state is NoInternetState) {
+              return const NoInternet(); // Show No Internet page
+            }
+            return Container(
+              color: Colors.white, // Set the background color to white
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           },
         ),
       ),

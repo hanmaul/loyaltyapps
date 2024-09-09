@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loyalty/bloc/auth/auth_bloc.dart';
 
 class InternetAwareWidget extends StatefulWidget {
   final Widget child;
@@ -55,14 +57,21 @@ class NoInternet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.only(
-                    top: 50.0, left: 50.0, right: 50.0, bottom: 50.0),
+                padding: const EdgeInsets.all(50),
                 child: Image.asset(
                   'assets/images/No connection-rafiki.png',
                   fit: BoxFit.cover,
                 ),
               ),
-              const Text('Please check your internet connection..'),
+              const Text('Tidak ada koneksi internet.'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // You can retry the connection or reload the app here
+                  BlocProvider.of<AuthBloc>(context).add(SessionCheck());
+                },
+                child: const Text("Coba Lagi"),
+              ),
             ],
           ),
         ),

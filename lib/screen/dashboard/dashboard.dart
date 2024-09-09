@@ -108,7 +108,15 @@ class _DashboardState extends State<Dashboard> {
                 child: Text(state.message),
               );
             }
-            return Container();
+            if (state is NoInternetState) {
+              return const NoInternet(); // Show No Internet page
+            }
+            return Container(
+              color: Colors.white, // Set the background color to white
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           },
         ),
       ),
