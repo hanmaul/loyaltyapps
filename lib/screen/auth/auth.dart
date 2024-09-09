@@ -5,6 +5,7 @@ import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
+import 'package:loyalty/services/auth_service.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -35,6 +36,9 @@ class _AuthState extends State<Auth> {
             }
             if (state is UnRegistered) {
               return const GetOtp();
+            }
+            if (state is UserLoggedOut) {
+              AuthService.signOut(context);
             }
             if (state is FailureLoadState) {
               return Center(

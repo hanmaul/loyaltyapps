@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/services/auth_service.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
@@ -11,12 +12,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEvent>((event, emit) async {
       final key = await databaseRepository.loadUser(field: 'key');
       final isRegistered = await databaseRepository.isRegistered();
+      final custId = await databaseRepository.loadUser(field: 'custId');
+      bool keyExists = await AuthService.keyExists(custId: custId, key: key);
+
       if (event is SessionCheck) {
         try {
           if (key != "" && isRegistered) {
-            emit(SignedIn(message: 'Selamat Datang kembali'));
+            if (keyExists) {
+              emit(SignedIn(message: 'Selamat Datang kembali'));
+            } else {
+              emit(UserLoggedOut());
+            }
           } else if (key != "" && !isRegistered) {
-            emit(InRegister(message: 'Silahkan daftar terlebih dahulu '));
+            if (keyExists) {
+              emit(InRegister(message: 'Silahkan daftar terlebih dahulu '));
+            } else {
+              emit(UserLoggedOut());
+            }
           } else {
             emit(UnRegistered(message: 'Silahkan masukkan nomor anda'));
           }

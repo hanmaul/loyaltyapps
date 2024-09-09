@@ -10,6 +10,7 @@ import 'package:loyalty/screen/notifications.dart';
 import 'package:loyalty/screen/akunku.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/webview/register.dart';
+import 'package:loyalty/services/auth_service.dart';
 
 class Dashboard extends StatefulWidget {
   final int page;
@@ -98,6 +99,9 @@ class _DashboardState extends State<Dashboard> {
             }
             if (state is UnRegistered) {
               return const GetOtp();
+            }
+            if (state is UserLoggedOut) {
+              AuthService.signOut(context);
             }
             if (state is FailureLoadState) {
               return Center(

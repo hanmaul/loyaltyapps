@@ -29,6 +29,8 @@ final class UnRegistered extends AuthState {
   });
 }
 
+class UserLoggedOut extends AuthState {}
+
 final class FailureLoadState extends AuthState {
   final String message;
 

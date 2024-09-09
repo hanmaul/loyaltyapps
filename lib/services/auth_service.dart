@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/material.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
+import 'package:http/http.dart' as http;
 
 class AuthService {
   // Background logout logic without UI navigation
@@ -85,5 +88,28 @@ class AuthService {
         },
       );
     });
+  }
+
+  static Future<bool> keyExists(
+      {required String custId, required String key}) async {
+    const baseUrl = "https://www.kamm-group.com:8070/fapi/checkkey";
+
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'cust_id': custId,
+        'key': key,
+      }),
+    );
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.isNotEmpty && jsonResponse[0]['status'] == true;
+    } else {
+      debugPrint('Request failed with status: ${response.statusCode}');
+      return false;
+    }
   }
 }
