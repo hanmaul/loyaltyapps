@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:loyalty/data/repository/notification_repository.dart';
 
 class DashboardWidget extends StatelessWidget {
   final int currentPageIndex;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
-import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
@@ -135,7 +134,7 @@ class _AkunkuState extends State<Akunku> {
                         String script = _injectVersionIntoWebView();
                         await controller.evaluateJavascript(source: script);
 
-                        await controller.evaluateJavascript(source: """ 
+                        await controller.evaluateJavascript(source: """
                             const Flutter = {
                                 home(){
                                   window.flutter_inappwebview.callHandler('dashboard', 'home');

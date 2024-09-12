@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
-import 'package:loyalty/components/webview_dialog.dart';
 import 'package:loyalty/screen/webview/content.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -23,7 +22,6 @@ class ContentAdds extends StatefulWidget {
 
 class _ContentAddsState extends State<ContentAdds> {
   int activeIndex = 0;
-  final controller = CarouselController();
 
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     if (urlWeb.isNotEmpty) {
@@ -33,14 +31,6 @@ class _ContentAddsState extends State<ContentAdds> {
           builder: (context) => Content(title: urlTitle, url: urlWeb),
         ),
       );
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return WebViewDialog(
-      //       url: urlWeb,
-      //     );
-      //   },
-      // );
     } else {
       showAlert(
         context: context,
