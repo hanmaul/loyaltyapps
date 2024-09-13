@@ -17,20 +17,23 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
 // Function to check if the user exists and route is not '/get-otp'
   Future<void> _checkForLogout() async {
     final logoutSession = await databaseRepository.getLogoutSession();
-    bool keyExists = true; // Initialize keyExists as true to avoid null issues
-    bool userExists = await databaseRepository.checkUserExists();
-
-    if (userExists) {
-      final custId = await databaseRepository.loadUser(field: 'custId');
-      final key = await databaseRepository.loadUser(field: 'key');
-      keyExists = await AuthService.keyExists(custId: custId, key: key);
-    }
 
     ConnectivityResult connectivityResult =
         await (Connectivity().checkConnectivity());
 
     // Only proceed with logout check if the device is connected to the internet
     if (connectivityResult != ConnectivityResult.none) {
+      bool keyExists =
+          true; // Initialize keyExists as true to avoid null issues
+      bool userExists = await databaseRepository.checkUserExists();
+
+      if (userExists) {
+        final custId = await databaseRepository.loadUser(field: 'custId');
+        final key = await databaseRepository.loadUser(field: 'key');
+        // Perform keyExists check only when there is an active internet connection
+        keyExists = await AuthService.keyExists(custId: custId, key: key);
+      }
+
       // If the logout session exists or the key doesn't exist, navigate to '/get-otp'
       if (logoutSession != null || !keyExists) {
         // Clear session if the key doesn't exist
