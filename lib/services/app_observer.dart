@@ -25,11 +25,10 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
     if (connectivityResult != ConnectivityResult.none) {
       bool keyExists =
           true; // Initialize keyExists as true to avoid null issues
-      bool userExists = await databaseRepository.checkUserExists();
+      final custId = await databaseRepository.loadUser(field: 'custId');
+      final key = await databaseRepository.loadUser(field: 'key');
 
-      if (userExists) {
-        final custId = await databaseRepository.loadUser(field: 'custId');
-        final key = await databaseRepository.loadUser(field: 'key');
+      if (custId.isNotEmpty && key.isNotEmpty) {
         // Perform keyExists check only when there is an active internet connection
         keyExists = await AuthService.keyExists(custId: custId, key: key);
       }
