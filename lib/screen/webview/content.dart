@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:loyalty/services/fetch_location.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
@@ -29,6 +30,34 @@ class _ContentState extends State<Content> {
   void initState() {
     super.initState();
     currentUrl = widget.url;
+    fetchGPS();
+  }
+
+  // Function to fetch location and set it in WebView's localStorage
+  Future<void> fetchGPS() async {
+    if (currentUrl.contains("re-order")) {
+      FetchLocation fetchLocation = FetchLocation();
+      try {
+        // Fetch latitude and longitude
+        Map<String, double> position = await fetchLocation.getCurrentPosition();
+        double latitude = position['latitude']!;
+        double longitude = position['longitude']!;
+
+        // Inject JavaScript to set latitude and longitude in localStorage
+        String jsCode = """
+        window.localStorage.setItem('latitude', '$latitude');
+        window.localStorage.setItem('longitude', '$longitude');
+      """;
+
+        if (_webViewController != null) {
+          await _webViewController.evaluateJavascript(source: jsCode);
+        }
+      } catch (e) {
+        print("Error fetching location: $e");
+      }
+    } else {
+      return;
+    }
   }
 
   Future<void> back() async {
@@ -180,6 +209,13 @@ class _ContentState extends State<Content> {
                 ),
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
+                  fetchGPS();
+                  controller.addJavaScriptHandler(
+                    handlerName: 'fetchLocation',
+                    callback: (args) {
+                      fetchGPS();
+                    },
+                  );
                   controller.addJavaScriptHandler(
                     handlerName: 'dashboard',
                     callback: (args) {
@@ -193,6 +229,9 @@ class _ContentState extends State<Content> {
                         home(){
                           window.flutter_inappwebview.callHandler('dashboard', 'home');
                         },
+                        fetchLocation() {
+                          window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
+                        }
                    }
                     """);
                 },

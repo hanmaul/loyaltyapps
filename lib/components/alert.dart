@@ -4,12 +4,14 @@ class MyAlert extends StatelessWidget {
   final String title;
   final String content;
   final String type;
+  final List<Widget>? actions;
 
   const MyAlert({
     Key? key,
     required this.title,
     required this.content,
     required this.type,
+    this.actions,
   }) : super(key: key);
 
   @override
@@ -27,27 +29,24 @@ class MyAlert extends StatelessWidget {
     }
 
     return AlertDialog(
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       title: Text(
         title,
-        style: TextStyle(color: titleColor, fontWeight: FontWeight.bold),
+        style: TextStyle(color: titleColor, fontSize: 20),
       ),
-      content: Text(
-        content,
-        style: TextStyle(color: Colors.grey[700]),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text(
-            'OK',
+      content: Text.rich(
+        TextSpan(
+          text: content,
+          style: const TextStyle(
+            // fontSize: 15,
+            height: 1.5, // Adjust the line height as needed
           ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
         ),
-      ],
+      ),
+      actions: actions ?? [], // Dynamic actions
     );
   }
 }
@@ -57,17 +56,16 @@ void showAlert({
   required String title,
   required String content,
   required String type,
+  List<Widget>? actions, // Optional actions
 }) {
   showDialog(
     context: context,
     builder: (context) {
-      return Theme(
-        data: ThemeData(dialogBackgroundColor: Colors.white),
-        child: MyAlert(
-          title: title,
-          content: content,
-          type: type,
-        ),
+      return MyAlert(
+        title: title,
+        content: content,
+        type: type,
+        actions: actions,
       );
     },
   );

@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
+import 'package:loyalty/services/fetch_location.dart';
 
 class ContentServices extends StatefulWidget {
   final List<dynamic> service;
@@ -39,6 +40,22 @@ class _ContentServicesState extends State<ContentServices> {
     }
   }
 
+  // Function to handle re-order logic
+  Future<void> handleReorder(String urlWeb, String urlTitle) async {
+    FetchLocation fetchLocation = FetchLocation();
+
+    // Validate GPS and permissions
+    bool gpsValid = await fetchLocation.validateGPSAndPermissions(context);
+
+    if (gpsValid) {
+      // If validation passed, proceed to get the URL
+      await getUrl(urlWeb, urlTitle);
+    } else {
+      // Handle failure case, maybe show a dialog or log the event
+      debugPrint('GPS or Location Permission is required.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // size
@@ -65,8 +82,14 @@ class _ContentServicesState extends State<ContentServices> {
           alignment: WrapAlignment.center, // Center align items
           children: widget.service.map((menuItem) {
             return GestureDetector(
-              onTap: () {
-                getUrl(menuItem.link, menuItem.judul);
+              onTap: () async {
+                if (menuItem.link.contains('re-order')) {
+                  // Call the validation for GPS and permissions before proceeding
+                  await handleReorder(menuItem.link, menuItem.judul);
+                } else {
+                  // Directly call getUrl if no need for GPS validation
+                  await getUrl(menuItem.link, menuItem.judul);
+                }
               },
               child: Container(
                 width: imgSize,
