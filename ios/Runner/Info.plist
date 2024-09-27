@@ -37,6 +37,13 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Untuk memberikan pengalaman yang lebih personal dan memungkinkan Anda mengunggah foto profil, aplikasi ini memerlukan akses ke kamera perangkat Anda. Kami berkomitmen untuk menjaga privasi dan keamanan foto Anda, dan tidak akan menggunakan kamera Anda untuk tujuan lain tanpa izin Anda.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app needs access to location when open.</string>
+    <key>NSLocationTemporaryUsageDescriptionDictionary</key>
+    <dict>
+      <key>YourPurposeKey</key>
+      <string>The example App requires temporary access to the device&apos;s precise location.</string>
+    </dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
