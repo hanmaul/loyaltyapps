@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/services/fetch_location.dart';
 import 'package:loyalty/services/firebase_api.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final AppLifecycleObserver _lifecycleObserver = AppLifecycleObserver();
+  final FetchLocation _fetchLocation = FetchLocation();
 
   @override
   void initState() {
@@ -53,6 +55,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseApi().initNotifications();
+    await _fetchLocation
+        .requestLocationPermission(navigatorKey.currentContext!);
   }
 
   @override

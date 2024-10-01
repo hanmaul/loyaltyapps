@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/material.dart';
+import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:http/http.dart' as http;
@@ -44,6 +45,8 @@ class AuthService {
     // Check if there is a logout session stored
     final logoutSession = await DatabaseRepository().getLogoutSession();
     if (logoutSession != null) {
+      // Clear session logout
+      await DatabaseRepository().clearLogoutSession();
       // Show a dialog explaining the logout
       _showLogoutSessionDialog(context, logoutSession.reason);
     }
@@ -52,40 +55,22 @@ class AuthService {
   // Show the logout session dialog
   static void _showLogoutSessionDialog(BuildContext context, String reason) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog(
+      showAlert(
+        barierDismiss: false,
         context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Theme(
-            data: ThemeData(dialogBackgroundColor: Colors.white),
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              title: const Text(
-                "Keluar Akun",
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              content: Text(
-                reason,
-                style: TextStyle(color: Colors.grey[700]),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text(
-                    'OK',
-                  ),
-                  onPressed: () async {
-                    // Hapus sesi logout setelah pengguna menekan OK
-                    await DatabaseRepository().clearLogoutSession();
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+        title: 'Keluar Akun',
+        content: reason,
+        type: 'error',
+        actions: [
+          TextButton(
+            child: const Text(
+              'OK',
             ),
-          );
-        },
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       );
     });
   }

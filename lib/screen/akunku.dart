@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -52,6 +53,33 @@ class _AkunkuState extends State<Akunku> {
       document.body.appendChild(versionElement);
     }
   """;
+  }
+
+  Future<void> _logout() async {
+    showAlert(
+      context: context,
+      title: 'Logout',
+      content: 'Apakah Anda yakin ingin keluar?',
+      type: 'info',
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          child: const Text('Batal'),
+        ),
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop(); // Close the dialog
+            await AuthService.signOutByUser(context); // Proceed with logout
+          },
+          child: const Text(
+            'Keluar',
+            style: TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
+    );
   }
 
   Future<void> dashboard() async {
@@ -122,7 +150,7 @@ class _AkunkuState extends State<Akunku> {
                         controller.addJavaScriptHandler(
                           handlerName: 'logout',
                           callback: (args) {
-                            AuthService.signOutByUser(context);
+                            _logout();
                           },
                         );
                       },

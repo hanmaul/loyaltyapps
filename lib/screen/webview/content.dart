@@ -9,11 +9,13 @@ import 'package:loyalty/screen/response/no_internet_page.dart';
 class Content extends StatefulWidget {
   final String title;
   final String url;
+  final String appVersion;
 
   const Content({
     super.key,
     required this.title,
     required this.url,
+    required this.appVersion,
   });
 
   @override
@@ -57,6 +59,35 @@ class _ContentState extends State<Content> {
       }
     } else {
       return;
+    }
+  }
+
+  Future<bool> checkGPS() async {
+    FetchLocation fetchLocation = FetchLocation();
+
+    try {
+      // Validate GPS and permissions
+      bool isGpsEnabled =
+          await fetchLocation.validateGPSAndPermissions(context);
+
+      if (isGpsEnabled) {
+        return true; // GPS is enabled
+      } else {
+        return false; // GPS is disabled
+      }
+    } catch (e) {
+      print("Error checking GPS: $e");
+      return false; // Return false in case of an error
+    }
+  }
+
+  Future<void> sendAppVersion() async {
+    String jsCode = """
+    window.localStorage.setItem('version', '${widget.appVersion}');
+  """;
+
+    if (_webViewController != null) {
+      await _webViewController.evaluateJavascript(source: jsCode);
     }
   }
 
@@ -209,7 +240,6 @@ class _ContentState extends State<Content> {
                 ),
                 onWebViewCreated: (InAppWebViewController controller) {
                   _webViewController = controller;
-                  fetchGPS();
                   controller.addJavaScriptHandler(
                     handlerName: 'fetchLocation',
                     callback: (args) {
@@ -222,17 +252,35 @@ class _ContentState extends State<Content> {
                       dashboard();
                     },
                   );
+                  controller.addJavaScriptHandler(
+                    handlerName: 'checkGPS',
+                    callback: (args) async {
+                      bool gpsEnabled = await checkGPS();
+                      return gpsEnabled;
+                    },
+                  );
                 },
                 onLoadStop: (controller, url) async {
+                  await fetchGPS();
+                  await sendAppVersion();
                   await controller.evaluateJavascript(source: """ 
                     const Flutter = {
-                        home(){
-                          window.flutter_inappwebview.callHandler('dashboard', 'home');
+                        home: function() {
+                            window.flutter_inappwebview.callHandler('dashboard', 'home');
                         },
-                        fetchLocation() {
-                          window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
+                        fetchLocation: function() {
+                            window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
+                        },
+                        checkgps: function() {
+                            return window.flutter_inappwebview.callHandler('checkGPS', 'gps')
+                                .then(result => {
+                                    return result;  // Return the result of the GPS check to be used in JavaScript
+                                })
+                                .catch(error => {
+                                    console.error('Error in checkGPS:', error);  // Handle any potential error
+                                });
                         }
-                   }
+                    }
                     """);
                 },
                 onProgressChanged:

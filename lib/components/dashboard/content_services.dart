@@ -20,12 +20,19 @@ class ContentServices extends StatefulWidget {
 
 class _ContentServicesState extends State<ContentServices> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    final custId = await DatabaseRepository().loadUser(field: "custId");
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    final custId = await databaseRepository.loadUser(field: "custId");
+    final appVersion = await databaseRepository.loadUser(field: "appVersion");
+
     if (urlWeb != "") {
       Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => Content(title: urlTitle, url: urlWeb + custId),
+          builder: (context) => Content(
+            title: urlTitle,
+            url: urlWeb + custId,
+            appVersion: appVersion,
+          ),
         ),
       );
     } else {

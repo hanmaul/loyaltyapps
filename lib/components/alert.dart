@@ -57,8 +57,10 @@ void showAlert({
   required String content,
   required String type,
   List<Widget>? actions, // Optional actions
+  bool barierDismiss = true,
 }) {
   showDialog(
+    barrierDismissible: barierDismiss,
     context: context,
     builder: (context) {
       return MyAlert(

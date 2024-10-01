@@ -62,9 +62,9 @@ class FirebaseApi {
     final action = message.data['action'];
 
     switch (action) {
-      case 'logout':
-        _forceLogout();
-        break;
+      // case 'logout':
+      //   _forceLogout();
+      //   break;
       case 'home':
         navigatorKey.currentState?.pushNamedAndRemoveUntil(
           '/home',
@@ -80,11 +80,11 @@ class FirebaseApi {
   }
 
   // Force logout
-  void _forceLogout() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AuthService.signOut(navigatorKey.currentContext!); // Sign out user
-    });
-  }
+  // void _forceLogout() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     AuthService.signOut(navigatorKey.currentContext!); // Sign out user
+  //   });
+  // }
 
   // Initialize foreground and background settings
   Future<void> initPushNotifications() async {
