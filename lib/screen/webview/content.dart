@@ -287,6 +287,25 @@ class _ContentState extends State<Content> {
                       },
                       onLoadStop: (controller, url) async {
                         await fetchGPS();
+                        await controller.evaluateJavascript(source: """ 
+                        const Flutter = {
+                            home: function() {
+                                window.flutter_inappwebview.callHandler('dashboard', 'home');
+                            },
+                            fetchLocation: function() {
+                                window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
+                            },
+                            checkgps: function() {
+                                return window.flutter_inappwebview.callHandler('checkGPS', 'gps')
+                                    .then(result => {
+                                        return result;  // Return the result of the GPS check to be used in JavaScript
+                                    })
+                                    .catch(error => {
+                                        console.error('Error in checkGPS:', error);  // Handle any potential error
+                                    });
+                            }
+                        }
+                        """);
                       },
                       onProgressChanged:
                           (InAppWebViewController controller, int progress) {
