@@ -3,19 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/services/fetch_location.dart';
+import 'package:loyalty/services/fetch_version.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
 class Content extends StatefulWidget {
   final String title;
   final String url;
-  final String appVersion;
 
   const Content({
     super.key,
     required this.title,
     required this.url,
-    required this.appVersion,
   });
 
   @override
@@ -31,8 +30,35 @@ class _ContentState extends State<Content> {
   @override
   void initState() {
     super.initState();
-    currentUrl = widget.url;
+    fetchVersion();
     fetchGPS();
+  }
+
+  Future<void> fetchVersion() async {
+    AppVersion appVersion = AppVersion();
+    final currentVersion = await appVersion.getVersion();
+    setState(() {
+      currentUrl = appendVersionToUrl(currentVersion);
+    });
+  }
+
+  String getAfterLastSlash() {
+    return widget.url.substring(widget.url.lastIndexOf('/') + 1);
+  }
+
+  bool checkIfContains(String keyword) {
+    String afterLastSlash = getAfterLastSlash();
+    return afterLastSlash.contains(keyword);
+  }
+
+  String appendVersionToUrl(String version) {
+    bool containsQuestionMark = checkIfContains('?');
+
+    if (containsQuestionMark) {
+      return '${widget.url}&version=$version';
+    } else {
+      return '${widget.url}?version=$version';
+    }
   }
 
   // Function to fetch location and set it in WebView's localStorage
@@ -78,16 +104,6 @@ class _ContentState extends State<Content> {
     } catch (e) {
       print("Error checking GPS: $e");
       return false; // Return false in case of an error
-    }
-  }
-
-  Future<void> sendAppVersion() async {
-    String jsCode = """
-    window.localStorage.setItem('version', '${widget.appVersion}');
-  """;
-
-    if (_webViewController != null) {
-      await _webViewController.evaluateJavascript(source: jsCode);
     }
   }
 
@@ -183,6 +199,8 @@ class _ContentState extends State<Content> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDatun = checkIfContains('datun');
+
     return InternetAwareWidget(
       child: WillPopScope(
         onWillPop: () async {
@@ -215,7 +233,7 @@ class _ContentState extends State<Content> {
               ),
             ),
             actions: [
-              if (widget.url.contains('datun'))
+              if (isDatun)
                 IconButton(
                   icon: const Icon(
                     Icons.qr_code_scanner,
@@ -228,90 +246,77 @@ class _ContentState extends State<Content> {
             ],
           ),
           backgroundColor: Colors.white,
-          body: Stack(
-            children: [
-              InAppWebView(
-                initialUrlRequest: URLRequest(
-                  url: WebUri(currentUrl),
-                ),
-                initialSettings: InAppWebViewSettings(
-                  supportZoom: false,
-                  transparentBackground: true,
-                ),
-                onWebViewCreated: (InAppWebViewController controller) {
-                  _webViewController = controller;
-                  controller.addJavaScriptHandler(
-                    handlerName: 'fetchLocation',
-                    callback: (args) {
-                      fetchGPS();
-                    },
-                  );
-                  controller.addJavaScriptHandler(
-                    handlerName: 'dashboard',
-                    callback: (args) {
-                      dashboard();
-                    },
-                  );
-                  controller.addJavaScriptHandler(
-                    handlerName: 'checkGPS',
-                    callback: (args) async {
-                      bool gpsEnabled = await checkGPS();
-                      return gpsEnabled;
-                    },
-                  );
-                },
-                onLoadStop: (controller, url) async {
-                  await fetchGPS();
-                  await sendAppVersion();
-                  await controller.evaluateJavascript(source: """ 
-                    const Flutter = {
-                        home: function() {
-                            window.flutter_inappwebview.callHandler('dashboard', 'home');
-                        },
-                        fetchLocation: function() {
-                            window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
-                        },
-                        checkgps: function() {
-                            return window.flutter_inappwebview.callHandler('checkGPS', 'gps')
-                                .then(result => {
-                                    return result;  // Return the result of the GPS check to be used in JavaScript
-                                })
-                                .catch(error => {
-                                    console.error('Error in checkGPS:', error);  // Handle any potential error
-                                });
-                        }
-                    }
-                    """);
-                },
-                onProgressChanged:
-                    (InAppWebViewController controller, int progress) {
-                  setState(() {
-                    _progress = progress / 100;
-                  });
-                },
-              ),
-              if (_progress < 1)
-                WillPopScope(
-                  key: _keyLoader,
-                  child: Stack(
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                      Center(
-                        child: LoadingAnimationWidget.waveDots(
-                          color: const Color(0xff0B60B0),
-                          size: 32,
-                        ),
-                      ),
-                    ],
+          body: currentUrl.isEmpty
+              ? Center(
+                  child: LoadingAnimationWidget.waveDots(
+                    color: const Color(0xff0B60B0),
+                    size: 32,
                   ),
-                  onWillPop: () async => false,
+                )
+              : Stack(
+                  children: [
+                    InAppWebView(
+                      initialUrlRequest: URLRequest(
+                        url: WebUri(currentUrl),
+                      ),
+                      initialSettings: InAppWebViewSettings(
+                        supportZoom: false,
+                        transparentBackground: true,
+                      ),
+                      onWebViewCreated: (InAppWebViewController controller) {
+                        _webViewController = controller;
+                        controller.addJavaScriptHandler(
+                          handlerName: 'fetchLocation',
+                          callback: (args) {
+                            fetchGPS();
+                          },
+                        );
+                        controller.addJavaScriptHandler(
+                          handlerName: 'dashboard',
+                          callback: (args) {
+                            dashboard();
+                          },
+                        );
+                        controller.addJavaScriptHandler(
+                          handlerName: 'checkGPS',
+                          callback: (args) async {
+                            bool gpsEnabled = await checkGPS();
+                            return gpsEnabled;
+                          },
+                        );
+                      },
+                      onLoadStop: (controller, url) async {
+                        await fetchGPS();
+                      },
+                      onProgressChanged:
+                          (InAppWebViewController controller, int progress) {
+                        setState(() {
+                          _progress = progress / 100;
+                        });
+                      },
+                    ),
+                    if (_progress < 1)
+                      WillPopScope(
+                        key: _keyLoader,
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
+                            Center(
+                              child: LoadingAnimationWidget.waveDots(
+                                color: const Color(0xff0B60B0),
+                                size: 32,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onWillPop: () async => false,
+                      ),
+                  ],
                 ),
-            ],
-          ),
         ),
       ),
     );

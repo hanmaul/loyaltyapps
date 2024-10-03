@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
-import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -25,9 +24,6 @@ class _ContentAddsState extends State<ContentAdds> {
   int activeIndex = 0;
 
   Future<void> getUrl(String urlWeb, String urlTitle) async {
-    DatabaseRepository databaseRepository = DatabaseRepository();
-    final appVersion = await databaseRepository.loadUser(field: "appVersion");
-
     if (urlWeb.isNotEmpty) {
       Navigator.push(
         context,
@@ -35,7 +31,6 @@ class _ContentAddsState extends State<ContentAdds> {
           builder: (context) => Content(
             title: urlTitle,
             url: urlWeb,
-            appVersion: appVersion,
           ),
         ),
       );

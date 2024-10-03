@@ -29,7 +29,6 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     DatabaseRepository databaseRepository = DatabaseRepository();
     final custId = await databaseRepository.loadUser(field: "custId");
-    final appVersion = await databaseRepository.loadUser(field: "appVersion");
 
     if (urlWeb.isNotEmpty) {
       Navigator.push(
@@ -38,7 +37,6 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
           builder: (context) => Content(
             title: urlTitle,
             url: urlWeb + custId,
-            appVersion: appVersion,
           ),
         ),
       );
