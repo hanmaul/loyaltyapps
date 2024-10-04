@@ -31,7 +31,6 @@ class _ContentState extends State<Content> {
   void initState() {
     super.initState();
     fetchVersion();
-    fetchGPS();
   }
 
   Future<void> fetchVersion() async {
@@ -61,30 +60,21 @@ class _ContentState extends State<Content> {
     }
   }
 
-  // Function to fetch location and set it in WebView's localStorage
-  Future<void> fetchGPS() async {
-    if (currentUrl.contains("re-order")) {
-      FetchLocation fetchLocation = FetchLocation();
-      try {
-        // Fetch latitude and longitude
-        Map<String, double> position = await fetchLocation.getCurrentPosition();
-        double latitude = position['latitude']!;
-        double longitude = position['longitude']!;
-
-        // Inject JavaScript to set latitude and longitude in localStorage
-        String jsCode = """
-        window.localStorage.setItem('latitude', '$latitude');
-        window.localStorage.setItem('longitude', '$longitude');
-      """;
-
-        if (_webViewController != null) {
-          await _webViewController.evaluateJavascript(source: jsCode);
-        }
-      } catch (e) {
-        print("Error fetching location: $e");
-      }
-    } else {
-      return;
+  Future<Map<String, double>> fetchPosition() async {
+    FetchLocation fetchLocation = FetchLocation();
+    try {
+      // Fetch latitude and longitude
+      Map<String, double> position = await fetchLocation.getCurrentPosition();
+      return {
+        'latitude': position['latitude']!,
+        'longitude': position['longitude']!,
+      };
+    } catch (e) {
+      print("Error fetching location: $e");
+      return {
+        'latitude': 0.0,
+        'longitude': 0.0,
+      }; // Return default values in case of error
     }
   }
 
@@ -267,8 +257,10 @@ class _ContentState extends State<Content> {
                         _webViewController = controller;
                         controller.addJavaScriptHandler(
                           handlerName: 'fetchLocation',
-                          callback: (args) {
-                            fetchGPS();
+                          callback: (args) async {
+                            // Call fetchGPS and return the result directly to JavaScript
+                            Map<String, double> gpsData = await fetchPosition();
+                            return gpsData; // Return the GPS data directly
                           },
                         );
                         controller.addJavaScriptHandler(
@@ -286,14 +278,10 @@ class _ContentState extends State<Content> {
                         );
                       },
                       onLoadStop: (controller, url) async {
-                        await fetchGPS();
                         await controller.evaluateJavascript(source: """ 
                         const Flutter = {
                             home: function() {
                                 window.flutter_inappwebview.callHandler('dashboard', 'home');
-                            },
-                            fetchLocation: function() {
-                                window.flutter_inappwebview.callHandler('fetchLocation', 'gps');
                             },
                             checkgps: function() {
                                 return window.flutter_inappwebview.callHandler('checkGPS', 'gps')
