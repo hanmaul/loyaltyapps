@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
@@ -55,20 +54,10 @@ class _ContentServicesState extends State<ContentServices> {
 
     if (gpsValid) {
       // If validation passed, proceed to get the URL
-      await clearWebViewCache();
       await getUrl(urlWeb, urlTitle);
     } else {
       // Handle failure case, maybe show a dialog or log the event
       debugPrint('GPS or Location Permission is required.');
-    }
-  }
-
-  Future<void> clearWebViewCache() async {
-    try {
-      await InAppWebViewController.clearAllCache();
-      debugPrint('WebView cache cleared.');
-    } catch (e) {
-      debugPrint('Error clearing WebView cache: $e');
     }
   }
 
