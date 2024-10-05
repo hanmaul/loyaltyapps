@@ -99,6 +99,7 @@ class _RegisterState extends State<Register> {
                       ),
                       initialSettings: InAppWebViewSettings(
                         supportZoom: false,
+                        disableDefaultErrorPage: true,
                       ),
                       onWebViewCreated: (InAppWebViewController controller) {
                         _webViewController = controller;

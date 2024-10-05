@@ -104,9 +104,10 @@ class _DashboardState extends State<Dashboard> {
               AuthService.signOut(context);
             }
             if (state is FailureLoadState) {
-              return Center(
-                child: Text(state.message),
-              );
+              // return Center(
+              //   child: Text(state.message),
+              // );
+              return const NoInternet();
             }
             if (state is NoInternetState) {
               return const NoInternet(); // Show No Internet page
