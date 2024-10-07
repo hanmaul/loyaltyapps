@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:loyalty/screen/response/webview_error_page.dart';
 import 'package:loyalty/services/fetch_location.dart';
 import 'package:loyalty/services/fetch_version.dart';
+import 'package:loyalty/services/filter_error.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 
@@ -24,8 +26,14 @@ class Content extends StatefulWidget {
 class _ContentState extends State<Content> {
   final GlobalKey<State> _keyLoader = GlobalKey<State>();
   late InAppWebViewController _webViewController;
-  double _progress = 0;
   String currentUrl = '';
+  double _progress = 0;
+
+  bool _hasError = false;
+  String errorType = '';
+  String errorImage = '';
+  String errorMessage = '';
+  VoidCallback errorAction = () {};
 
   @override
   void initState() {
@@ -106,8 +114,31 @@ class _ContentState extends State<Content> {
     }
   }
 
-  Future<void> dashboard() async {
+  void dashboard() {
     Navigator.pop(context);
+  }
+
+  void receivedError(Map<String, String> error) {
+    setState(() {
+      _progress = 100;
+      errorType = error['errorType']!;
+      errorImage = error['imagePath']!;
+      errorMessage = error['message']!;
+      _hasError = true;
+      if (errorType == 'not_found') {
+        errorAction = dashboard; // Navigate to the dashboard for 'not_found'
+      } else {
+        errorAction = _retryWebView; // Retry for other errors
+      }
+    });
+  }
+
+  void _retryWebView() {
+    setState(() {
+      _progress = 0;
+      _hasError = false;
+    });
+    _webViewController.reload(); // Reload the same page when retrying
   }
 
   void openScanner() {
@@ -245,41 +276,59 @@ class _ContentState extends State<Content> {
                 )
               : Stack(
                   children: [
-                    InAppWebView(
-                      initialUrlRequest: URLRequest(
-                        url: WebUri(currentUrl),
-                      ),
-                      initialSettings: InAppWebViewSettings(
-                        supportZoom: false,
-                        transparentBackground: true,
-                        disableDefaultErrorPage: true,
-                      ),
-                      onWebViewCreated: (InAppWebViewController controller) {
-                        _webViewController = controller;
-                        controller.addJavaScriptHandler(
-                          handlerName: 'fetchLocation',
-                          callback: (args) async {
-                            // Call fetchGPS and return the result directly to JavaScript
-                            Map<String, double> gpsData = await fetchPosition();
-                            return gpsData; // Return the GPS data directly
-                          },
-                        );
-                        controller.addJavaScriptHandler(
-                          handlerName: 'dashboard',
-                          callback: (args) {
-                            dashboard();
-                          },
-                        );
-                        controller.addJavaScriptHandler(
-                          handlerName: 'checkGPS',
-                          callback: (args) async {
-                            bool gpsEnabled = await checkGPS();
-                            return gpsEnabled;
-                          },
-                        );
-                      },
-                      onLoadStop: (controller, url) async {
-                        await controller.evaluateJavascript(source: """ 
+                    if (!_hasError)
+                      InAppWebView(
+                        initialUrlRequest: URLRequest(
+                          url: WebUri(currentUrl),
+                        ),
+                        initialSettings: InAppWebViewSettings(
+                          supportZoom: false,
+                          transparentBackground: true,
+                          disableDefaultErrorPage: true,
+                        ),
+                        onReceivedError: (controller, request, error) {
+                          debugPrint('RESULT ERROR : ${error.type.toString()}');
+                          final errorDetails =
+                              FilterErrorService.filterError(error.type);
+                          receivedError(errorDetails);
+                        },
+                        onReceivedHttpError:
+                            (controller, request, errorResponse) {
+                          debugPrint(
+                              'RESULT ERROR : ${errorResponse.statusCode.toString()}');
+                          final errorDetails =
+                              FilterErrorService.filterHttpError(
+                            errorResponse.statusCode ?? 0,
+                          );
+                          receivedError(errorDetails);
+                        },
+                        onWebViewCreated: (InAppWebViewController controller) {
+                          _webViewController = controller;
+                          controller.addJavaScriptHandler(
+                            handlerName: 'fetchLocation',
+                            callback: (args) async {
+                              // Call fetchGPS and return the result directly to JavaScript
+                              Map<String, double> gpsData =
+                                  await fetchPosition();
+                              return gpsData; // Return the GPS data directly
+                            },
+                          );
+                          controller.addJavaScriptHandler(
+                            handlerName: 'dashboard',
+                            callback: (args) {
+                              dashboard();
+                            },
+                          );
+                          controller.addJavaScriptHandler(
+                            handlerName: 'checkGPS',
+                            callback: (args) async {
+                              bool gpsEnabled = await checkGPS();
+                              return gpsEnabled;
+                            },
+                          );
+                        },
+                        onLoadStop: (controller, url) async {
+                          await controller.evaluateJavascript(source: """ 
                         const Flutter = {
                             home: function() {
                                 window.flutter_inappwebview.callHandler('dashboard', 'home');
@@ -295,14 +344,14 @@ class _ContentState extends State<Content> {
                             }
                         }
                         """);
-                      },
-                      onProgressChanged:
-                          (InAppWebViewController controller, int progress) {
-                        setState(() {
-                          _progress = progress / 100;
-                        });
-                      },
-                    ),
+                        },
+                        onProgressChanged:
+                            (InAppWebViewController controller, int progress) {
+                          setState(() {
+                            _progress = progress / 100;
+                          });
+                        },
+                      ),
                     if (_progress < 1)
                       WillPopScope(
                         key: _keyLoader,
@@ -323,6 +372,13 @@ class _ContentState extends State<Content> {
                         ),
                         onWillPop: () async => false,
                       ),
+                    if (_hasError)
+                      WebViewErrorPage(
+                        type: errorType,
+                        message: errorMessage,
+                        imagePath: errorImage,
+                        onRetry: errorAction,
+                      )
                   ],
                 ),
         ),

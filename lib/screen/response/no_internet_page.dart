@@ -59,7 +59,7 @@ class NoInternet extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(50),
                 child: Image.asset(
-                  'assets/images/No connection-rafiki.png',
+                  'assets/images/no_connection-error.png',
                   fit: BoxFit.cover,
                 ),
               ),

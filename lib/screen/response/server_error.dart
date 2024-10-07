@@ -19,18 +19,18 @@ class ServerError extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   top: 50.0, left: 50.0, right: 50.0, bottom: 50.0),
               child: Image.asset(
-                'assets/images/503 Error Service Unavailable-rafiki.png',
+                'assets/images/503-error.png',
                 fit: BoxFit.cover,
               ),
             ),
             Text(message),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRetry,
-              child: Text('Retry'),
+              child: const Text('Coba Lagi'),
             ),
           ],
         ),
