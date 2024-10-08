@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:loyalty/screen/auth/send_otp.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
-import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/auth/auth.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -22,10 +21,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/get-otp':
       return MaterialPageRoute(
         builder: (_) => const GetOtp(),
-      );
-    case '/register':
-      return MaterialPageRoute(
-        builder: (_) => const Register(),
       );
     case '/home':
       return MaterialPageRoute(

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loyalty/bloc/auth/auth_bloc.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/services/fetch_location.dart';
 import 'package:loyalty/services/firebase_api.dart';
+import 'package:loyalty/services/internet_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loyalty/firebase_options.dart';
@@ -67,26 +69,39 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         providers: [
           RepositoryProvider(create: (context) => DatabaseRepository()),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'KAMM Loyalty',
-          theme: ThemeData(
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
-            primaryColor: const Color(0xFF0B60B0),
-            textSelectionTheme: TextSelectionThemeData(
-              cursorColor: Colors.grey.shade400,
-              selectionColor: Colors.grey.shade300,
-              selectionHandleColor: Colors.blue,
+        child: MultiBlocProvider(
+          providers: [
+            // Provide AuthBloc globally in the app
+            BlocProvider(
+              create: (context) => AuthBloc(
+                databaseRepository:
+                    RepositoryProvider.of<DatabaseRepository>(context),
+                internetService:
+                    InternetService(), // Provide the InternetService
+              ),
             ),
-            useMaterial3: true,
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'KAMM Loyalty',
+            theme: ThemeData(
+              colorScheme:
+                  ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
+              primaryColor: const Color(0xFF0B60B0),
+              textSelectionTheme: TextSelectionThemeData(
+                cursorColor: Colors.grey.shade400,
+                selectionColor: Colors.grey.shade300,
+                selectionHandleColor: Colors.blue,
+              ),
+              useMaterial3: true,
+            ),
+            navigatorKey: navigatorKey,
+            initialRoute: '/',
+            onGenerateInitialRoutes: (String initialRoute) {
+              return [generateRoute(RouteSettings(name: initialRoute))];
+            },
+            onGenerateRoute: generateRoute,
           ),
-          navigatorKey: navigatorKey,
-          initialRoute: '/',
-          onGenerateInitialRoutes: (String initialRoute) {
-            return [generateRoute(RouteSettings(name: initialRoute))];
-          },
-          onGenerateRoute: generateRoute,
         ),
       ),
     );

@@ -143,12 +143,13 @@ class _HomePageState extends State<HomePage> {
                 return const ShimmerHome();
               }
               if (state is FailureLoadState) {
-                return ServerError(
-                  message: state.message,
-                  onRetry: () async {
-                    context.read<ContentBloc>().add(PullToRefreshEvent());
-                  },
-                );
+                debugPrint('ERROR COYYY : ${state.message}');
+                // return ServerError(
+                //   message: state.message,
+                //   onRetry: () async {
+                //     context.read<ContentBloc>().add(PullToRefreshEvent());
+                //   },
+                // );
               }
               return Container();
             },

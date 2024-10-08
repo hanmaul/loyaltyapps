@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loyalty/bloc/auth/auth_bloc.dart';
+import 'package:loyalty/services/internet_service.dart';
 
 class InternetAwareWidget extends StatefulWidget {
   final Widget child;
@@ -16,12 +17,17 @@ class InternetAwareWidget extends StatefulWidget {
 class _InternetAwareWidgetState extends State<InternetAwareWidget> {
   bool _isOnline = true;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  final InternetService _internetService = InternetService();
 
   @override
   void initState() {
     super.initState();
+    // Listen to connectivity changes (Wi-Fi, mobile data, etc.)
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+
+    // Check for internet access at initialization
+    _checkInternetAccess();
   }
 
   @override
@@ -30,12 +36,21 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
     super.dispose();
   }
 
+  // This function updates the state based on connectivity and internet access
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     if (result == ConnectivityResult.none) {
+      // No network connectivity at all
       setState(() => _isOnline = false);
     } else {
-      setState(() => _isOnline = true);
+      // Check if the device has internet access
+      _checkInternetAccess();
     }
+  }
+
+  // Function to check if the device has real internet access
+  Future<void> _checkInternetAccess() async {
+    bool hasInternet = await _internetService.hasActiveInternetConnection();
+    setState(() => _isOnline = hasInternet);
   }
 
   @override

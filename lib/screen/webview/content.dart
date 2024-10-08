@@ -225,6 +225,11 @@ class _ContentState extends State<Content> {
     return InternetAwareWidget(
       child: WillPopScope(
         onWillPop: () async {
+          if (_hasError) {
+            Navigator.pop(context);
+            return false;
+          }
+
           bool canGoBack = await _webViewController.canGoBack();
           if (canGoBack) {
             _webViewController.goBack();
@@ -243,7 +248,11 @@ class _ContentState extends State<Content> {
                 color: Colors.white,
               ),
               onPressed: () {
-                back();
+                if (_hasError) {
+                  Navigator.pop(context);
+                } else {
+                  back();
+                }
               },
             ),
             title: Text(

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:connectivity_plus/connectivity_plus.dart'; // Import connectivity
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/services/auth_service.dart';
+import 'package:loyalty/services/internet_service.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_event.dart';
@@ -9,11 +9,14 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final DatabaseRepository databaseRepository;
-  AuthBloc({required this.databaseRepository}) : super(AuthInitial()) {
+  final InternetService internetService;
+
+  AuthBloc({required this.databaseRepository, required this.internetService})
+      : super(AuthInitial()) {
     on<AuthEvent>((event, emit) async {
       // Check internet connectivity first
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
+      bool hasInternet = await internetService.hasActiveInternetConnection();
+      if (!hasInternet) {
         emit(NoInternetState());
         return;
       }

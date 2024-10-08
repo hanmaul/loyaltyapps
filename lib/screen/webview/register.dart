@@ -5,6 +5,8 @@ import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:loyalty/screen/response/webview_error_page.dart';
+import 'package:loyalty/services/filter_error.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -19,6 +21,12 @@ class _RegisterState extends State<Register> {
   final DatabaseRepository databaseRepository = DatabaseRepository();
   double _progress = 0;
   late Future<String> _urlFuture;
+
+  bool _hasError = false;
+  String errorType = '';
+  String errorImage = '';
+  String errorMessage = '';
+  VoidCallback errorAction = () {};
 
   @override
   void initState() {
@@ -45,6 +53,25 @@ class _RegisterState extends State<Register> {
 
   Future<void> registered() async {
     await databaseRepository.registered();
+  }
+
+  void receivedError(Map<String, String> error) {
+    setState(() {
+      _progress = 100;
+      errorType = error['errorType']!;
+      errorImage = error['imagePath']!;
+      errorMessage = error['message']!;
+      _hasError = true;
+      errorAction = _retryWebView; // Retry for other errors
+    });
+  }
+
+  void _retryWebView() {
+    setState(() {
+      _progress = 0;
+      _hasError = false;
+    });
+    _webViewController.reload(); // Reload the same page when retrying
   }
 
   @override
@@ -87,44 +114,56 @@ class _RegisterState extends State<Register> {
                   child: Text('Error: ${snapshot.error}'),
                 );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
+                return const Center(
                   child: Text('No URL found'),
                 );
               } else {
                 return Stack(
                   children: [
-                    InAppWebView(
-                      initialUrlRequest: URLRequest(
-                        url: WebUri(snapshot.data!),
-                      ),
-                      initialSettings: InAppWebViewSettings(
-                        supportZoom: false,
-                        disableDefaultErrorPage: true,
-                      ),
-                      onWebViewCreated: (InAppWebViewController controller) {
-                        _webViewController = controller;
-                        controller.addJavaScriptHandler(
-                          handlerName: 'dashboard',
-                          callback: (args) {
-                            dashboard();
-                          },
-                        );
+                    if (!_hasError)
+                      InAppWebView(
+                        initialUrlRequest: URLRequest(
+                          url: WebUri(snapshot.data!),
+                        ),
+                        initialSettings: InAppWebViewSettings(
+                          supportZoom: false,
+                          disableDefaultErrorPage: true,
+                        ),
+                        onReceivedError: (controller, request, error) {
+                          debugPrint('RESULT ERROR : ${error.type.toString()}');
+                          final errorDetails =
+                              FilterErrorService.filterError(error.type);
+                          receivedError(errorDetails);
+                        },
+                        onReceivedHttpError:
+                            (controller, request, errorResponse) {
+                          debugPrint(
+                              'RESULT ERROR : ${errorResponse.statusCode.toString()}');
+                          final errorDetails =
+                              FilterErrorService.filterHttpError(
+                            errorResponse.statusCode ?? 0,
+                          );
+                          receivedError(errorDetails);
+                        },
+                        onWebViewCreated: (InAppWebViewController controller) {
+                          _webViewController = controller;
+                          controller.addJavaScriptHandler(
+                            handlerName: 'dashboard',
+                            callback: (args) {
+                              dashboard();
+                            },
+                          );
 
-                        controller.addJavaScriptHandler(
-                          handlerName: 'saveNama',
-                          callback: (args) {
-                            String nama = args.join('');
-                            saveNama(nama);
-                          },
-                        );
-                      },
-                      // onReceivedError: (controller, request, error) {
-                      //   controller.loadUrl(
-                      //     urlRequest: URLRequest(url: WebUri("about:blank")),
-                      //   );
-                      // },
-                      onLoadStop: (controller, url) async {
-                        await controller.evaluateJavascript(source: """ 
+                          controller.addJavaScriptHandler(
+                            handlerName: 'saveNama',
+                            callback: (args) {
+                              String nama = args.join('');
+                              saveNama(nama);
+                            },
+                          );
+                        },
+                        onLoadStop: (controller, url) async {
+                          await controller.evaluateJavascript(source: """ 
                           const Flutter = {
                               getNama(nama){
                                 window.flutter_inappwebview.callHandler('saveNama', nama);
@@ -134,14 +173,14 @@ class _RegisterState extends State<Register> {
                               },
                          }
                           """);
-                      },
-                      onProgressChanged:
-                          (InAppWebViewController controller, int progress) {
-                        setState(() {
-                          _progress = progress / 100;
-                        });
-                      },
-                    ),
+                        },
+                        onProgressChanged:
+                            (InAppWebViewController controller, int progress) {
+                          setState(() {
+                            _progress = progress / 100;
+                          });
+                        },
+                      ),
                     if (_progress < 1)
                       WillPopScope(
                         key: _keyLoader,
@@ -162,6 +201,13 @@ class _RegisterState extends State<Register> {
                         ),
                         onWillPop: () async => false,
                       ),
+                    if (_hasError)
+                      WebViewErrorPage(
+                        type: errorType,
+                        message: errorMessage,
+                        imagePath: errorImage,
+                        onRetry: errorAction,
+                      )
                   ],
                 );
               }

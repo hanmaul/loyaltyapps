@@ -7,6 +7,7 @@ import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/services/auth_service.dart';
+import 'package:loyalty/services/internet_service.dart';
 
 class Auth extends StatefulWidget {
   const Auth({super.key});
@@ -24,8 +25,10 @@ class _AuthState extends State<Auth> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthBloc(databaseRepository: DatabaseRepository())
-        ..add(SessionCheck()),
+      create: (context) => AuthBloc(
+        databaseRepository: DatabaseRepository(),
+        internetService: InternetService(),
+      )..add(SessionCheck()),
       child: Scaffold(
         body: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
@@ -42,9 +45,6 @@ class _AuthState extends State<Auth> {
               AuthService.signOut(context);
             }
             if (state is FailureLoadState) {
-              // return Center(
-              //   child: Text(state.message),
-              // );
               return const NoInternet();
             }
             if (state is NoInternetState) {

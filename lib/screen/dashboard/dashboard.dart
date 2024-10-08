@@ -11,6 +11,7 @@ import 'package:loyalty/screen/akunku.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/auth_service.dart';
+import 'package:loyalty/services/internet_service.dart';
 
 class Dashboard extends StatefulWidget {
   final int page;
@@ -80,8 +81,10 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return InternetAwareWidget(
       child: BlocProvider(
-        create: (context) => AuthBloc(databaseRepository: DatabaseRepository())
-          ..add(SessionCheck()),
+        create: (context) => AuthBloc(
+          databaseRepository: DatabaseRepository(),
+          internetService: InternetService(),
+        )..add(SessionCheck()),
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is SignedIn) {
@@ -104,9 +107,6 @@ class _DashboardState extends State<Dashboard> {
               AuthService.signOut(context);
             }
             if (state is FailureLoadState) {
-              // return Center(
-              //   child: Text(state.message),
-              // );
               return const NoInternet();
             }
             if (state is NoInternetState) {
