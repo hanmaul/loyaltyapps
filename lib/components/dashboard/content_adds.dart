@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/screen/webview/content.dart';
+import 'package:loyalty/services/internet_service.dart';
+import 'package:loyalty/services/settings_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class ContentAdds extends StatefulWidget {
@@ -21,6 +23,8 @@ class ContentAdds extends StatefulWidget {
 }
 
 class _ContentAddsState extends State<ContentAdds> {
+  final InternetService internetService = InternetService();
+  final SettingsService settingsService = SettingsService();
   int activeIndex = 0;
 
   Future<void> getUrl(String urlWeb, String urlTitle) async {
@@ -42,6 +46,30 @@ class _ContentAddsState extends State<ContentAdds> {
         type: 'info',
       );
     }
+  }
+
+  void _showInternetDialog(BuildContext context) {
+    showAlert(
+      context: context,
+      title: 'Akses Internet',
+      content:
+          'Untuk mengakses layanan ini, harap aktifkan akses internet anda.',
+      type: 'error',
+      actions: [
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await settingsService.openPhoneSettings();
+          },
+          child: const Text('Aktifkan'),
+        ),
+      ],
+    );
+  }
+
+  Future<bool> handleConnection() async {
+    bool hasInternet = await internetService.hasActiveConnection();
+    return hasInternet;
   }
 
   @override
@@ -68,8 +96,13 @@ class _ContentAddsState extends State<ContentAdds> {
             CarouselSlider(
               items: widget.adds.map<Widget>((item) {
                 return GestureDetector(
-                  onTap: () {
-                    getUrl(item.link, item.judul);
+                  onTap: () async {
+                    final hasInternet = await handleConnection();
+                    if (hasInternet) {
+                      getUrl(item.link, item.judul);
+                    } else {
+                      _showInternetDialog(context);
+                    }
                   },
                   child: Container(
                     color: Colors.white,

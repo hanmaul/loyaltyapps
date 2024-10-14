@@ -1,7 +1,17 @@
 import 'package:http/http.dart' as http;
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class InternetService {
-  // This function checks if there's an actual internet connection
+  Future<bool> hasActiveConnection() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    // If the result is anything other than 'none', it means the user is connected to some network
+    if (connectivityResult != ConnectivityResult.none) {
+      return true; // User is connected to Wi-Fi, mobile, or Ethernet
+    }
+    return false; // No active connection
+  }
+
   Future<bool> hasActiveInternetConnection() async {
     try {
       // Perform a GET request to a reliable server

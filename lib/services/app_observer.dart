@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/main.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:loyalty/services/auth_service.dart';
+import 'package:loyalty/services/internet_service.dart';
 
 class AppLifecycleObserver extends WidgetsBindingObserver {
   DatabaseRepository databaseRepository = DatabaseRepository();
+  InternetService internetService = InternetService();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -17,12 +18,10 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
 // Function to check if the user exists and route is not '/get-otp'
   Future<void> _checkForLogout() async {
     final logoutSession = await databaseRepository.getLogoutSession();
-
-    ConnectivityResult connectivityResult =
-        await (Connectivity().checkConnectivity());
+    final hasInternet = await internetService.hasActiveInternetConnection();
 
     // Only proceed with logout check if the device is connected to the internet
-    if (connectivityResult != ConnectivityResult.none) {
+    if (hasInternet) {
       bool keyExists =
           true; // Initialize keyExists as true to avoid null issues
       final custId = await databaseRepository.loadUser(field: 'custId');

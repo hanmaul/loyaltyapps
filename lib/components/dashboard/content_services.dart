@@ -5,6 +5,8 @@ import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
 import 'package:loyalty/services/fetch_location.dart';
+import 'package:loyalty/services/internet_service.dart';
+import 'package:loyalty/services/settings_service.dart';
 
 class ContentServices extends StatefulWidget {
   final List<dynamic> service;
@@ -19,6 +21,10 @@ class ContentServices extends StatefulWidget {
 }
 
 class _ContentServicesState extends State<ContentServices> {
+  final InternetService internetService = InternetService();
+  final FetchLocation fetchLocation = FetchLocation();
+  final SettingsService settingsService = SettingsService();
+
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     DatabaseRepository databaseRepository = DatabaseRepository();
     final custId = await databaseRepository.loadUser(field: "custId");
@@ -47,8 +53,6 @@ class _ContentServicesState extends State<ContentServices> {
 
   // Function to handle re-order logic
   Future<void> handleReorder(String urlWeb, String urlTitle) async {
-    FetchLocation fetchLocation = FetchLocation();
-
     // Validate GPS and permissions
     bool gpsValid = await fetchLocation.validateGPSAndPermissions(context);
 
@@ -59,6 +63,30 @@ class _ContentServicesState extends State<ContentServices> {
       // Handle failure case, maybe show a dialog or log the event
       debugPrint('GPS or Location Permission is required.');
     }
+  }
+
+  void _showInternetDialog(BuildContext context) {
+    showAlert(
+      context: context,
+      title: 'Akses Internet',
+      content:
+          'Untuk mengakses layanan ini, harap aktifkan akses internet anda.',
+      type: 'error',
+      actions: [
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await settingsService.openPhoneSettings();
+          },
+          child: const Text('Aktifkan'),
+        ),
+      ],
+    );
+  }
+
+  Future<bool> handleConnection() async {
+    bool hasInternet = await internetService.hasActiveConnection();
+    return hasInternet;
   }
 
   @override
@@ -88,12 +116,17 @@ class _ContentServicesState extends State<ContentServices> {
           children: widget.service.map((menuItem) {
             return GestureDetector(
               onTap: () async {
-                if (menuItem.link.contains('re-order')) {
-                  // Call the validation for GPS and permissions before proceeding
-                  await handleReorder(menuItem.link, menuItem.judul);
+                final hasInternet = await handleConnection();
+                if (hasInternet) {
+                  if (menuItem.link.contains('re-order')) {
+                    // Call the validation for GPS and permissions before proceeding
+                    await handleReorder(menuItem.link, menuItem.judul);
+                  } else {
+                    // Directly call getUrl if no need for GPS validation
+                    await getUrl(menuItem.link, menuItem.judul);
+                  }
                 } else {
-                  // Directly call getUrl if no need for GPS validation
-                  await getUrl(menuItem.link, menuItem.judul);
+                  _showInternetDialog(context);
                 }
               },
               child: Container(

@@ -97,4 +97,21 @@ class AuthService {
       return false;
     }
   }
+
+  static Future<void> logoutByKey(BuildContext context) async {
+    DatabaseRepository databaseRepository = DatabaseRepository();
+
+    final custId = await databaseRepository.loadUser(field: 'custId');
+    final key = await databaseRepository.loadUser(field: 'key');
+
+    if (custId.isEmpty || key.isEmpty) {
+      return; // Exit if custId or key is empty
+    }
+
+    final userKey = await keyExists(custId: custId, key: key);
+    if (!userKey) {
+      // If the user key does not exist, sign the user out
+      await signOut(context);
+    }
+  }
 }

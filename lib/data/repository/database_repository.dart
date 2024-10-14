@@ -13,16 +13,25 @@ import 'package:loyalty/services/firebase_api.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DatabaseRepository {
-  late Future<Isar> _db;
+  static final DatabaseRepository _instance = DatabaseRepository._internal();
 
-  DatabaseRepository() {
-    _db = openDatabase();
+  // Factory constructor to return the singleton instance
+  factory DatabaseRepository() {
+    return _instance;
   }
 
+  // Private constructor for internal singleton usage
+  DatabaseRepository._internal();
+
+  // Step 2: Store the Isar instance here
+  static Isar? _isarInstance;
+
+  // Step 3: Method to open the Isar database only once
   Future<Isar> openDatabase() async {
-    if (Isar.instanceNames.isEmpty) {
+    if (_isarInstance == null) {
+      // Open the Isar instance if not already open
       final dir = await getApplicationDocumentsDirectory();
-      final isar = await Isar.open([
+      _isarInstance = await Isar.open([
         UserSchema,
         ServiceSchema,
         HighlightSchema,
@@ -30,16 +39,36 @@ class DatabaseRepository {
         BannerSchema,
         LoggedOutSchema,
       ], directory: dir.path);
-      return isar;
     }
-    return Future.value(Isar.getInstance());
+    return _isarInstance!;
   }
 
+  // late Future<Isar> _db;
+  //
+  // DatabaseRepository() {
+  //   _db = openDatabase();
+  // }
+  //
+  // Future<Isar> openDatabase() async {
+  //   if (Isar.instanceNames.isEmpty) {
+  //     final dir = await getApplicationDocumentsDirectory();
+  //     final isar = await Isar.open([
+  //       UserSchema,
+  //       ServiceSchema,
+  //       HighlightSchema,
+  //       PromoSchema,
+  //       BannerSchema,
+  //       LoggedOutSchema,
+  //     ], directory: dir.path);
+  //     return isar;
+  //   }
+  //   return Future.value(Isar.getInstance());
+  // }
+
   Future<bool> checkUserExists() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
-    return existingUser !=
-        null; // Return true if the user exists, otherwise false
+    return existingUser != null;
   }
 
   Future<void> saveUser({
@@ -62,7 +91,7 @@ class DatabaseRepository {
         key: key, custId: custId, forceLogout: forceLogout);
 
     if (validToken || newDevice) {
-      final Isar dbInstance = await _db;
+      final Isar dbInstance = await openDatabase();
       final existingUser = await dbInstance.users.get(1);
       bool isRegistered = nama.isNotEmpty;
 
@@ -99,7 +128,7 @@ class DatabaseRepository {
   }
 
   Future<bool> isRegistered() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
 
     if (existingUser != null) {
@@ -111,7 +140,7 @@ class DatabaseRepository {
   }
 
   Future<void> registered() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
 
     if (existingUser != null) {
@@ -126,7 +155,7 @@ class DatabaseRepository {
 
   // Save logout session data
   Future<void> saveLogoutSession(String reason) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final logoutSession = LoggedOut()
       ..reason = reason
       ..timestamp = DateTime.now();
@@ -138,20 +167,20 @@ class DatabaseRepository {
 
   // Retrieve logout session
   Future<LoggedOut?> getLogoutSession() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     return await dbInstance.loggedOuts.where().findFirst();
   }
 
   // Clear the logout session after the user acknowledges it
   Future<void> clearLogoutSession() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     await dbInstance.writeTxn(() async {
       await dbInstance.loggedOuts.clear();
     });
   }
 
   Future<String> loadUser({required String field}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
 
     if (existingUser != null) {
@@ -183,7 +212,7 @@ class DatabaseRepository {
   }
 
   Future<void> updateUser({required String field, required String data}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
 
     if (existingUser != null) {
@@ -256,7 +285,7 @@ class DatabaseRepository {
 
   // -- Service --
   Future<List<Service>> loadAllService() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     List<Service> services = await dbInstance.services.where().findAll();
 
     if (services.isEmpty) {
@@ -295,7 +324,7 @@ class DatabaseRepository {
       required String judul,
       required String keterangan,
       required String link}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final service = Service(
         gambar: gambar, judul: judul, keterangan: keterangan, link: link);
     await dbInstance.writeTxn(() async {
@@ -306,7 +335,7 @@ class DatabaseRepository {
 
   // -- Highlight --
   Future<List<Highlight>> loadAllHighlight() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     List<Highlight> highlights = await dbInstance.highlights.where().findAll();
 
     if (highlights.isEmpty) {
@@ -345,7 +374,7 @@ class DatabaseRepository {
       required String judul,
       required String keterangan,
       required String link}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final highlight = Highlight(
         gambar: gambar, judul: judul, keterangan: keterangan, link: link);
     await dbInstance.writeTxn(() async {
@@ -356,7 +385,7 @@ class DatabaseRepository {
 
 // -- Promo --
   Future<List<Promo>> loadAllPromo() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     List<Promo> promos = await dbInstance.promos.where().findAll();
 
     if (promos.isEmpty) {
@@ -395,7 +424,7 @@ class DatabaseRepository {
       required String judul,
       required String keterangan,
       required String link}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final promo =
         Promo(gambar: gambar, judul: judul, keterangan: keterangan, link: link);
     await dbInstance.writeTxn(() async {
@@ -406,7 +435,7 @@ class DatabaseRepository {
 
 // -- Banner --
   Future<List<Banner>> loadAllBanner() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     List<Banner> banners = await dbInstance.banners.where().findAll();
 
     if (banners.isEmpty) {
@@ -435,7 +464,7 @@ class DatabaseRepository {
   }
 
   Future<void> createNewBanner({required String gambar}) async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     final banner = Banner(gambar: gambar);
     await dbInstance.writeTxn(() async {
       await dbInstance.banners.put(banner);
@@ -444,7 +473,7 @@ class DatabaseRepository {
   // -- End of Banner --
 
   Future<void> clearDatabase() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     await dbInstance.writeTxn(() async {
       await dbInstance.users.clear();
       await dbInstance.services.clear();
@@ -455,7 +484,7 @@ class DatabaseRepository {
   }
 
   Future<void> clearContent() async {
-    final Isar dbInstance = await _db;
+    final Isar dbInstance = await openDatabase();
     await dbInstance.writeTxn(() async {
       await dbInstance.services.clear();
       await dbInstance.highlights.clear();

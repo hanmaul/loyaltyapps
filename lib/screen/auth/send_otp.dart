@@ -156,6 +156,7 @@ class _SendOtpState extends State<SendOtp> {
       ),
     );
     return InternetAwareWidget(
+      byPass: true,
       child: Scaffold(
         appBar: AppBar(
           leading: GestureDetector(

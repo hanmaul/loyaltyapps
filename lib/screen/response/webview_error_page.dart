@@ -38,7 +38,16 @@ class WebViewErrorPage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            Text(message),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0), // Added horizontal padding
+              child: Text(
+                message,
+                textAlign: TextAlign.center, // Center the text
+                style:
+                    const TextStyle(fontSize: 14.0), // Optional: Set font size
+              ),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRetry, // Dynamically handle the retry action

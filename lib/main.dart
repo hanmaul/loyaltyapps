@@ -17,10 +17,9 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   runApp(const MyApp());
 }
 
@@ -39,14 +38,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     initialization();
-    WidgetsBinding.instance
-        .addObserver(_lifecycleObserver); // Add lifecycle observer
+    WidgetsBinding.instance.addObserver(_lifecycleObserver);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance
-        .removeObserver(_lifecycleObserver); // Remove observer on dispose
+    WidgetsBinding.instance.removeObserver(_lifecycleObserver);
     super.dispose();
   }
 
@@ -65,43 +62,36 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: MultiRepositoryProvider(
+      child: MultiBlocProvider(
         providers: [
-          RepositoryProvider(create: (context) => DatabaseRepository()),
-        ],
-        child: MultiBlocProvider(
-          providers: [
-            // Provide AuthBloc globally in the app
-            BlocProvider(
-              create: (context) => AuthBloc(
-                databaseRepository:
-                    RepositoryProvider.of<DatabaseRepository>(context),
-                internetService:
-                    InternetService(), // Provide the InternetService
-              ),
+          // Provide AuthBloc globally in the app
+          BlocProvider(
+            create: (context) => AuthBloc(
+              databaseRepository: DatabaseRepository(),
+              internetService: InternetService(),
             ),
-          ],
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'KAMM Loyalty',
-            theme: ThemeData(
-              colorScheme:
-                  ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
-              primaryColor: const Color(0xFF0B60B0),
-              textSelectionTheme: TextSelectionThemeData(
-                cursorColor: Colors.grey.shade400,
-                selectionColor: Colors.grey.shade300,
-                selectionHandleColor: Colors.blue,
-              ),
-              useMaterial3: true,
-            ),
-            navigatorKey: navigatorKey,
-            initialRoute: '/',
-            onGenerateInitialRoutes: (String initialRoute) {
-              return [generateRoute(RouteSettings(name: initialRoute))];
-            },
-            onGenerateRoute: generateRoute,
           ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'KAMM Loyalty',
+          theme: ThemeData(
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: const Color(0xFF0B60B0)),
+            primaryColor: const Color(0xFF0B60B0),
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.grey.shade400,
+              selectionColor: Colors.grey.shade300,
+              selectionHandleColor: Colors.blue,
+            ),
+            useMaterial3: true,
+          ),
+          navigatorKey: navigatorKey,
+          initialRoute: '/',
+          onGenerateInitialRoutes: (String initialRoute) {
+            return [generateRoute(RouteSettings(name: initialRoute))];
+          },
+          onGenerateRoute: generateRoute,
         ),
       ),
     );

@@ -43,7 +43,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
               promo: promo,
             ));
           } catch (e) {
-            emit(FailureLoadState(message: 'Gagal memuat menu..'));
+            emit(FailureLoadState(
+                message:
+                    'Gagal memuat menu. Silakan periksa koneksi internet Anda dan coba lagi.'));
           }
         }
       },

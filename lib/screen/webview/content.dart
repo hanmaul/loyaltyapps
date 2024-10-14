@@ -296,15 +296,12 @@ class _ContentState extends State<Content> {
                           disableDefaultErrorPage: true,
                         ),
                         onReceivedError: (controller, request, error) {
-                          debugPrint('RESULT ERROR : ${error.type.toString()}');
                           final errorDetails =
                               FilterErrorService.filterError(error.type);
                           receivedError(errorDetails);
                         },
                         onReceivedHttpError:
                             (controller, request, errorResponse) {
-                          debugPrint(
-                              'RESULT ERROR : ${errorResponse.statusCode.toString()}');
                           final errorDetails =
                               FilterErrorService.filterHttpError(
                             errorResponse.statusCode ?? 0,

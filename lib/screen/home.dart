@@ -8,8 +8,8 @@ import 'package:loyalty/components/dashboard/content_adds.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
-import 'package:loyalty/screen/response/server_error.dart';
 import 'package:loyalty/screen/loading/shimmer_home.dart';
+import 'package:loyalty/screen/response/server_error.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
         mobile ? mediaQueryWidth * 0.9 : mediaQueryWidth * 0.5;
 
     return InternetAwareWidget(
+      byPass: true,
       child: BlocProvider(
         create: (context) => ContentBloc(
           databaseRepository: DatabaseRepository(),
@@ -143,13 +144,12 @@ class _HomePageState extends State<HomePage> {
                 return const ShimmerHome();
               }
               if (state is FailureLoadState) {
-                debugPrint('ERROR COYYY : ${state.message}');
-                // return ServerError(
-                //   message: state.message,
-                //   onRetry: () async {
-                //     context.read<ContentBloc>().add(PullToRefreshEvent());
-                //   },
-                // );
+                return ServerError(
+                  message: state.message,
+                  onRetry: () async {
+                    context.read<ContentBloc>().add(PullToRefreshEvent());
+                  },
+                );
               }
               return Container();
             },

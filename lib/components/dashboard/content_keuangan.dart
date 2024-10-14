@@ -4,6 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
+import 'package:loyalty/services/internet_service.dart';
+import 'package:loyalty/services/settings_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ContentKeuangan extends StatefulWidget {
   final String icon;
@@ -26,6 +29,9 @@ class ContentKeuangan extends StatefulWidget {
 }
 
 class _ContentKeuanganState extends State<ContentKeuangan> {
+  final InternetService internetService = InternetService();
+  final SettingsService settingsService = SettingsService();
+
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     DatabaseRepository databaseRepository = DatabaseRepository();
     final custId = await databaseRepository.loadUser(field: "custId");
@@ -52,6 +58,30 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
     }
   }
 
+  void _showInternetDialog(BuildContext context) {
+    showAlert(
+      context: context,
+      title: 'Akses Internet',
+      content:
+          'Untuk mengakses layanan ini, harap aktifkan akses internet anda.',
+      type: 'error',
+      actions: [
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop();
+            await settingsService.openPhoneSettings();
+          },
+          child: const Text('Aktifkan'),
+        ),
+      ],
+    );
+  }
+
+  Future<bool> handleConnection() async {
+    bool hasInternet = await internetService.hasActiveConnection();
+    return hasInternet;
+  }
+
   @override
   Widget build(BuildContext context) {
     const double iconSize = 24;
@@ -63,8 +93,13 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
 
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          getUrl(widget.url, widget.title);
+        onTap: () async {
+          final hasInternet = await handleConnection();
+          if (hasInternet) {
+            getUrl(widget.url, widget.title);
+          } else {
+            _showInternetDialog(context);
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 6),

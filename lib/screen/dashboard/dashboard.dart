@@ -80,6 +80,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return InternetAwareWidget(
+      checkKey: true,
+      byPass: true,
       child: BlocProvider(
         create: (context) => AuthBloc(
           databaseRepository: DatabaseRepository(),
@@ -108,9 +110,6 @@ class _DashboardState extends State<Dashboard> {
             }
             if (state is FailureLoadState) {
               return const NoInternet();
-            }
-            if (state is NoInternetState) {
-              return const NoInternet(); // Show No Internet page
             }
             return Container(
               color: Colors.white, // Set the background color to white

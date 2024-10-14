@@ -115,6 +115,7 @@ class _GetOtpState extends State<GetOtp> {
     );
 
     return InternetAwareWidget(
+      byPass: true,
       child: Scaffold(
         appBar: AppBar(
           title: const Row(

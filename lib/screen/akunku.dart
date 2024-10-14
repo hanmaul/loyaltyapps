@@ -6,7 +6,9 @@ import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:loyalty/screen/response/webview_error_page.dart';
 import 'package:loyalty/services/auth_service.dart';
+import 'package:loyalty/services/filter_error.dart';
 
 class Akunku extends StatefulWidget {
   final VoidCallback onGoToHome;
@@ -22,6 +24,13 @@ class _AkunkuState extends State<Akunku> {
   double _progress = 0;
   late Future<String> _urlFuture;
   String _appVersion = 'Unknown';
+  String? _currentUrl;
+
+  bool _hasError = false;
+  String errorType = '';
+  String errorImage = '';
+  String errorMessage = '';
+  VoidCallback errorAction = () {};
 
   @override
   void initState() {
@@ -94,9 +103,33 @@ class _AkunkuState extends State<Akunku> {
     );
   }
 
+  void receivedError(Map<String, String> error) {
+    setState(() {
+      _progress = 100;
+      errorType = error['errorType']!;
+      errorImage = error['imagePath']!;
+      errorMessage = error['message']!;
+      _hasError = true;
+      errorAction = _retryWebView;
+    });
+  }
+
+  void _retryWebView() {
+    if (_currentUrl != null) {
+      setState(() {
+        _progress = 0;
+        _hasError = false;
+      });
+      _webViewController.loadUrl(
+        urlRequest: URLRequest(url: WebUri(_currentUrl!)),
+      ); // Use the stored URL to load the page.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InternetAwareWidget(
+      byPass: true,
       child: WillPopScope(
         onWillPop: () async {
           var isLastPage = await _webViewController.canGoBack();
@@ -130,14 +163,35 @@ class _AkunkuState extends State<Akunku> {
                   child: Text('No URL found'),
                 );
               } else {
+                _currentUrl = snapshot.data;
+
                 return Stack(
                   children: [
                     InAppWebView(
                       initialUrlRequest: URLRequest(
                         url: WebUri(snapshot.data!),
                       ),
+                      onReceivedError: (controller, request, error) {
+                        final errorDetails =
+                            FilterErrorService.filterError(error.type);
+                        receivedError(errorDetails);
+                      },
+                      // onReceivedHttpError:
+                      //     (controller, request, errorResponse) {
+                      //   final errorDetails = FilterErrorService.filterHttpError(
+                      //     errorResponse.statusCode ?? 0,
+                      //   );
+                      //   receivedError(errorDetails);
+                      // },
+                      onJsAlert: (controller, jsAlertRequest) async {
+                        return JsAlertResponse(
+                          handledByClient: true,
+                          action: JsAlertResponseAction.CONFIRM,
+                        );
+                      },
                       initialSettings: InAppWebViewSettings(
                         supportZoom: false,
+                        disableDefaultErrorPage: true,
                       ),
                       onWebViewCreated: (InAppWebViewController controller) {
                         _webViewController = controller;
@@ -154,10 +208,6 @@ class _AkunkuState extends State<Akunku> {
                           },
                         );
                       },
-                      // onReceivedError: (controller, request, error) {
-                      //   controller.loadUrl(
-                      //       urlRequest: URLRequest(url: WebUri("about:blank")));
-                      // },
                       onLoadStop: (controller, url) async {
                         String script = _injectVersionIntoWebView();
                         await controller.evaluateJavascript(source: script);
@@ -200,6 +250,13 @@ class _AkunkuState extends State<Akunku> {
                         ),
                         onWillPop: () async => false,
                       ),
+                    if (_hasError)
+                      WebViewErrorPage(
+                        type: errorType,
+                        message: errorMessage,
+                        imagePath: errorImage,
+                        onRetry: errorAction,
+                      )
                   ],
                 );
               }

@@ -3,6 +3,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:loyalty/data/repository/webview_repository.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
+import 'package:loyalty/screen/response/webview_error_page.dart';
+import 'package:loyalty/services/filter_error.dart';
 
 class Notifications extends StatefulWidget {
   final VoidCallback onGoToHome;
@@ -22,9 +24,16 @@ class _NotificationsState extends State<Notifications> {
   late InAppWebViewController _webViewController;
   late PullToRefreshController _pullToRefreshController;
   late Future<String> _urlFuture;
+  String? _currentUrl;
 
   double _progress = 0;
-  String? _initialUrl; // Store the initial URL
+  String? _initialUrl; // Pull To Refresh
+
+  bool _hasError = false;
+  String errorType = '';
+  String errorImage = '';
+  String errorMessage = '';
+  VoidCallback errorAction = () {};
 
   @override
   void initState() {
@@ -57,9 +66,33 @@ class _NotificationsState extends State<Notifications> {
     _updateBackButtonStatus(); // Update back button status after navigating back
   }
 
+  void receivedError(Map<String, String> error) {
+    setState(() {
+      _progress = 100;
+      errorType = error['errorType']!;
+      errorImage = error['imagePath']!;
+      errorMessage = error['message']!;
+      _hasError = true;
+      errorAction = _retryWebView;
+    });
+  }
+
+  void _retryWebView() {
+    if (_currentUrl != null) {
+      setState(() {
+        _progress = 0;
+        _hasError = false;
+      });
+      _webViewController.loadUrl(
+        urlRequest: URLRequest(url: WebUri(_currentUrl!)),
+      ); // Use the stored URL to load the page.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InternetAwareWidget(
+      byPass: true,
       child: WillPopScope(
         onWillPop: () async {
           var canGoBack = await _webViewController.canGoBack();
@@ -90,6 +123,8 @@ class _NotificationsState extends State<Notifications> {
                 child: Text('No URL found'),
               );
             } else {
+              _currentUrl = snapshot.data;
+
               return Stack(
                 children: [
                   InAppWebView(
@@ -98,7 +133,25 @@ class _NotificationsState extends State<Notifications> {
                     ),
                     initialSettings: InAppWebViewSettings(
                       supportZoom: false,
+                      disableDefaultErrorPage: true,
                     ),
+                    onReceivedError: (controller, request, error) {
+                      final errorDetails =
+                          FilterErrorService.filterError(error.type);
+                      receivedError(errorDetails);
+                    },
+                    // onReceivedHttpError: (controller, request, errorResponse) {
+                    //   final errorDetails = FilterErrorService.filterHttpError(
+                    //     errorResponse.statusCode ?? 0,
+                    //   );
+                    //   receivedError(errorDetails);
+                    // },
+                    onJsAlert: (controller, jsAlertRequest) async {
+                      return JsAlertResponse(
+                        handledByClient: true,
+                        action: JsAlertResponseAction.CONFIRM,
+                      );
+                    },
                     pullToRefreshController: _pullToRefreshController,
                     onWebViewCreated: (controller) {
                       _webViewController = controller;
@@ -119,6 +172,7 @@ class _NotificationsState extends State<Notifications> {
                           currentUrl: url
                               .toString()); // Update back button status after page load
                     },
+                    onConsoleMessage: (controller, consoleMessage) {},
                     onUpdateVisitedHistory: (controller, url, isReload) {
                       // Renamed parameter
                       _updateBackButtonStatus(
@@ -156,6 +210,13 @@ class _NotificationsState extends State<Notifications> {
                       ),
                       onWillPop: () async => false,
                     ),
+                  if (_hasError)
+                    WebViewErrorPage(
+                      type: errorType,
+                      message: errorMessage,
+                      imagePath: errorImage,
+                      onRetry: errorAction,
+                    )
                 ],
               );
             }
