@@ -15,7 +15,8 @@ class FilterErrorService {
       return {
         'errorType': 'connection',
         'imagePath': 'assets/images/no_connection-error.png',
-        'message': 'Koneksi terputus. Silakan coba lagi.',
+        'message':
+            'Koneksi terputus. Mohon periksa koneksi internet Anda dan coba lagi.',
       }; // Connection-related errors
     } else if (errorType == WebResourceErrorType.BAD_SERVER_RESPONSE ||
         errorType == WebResourceErrorType.FAILED_SSL_HANDSHAKE) {

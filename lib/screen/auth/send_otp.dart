@@ -6,6 +6,7 @@ import 'package:loyalty/screen/dashboard/dashboard.dart';
 import 'package:loyalty/screen/terms_of_use.dart';
 import 'package:loyalty/screen/webview/register.dart';
 import 'package:loyalty/services/fetch_otp.dart';
+import 'package:loyalty/services/internet_service.dart';
 import 'package:pinput/pinput.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/components/alert.dart';
@@ -22,6 +23,114 @@ class SendOtp extends StatefulWidget {
 }
 
 class _SendOtpState extends State<SendOtp> {
+  final internetService = InternetService();
+
+  void sendOTP(String otp) async {
+    // Show loading dialog immediately after OTP completion
+    showLoadingDialog();
+
+    // Check for internet connection after showing the loading dialog
+    if (!await _hasInternetConnection()) {
+      return; // Exit the function if no internet
+    }
+
+    // Proceed with OTP verification
+    await _verifyOtp(otp);
+  }
+
+  Future<void> _verifyOtp(String otp) async {
+    try {
+      final manageOtp = ManageOtp();
+      Map<String, dynamic> result = await manageOtp.sendOtp(otp);
+
+      Navigator.pop(context); // Dismiss loading dialog
+
+      if (result['status'] == 'failed') {
+        _showError('OTP Salah!', 'Silakan periksa OTP Anda dan coba lagi.');
+      } else {
+        await _handleNextStep(result);
+      }
+    } catch (e) {
+      Navigator.pop(context); // Dismiss loading dialog on error
+      _showError('Gagal!',
+          'Gagal memverifikasi OTP. Pastikan koneksi internet Anda stabil atau coba lagi nanti.');
+    }
+  }
+
+  Future<void> _handleNextStep(Map<String, dynamic> result) async {
+    DatabaseRepository databaseRepository = DatabaseRepository();
+    String keyExist = await databaseRepository.loadUser(field: "key");
+
+    if (keyExist.isNotEmpty) {
+      nextPage();
+    } else {
+      openTermsOfUse(data: result);
+    }
+  }
+
+  Future<void> reGenerateOTP() async {
+    // Show loading dialog immediately when "Kirim ulang" is pressed
+    showLoadingDialog();
+
+    // Check for internet connection after showing the loading dialog
+    if (!await _hasInternetConnection()) {
+      return; // Exit the function if no internet
+    }
+
+    try {
+      final manageOtp = ManageOtp();
+      final response = await manageOtp.reGetOtp();
+
+      Navigator.pop(context); // Dismiss loading dialog
+
+      if (response.statusCode == 200) {
+        // Notify user that a new OTP has been sent
+        _showInfo('Kode OTP baru dikirim',
+            'Silakan periksa SMS Anda untuk kode baru.');
+      } else {
+        _showError('Gagal Mengirim OTP!',
+            'Terjadi kesalahan. Silakan coba lagi nanti.');
+      }
+    } catch (e) {
+      Navigator.pop(context); // Dismiss loading dialog on error
+      _showError('Gagal!',
+          'Tidak dapat mengirim OTP. Pastikan koneksi internet Anda stabil atau coba lagi nanti.');
+    }
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    bool hasInternet = await internetService.hasActiveInternetConnection();
+    if (!hasInternet) {
+      Navigator.pop(context); // Dismiss loading dialog
+      _showError('Tidak ada koneksi internet!',
+          'Pastikan koneksi internet Anda stabil dan coba lagi.');
+      return false;
+    }
+    return true;
+  }
+
+  void _showError(String title, String content) {
+    if (mounted) {
+      showAlert(
+        context: context,
+        title: title,
+        content: content,
+        type: 'error',
+      );
+    }
+  }
+
+  void _showInfo(String title, String content) {
+    if (mounted) {
+      showAlert(
+        context: context,
+        title: title,
+        content: content,
+        type: 'info',
+      );
+    }
+  }
+
   void showLoadingDialog() {
     showDialog(
       context: context,
@@ -32,41 +141,6 @@ class _SendOtpState extends State<SendOtp> {
         );
       },
     );
-  }
-
-  Future<void> sendOTP(String otp) async {
-    try {
-      final manageOtp = ManageOtp();
-
-      // Show loading dialog
-      showLoadingDialog();
-
-      Map<String, dynamic> result = await manageOtp.sendOtp(otp);
-
-      // Dismiss loading dialog
-      Navigator.pop(context);
-
-      if (result['status'] == 'failed') {
-        if (mounted) {
-          showAlert(
-            context: context,
-            title: 'OTP Salah!',
-            content: 'Silakan periksa OTP Anda dan coba lagi.',
-            type: 'error',
-          );
-        }
-      } else {
-        DatabaseRepository databaseRepository = DatabaseRepository();
-        String keyExist = await databaseRepository.loadUser(field: "key");
-        if (keyExist != '') {
-          nextPage();
-        } else {
-          openTermsOfUse(data: result);
-        }
-      }
-    } catch (e) {
-      debugPrint('$e');
-    }
   }
 
   Future<void> nextPage() async {
@@ -113,31 +187,6 @@ class _SendOtpState extends State<SendOtp> {
       ),
       (route) => false,
     );
-  }
-
-  Future<void> reGenerateOTP() async {
-    final manageOtp = ManageOtp();
-
-    // Show loading dialog
-    showLoadingDialog();
-
-    final response = await manageOtp.reGetOtp();
-
-    // Dismiss loading dialog
-    Navigator.pop(context);
-
-    if (response.statusCode == 200) {
-      if (mounted) {
-        showAlert(
-          context: context,
-          title: 'OTP Dikirim!',
-          content: 'Silakan periksa OTP Anda dan coba lagi.',
-          type: 'info',
-        );
-      }
-    } else {
-      throw Exception('Failed to generate OTP');
-    }
   }
 
   @override

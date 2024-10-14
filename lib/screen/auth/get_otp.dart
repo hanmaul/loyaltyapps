@@ -7,6 +7,7 @@ import 'package:loyalty/services/auth_service.dart';
 import 'package:loyalty/services/fetch_otp.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/components/alert.dart';
+import 'package:loyalty/services/internet_service.dart';
 
 class GetOtp extends StatefulWidget {
   const GetOtp({super.key});
@@ -21,6 +22,8 @@ class _GetOtpState extends State<GetOtp> {
   bool isPhoneNumberValid = false;
   String warningMessage = '';
 
+  final internetService = InternetService();
+
   @override
   void initState() {
     super.initState();
@@ -30,58 +33,80 @@ class _GetOtpState extends State<GetOtp> {
 
   void generateOTP(String nomor) async {
     String trimmedPhoneNumber = phoneController.text.trim();
-    if (trimmedPhoneNumber.isNotEmpty && !trimmedPhoneNumber.startsWith('0')) {
-      if (trimmedPhoneNumber.length < 8 || trimmedPhoneNumber.length > 15) {
-        showAlert(
-          context: context,
-          title: 'Nomor tidak valid!',
-          content:
-              'Nomor ponsel harus memiliki panjang antara 8 hingga 15 digit.',
-          type: 'error',
-        );
-        return;
-      }
 
-      showLoadingDialog();
-      final manageOtp = ManageOtp(); // Create an instance of ManageOtp
-      final response =
-          await manageOtp.getOtp(nomor); // Use the instance to call getOtp
+    // Validate phone number
+    if (!_isValidPhoneNumber(trimmedPhoneNumber)) {
+      return;
+    }
+
+    await _requestOtp(trimmedPhoneNumber);
+  }
+
+  bool _isValidPhoneNumber(String phoneNumber) {
+    if (phoneNumber.isEmpty) {
+      _showError('Nomor kosong!', 'Mohon input nomor Anda!');
+      return false;
+    } else if (phoneNumber.startsWith('0')) {
+      _showError(
+          'Nomor tidak valid!', 'Masukkan nomor Anda tanpa angka 0 di depan.');
+      return false;
+    } else if (phoneNumber.length < 8 || phoneNumber.length > 15) {
+      _showError('Nomor tidak valid!',
+          'Nomor ponsel harus memiliki panjang antara 8 hingga 15 digit.');
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    bool hasInternet = await internetService.hasActiveInternetConnection();
+    if (!hasInternet) {
       Navigator.pop(context);
+      _showError('Tidak ada koneksi internet!',
+          'Mohon periksa koneksi internet Anda dan coba lagi.');
+    }
+    return hasInternet;
+  }
+
+  Future<void> _requestOtp(String phoneNumber) async {
+    showLoadingDialog();
+
+    if (!await _hasInternetConnection()) {
+      return; // Exit the function if no internet
+    }
+
+    try {
+      final manageOtp = ManageOtp();
+      final response = await manageOtp.getOtp(phoneNumber);
+
+      Navigator.pop(context); // Close the loading dialog
+
       if (response.statusCode == 200) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) {
-            return SendOtp(phoneNumber: trimmedPhoneNumber);
+            return SendOtp(phoneNumber: phoneNumber);
           }),
         );
       } else {
-        if (mounted) {
-          showAlert(
-            context: context,
-            title: 'Nomor tidak valid!',
-            content: 'Silakan periksa nomor Anda dan coba lagi.',
-            type: 'error',
-          );
-        }
+        _showError(
+            'Nomor tidak valid!', 'Mohon periksa nomor Anda dan coba lagi.');
       }
-    } else if (trimmedPhoneNumber.startsWith('0')) {
-      if (mounted) {
-        showAlert(
-          context: context,
-          title: 'Nomor tidak valid!',
-          content: 'Masukkan nomor Anda setelah angka 0',
-          type: 'error',
-        );
-      }
-    } else {
-      if (mounted) {
-        showAlert(
-          context: context,
-          title: 'Nomor kosong!',
-          content: 'Mohon input nomor Anda!',
-          type: 'error',
-        );
-      }
+    } catch (e) {
+      Navigator.pop(context); // Close the loading dialog on error
+      _showError('Gagal!',
+          'Gagal mengirim OTP. Pastikan koneksi internet Anda stabil atau coba lagi nanti.');
+    }
+  }
+
+  void _showError(String title, String content) {
+    if (mounted) {
+      showAlert(
+        context: context,
+        title: title,
+        content: content,
+        type: 'error',
+      );
     }
   }
 
