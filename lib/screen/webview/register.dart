@@ -130,21 +130,20 @@ class _RegisterState extends State<Register> {
                           disableDefaultErrorPage: true,
                         ),
                         onReceivedError: (controller, request, error) {
-                          debugPrint('RESULT ERROR : ${error.type.toString()}');
                           final errorDetails =
                               FilterErrorService.filterError(error.type);
                           receivedError(errorDetails);
                         },
-                        onReceivedHttpError:
-                            (controller, request, errorResponse) {
-                          debugPrint(
-                              'RESULT ERROR : ${errorResponse.statusCode.toString()}');
-                          final errorDetails =
-                              FilterErrorService.filterHttpError(
-                            errorResponse.statusCode ?? 0,
-                          );
-                          receivedError(errorDetails);
-                        },
+                        // onReceivedHttpError:
+                        //     (controller, request, errorResponse) {
+                        //   debugPrint(
+                        //       'RESULT ERROR : ${errorResponse.statusCode.toString()}');
+                        //   final errorDetails =
+                        //       FilterErrorService.filterHttpError(
+                        //     errorResponse.statusCode ?? 0,
+                        //   );
+                        //   receivedError(errorDetails);
+                        // },
                         onWebViewCreated: (InAppWebViewController controller) {
                           _webViewController = controller;
                           controller.addJavaScriptHandler(

@@ -30,12 +30,15 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
   @override
   void initState() {
     super.initState();
+
     // Listen to connectivity changes (Wi-Fi, mobile data, etc.)
     _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
 
-    // Check for internet access at initialization
-    _checkInternetAccess();
+    // Check for internet access at initialization and update state
+    Connectivity().checkConnectivity().then((result) {
+      _updateConnectionStatus(result);
+    });
   }
 
   @override
@@ -46,28 +49,29 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
 
   // This function updates the state based on connectivity and internet access
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    if (result == ConnectivityResult.none) {
-      // No network connectivity at all
-      setState(() => _isOnline = false);
-    } else {
-      // Check if the device has internet access
-      _checkInternetAccess();
+    bool hasInternet = false;
+
+    if (result != ConnectivityResult.none) {
+      hasInternet = await _checkInternetAccess();
     }
+
+    // Set state once to update online status
+    setState(() => _isOnline = hasInternet);
   }
 
   // Function to check if the device has real internet access
-  Future<void> _checkInternetAccess() async {
+  Future<bool> _checkInternetAccess() async {
     bool hasInternet = await _internetService.hasActiveInternetConnection();
 
     if (hasInternet && widget.checkKey) {
       // Ensure the widget is still mounted before using context
-      if (!mounted) return;
+      if (!mounted) return false;
 
       // Call the logoutByKey here with the current context
       await AuthService.logoutByKey(context);
     }
 
-    setState(() => _isOnline = hasInternet);
+    return hasInternet;
   }
 
   @override
