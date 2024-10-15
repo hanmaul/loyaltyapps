@@ -19,6 +19,7 @@ class _TermsOfUseState extends State<TermsOfUse> {
   final TermsService termsService = TermsService();
   final DatabaseRepository databaseRepository = DatabaseRepository();
   bool isLoading = true;
+  bool isAgreeing = false;
 
   @override
   void initState() {
@@ -55,10 +56,28 @@ class _TermsOfUseState extends State<TermsOfUse> {
   }
 
   Future<void> agree() async {
-    await databaseRepository.saveUser(
-        userData: widget.data, newDevice: true, forceLogout: false);
-    await termsService.agreeTerms();
-    await nextPage();
+    setState(() {
+      isAgreeing = true; // Start the loading when the "Agree" button is pressed
+    });
+
+    try {
+      // 1. Save the user data and ensure it completes before moving forward
+      await databaseRepository.saveUser(
+          userData: widget.data, newDevice: true, forceLogout: false);
+
+      // 2. Agree to terms after saving user data
+      await termsService.agreeTerms();
+
+      // 3. Navigate to the next page after both previous operations complete
+      await nextPage(); // Ensure this is awaited
+    } catch (e) {
+      // Handle potential errors
+      print('Error during agree process: $e');
+    } finally {
+      setState(() {
+        isAgreeing = false; // Stop the loading when the process is done
+      });
+    }
   }
 
   Future<void> nextPage() async {
@@ -117,6 +136,15 @@ class _TermsOfUseState extends State<TermsOfUse> {
                   color: Color(0xff0B60B0),
                 ),
               ),
+            if (isAgreeing) // Show a full-screen loading overlay when "Agree" is pressed
+              Container(
+                color: Colors.black.withOpacity(0.5), // Transparent overlay
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xff0B60B0),
+                  ),
+                ),
+              ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -124,9 +152,11 @@ class _TermsOfUseState extends State<TermsOfUse> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton(
-                      onPressed: () async {
-                        await agree();
-                      },
+                      onPressed: isAgreeing // Disable the button if processing
+                          ? null
+                          : () async {
+                              await agree();
+                            },
                       child: const Text('Setuju'),
                     ),
                   ),
