@@ -56,7 +56,6 @@ class AuthService {
   static void _showLogoutSessionDialog(BuildContext context, String reason) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showAlert(
-        barierDismiss: false,
         context: context,
         title: 'Keluar Akun',
         content: reason,

@@ -142,7 +142,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         print('FETCH MENU FAILED');
       } else {
         emit(FailureLoadState(
-            message: 'Gagal memuat menu dari API maupun penyimpanan lokal.'));
+            message:
+                'Gagal memuat menu. Mohon periksa koneksi internet anda dan coba lagi'));
       }
     }
   }
