@@ -283,194 +283,321 @@ class DatabaseRepository {
     }
   }
 
-  // -- Service --
+//   // -- Service --
+//   Future<List<Service>> loadAllService() async {
+//     final Isar dbInstance = await openDatabase();
+//     List<Service> services = await dbInstance.services.where().findAll();
+//
+//     if (services.isEmpty) {
+//       // Fetch data from API
+//       final response = await DataContent().getContents();
+//       if (response.statusCode == 200) {
+//         final json = jsonDecode(response.body);
+//         List<dynamic> data = json['menu1'];
+//         services = data
+//             .map((item) => Service(
+//                   gambar: item['mGambar'] ?? '',
+//                   judul: item['mJudul'] ?? '',
+//                   keterangan: item['mKeterangan'] ?? '',
+//                   link: item['mLink'] ?? '',
+//                 ))
+//             .toList();
+//
+//         // Store data locally
+//         for (var service in services) {
+//           await createNewService(
+//             gambar: service.gambar,
+//             judul: service.judul,
+//             keterangan: service.keterangan,
+//             link: service.link,
+//           );
+//         }
+//       } else {
+//         throw Exception('Failed to load Service from API');
+//       }
+//     }
+//     return services;
+//   }
+//
+//   Future<void> createNewService(
+//       {required String gambar,
+//       required String judul,
+//       required String keterangan,
+//       required String link}) async {
+//     final Isar dbInstance = await openDatabase();
+//     final service = Service(
+//         gambar: gambar, judul: judul, keterangan: keterangan, link: link);
+//     await dbInstance.writeTxn(() async {
+//       await dbInstance.services.put(service);
+//     });
+//   }
+//   // -- End of Service --
+//
+//   // -- Highlight --
+//   Future<List<Highlight>> loadAllHighlight() async {
+//     final Isar dbInstance = await openDatabase();
+//     List<Highlight> highlights = await dbInstance.highlights.where().findAll();
+//
+//     if (highlights.isEmpty) {
+//       // Fetch data from API
+//       final response = await DataContent().getContents();
+//       if (response.statusCode == 200) {
+//         final json = jsonDecode(response.body);
+//         List<dynamic> data = json['menuheader'];
+//         highlights = data
+//             .map((item) => Highlight(
+//                   gambar: item['mGambar'] ?? '',
+//                   judul: item['mJudul'] ?? '',
+//                   keterangan: item['nominal'] ?? '0',
+//                   link: item['mLink'] ?? '',
+//                 ))
+//             .toList();
+//
+//         // Store data locally
+//         for (var highlight in highlights) {
+//           await createNewHighlight(
+//             gambar: highlight.gambar,
+//             judul: highlight.judul,
+//             keterangan: highlight.keterangan,
+//             link: highlight.link,
+//           );
+//         }
+//       } else {
+//         throw Exception('Failed to load Highlight from API');
+//       }
+//     }
+//     return highlights;
+//   }
+//
+//   Future<void> createNewHighlight(
+//       {required String gambar,
+//       required String judul,
+//       required String keterangan,
+//       required String link}) async {
+//     final Isar dbInstance = await openDatabase();
+//     final highlight = Highlight(
+//         gambar: gambar, judul: judul, keterangan: keterangan, link: link);
+//     await dbInstance.writeTxn(() async {
+//       await dbInstance.highlights.put(highlight);
+//     });
+//   }
+//   // -- End of Highlight --
+//
+// // -- Promo --
+//   Future<List<Promo>> loadAllPromo() async {
+//     final Isar dbInstance = await openDatabase();
+//     List<Promo> promos = await dbInstance.promos.where().findAll();
+//
+//     if (promos.isEmpty) {
+//       // Fetch data from API
+//       final response = await DataContent().getContents();
+//       if (response.statusCode == 200) {
+//         final json = jsonDecode(response.body);
+//         List<dynamic> data = json['menulist'];
+//         promos = data
+//             .map((item) => Promo(
+//                   gambar: item['mGambar'] ?? '',
+//                   judul: item['mJudul'] ?? '',
+//                   keterangan: item['mKeterangan'] ?? '',
+//                   link: item['mLink'] ?? '',
+//                 ))
+//             .toList();
+//
+//         // Store data locally
+//         for (var promo in promos) {
+//           await createNewPromo(
+//             gambar: promo.gambar,
+//             judul: promo.judul,
+//             keterangan: promo.keterangan,
+//             link: promo.link,
+//           );
+//         }
+//       } else {
+//         throw Exception('Failed to load Promo from API');
+//       }
+//     }
+//     return promos;
+//   }
+//
+//   Future<void> createNewPromo(
+//       {required String gambar,
+//       required String judul,
+//       required String keterangan,
+//       required String link}) async {
+//     final Isar dbInstance = await openDatabase();
+//     final promo =
+//         Promo(gambar: gambar, judul: judul, keterangan: keterangan, link: link);
+//     await dbInstance.writeTxn(() async {
+//       await dbInstance.promos.put(promo);
+//     });
+//   }
+//   // -- End of Promo --
+//
+// // -- Banner --
+//   Future<List<Banner>> loadAllBanner() async {
+//     final Isar dbInstance = await openDatabase();
+//     List<Banner> banners = await dbInstance.banners.where().findAll();
+//
+//     if (banners.isEmpty) {
+//       // Fetch data from API
+//       final response = await DataContent().getContents();
+//       if (response.statusCode == 200) {
+//         final json = jsonDecode(response.body);
+//         List<dynamic> data = json['banner'];
+//         banners = data
+//             .map((item) => Banner(
+//                   gambar: item,
+//                 ))
+//             .toList();
+//
+//         // Store data locally
+//         for (var banner in banners) {
+//           await createNewBanner(
+//             gambar: banner.gambar,
+//           );
+//         }
+//       } else {
+//         throw Exception('Failed to load Banner from API');
+//       }
+//     }
+//     return banners;
+//   }
+//
+//   Future<void> createNewBanner({required String gambar}) async {
+//     final Isar dbInstance = await openDatabase();
+//     final banner = Banner(gambar: gambar);
+//     await dbInstance.writeTxn(() async {
+//       await dbInstance.banners.put(banner);
+//     });
+//   }
+//   // -- End of Banner --
+
+  // Fetching data from API (For pull-to-refresh or first load if no data is present)
+
+  Future<List<Service>> fetchServicesFromApi() async {
+    final response = await DataContent().getContents();
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      List<dynamic> data = json['menu1'];
+      return data
+          .map((item) => Service(
+                gambar: item['mGambar'] ?? '',
+                judul: item['mJudul'] ?? '',
+                keterangan: item['mKeterangan'] ?? '',
+                link: item['mLink'] ?? '',
+              ))
+          .toList();
+    } else {
+      throw Exception('Failed to fetch services from API');
+    }
+  }
+
+  Future<List<Highlight>> fetchHighlightsFromApi() async {
+    final response = await DataContent().getContents();
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      List<dynamic> data = json['menuheader'];
+      return data
+          .map((item) => Highlight(
+                gambar: item['mGambar'] ?? '',
+                judul: item['mJudul'] ?? '',
+                keterangan: item['nominal'] ?? '0',
+                link: item['mLink'] ?? '',
+              ))
+          .toList();
+    } else {
+      throw Exception('Failed to fetch highlights from API');
+    }
+  }
+
+  Future<List<Promo>> fetchPromosFromApi() async {
+    final response = await DataContent().getContents();
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      List<dynamic> data = json['menulist'];
+      return data
+          .map((item) => Promo(
+                gambar: item['mGambar'] ?? '',
+                judul: item['mJudul'] ?? '',
+                keterangan: item['mKeterangan'] ?? '',
+                link: item['mLink'] ?? '',
+              ))
+          .toList();
+    } else {
+      throw Exception('Failed to fetch promos from API');
+    }
+  }
+
+  Future<List<Banner>> fetchBannersFromApi() async {
+    final response = await DataContent().getContents();
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      List<dynamic> data = json['banner'];
+      return data.map((item) => Banner(gambar: item)).toList();
+    } else {
+      throw Exception('Failed to fetch banners from API');
+    }
+  }
+
+  // Save methods to store API-fetched data to local storage
+
+  Future<void> saveServices(List<Service> services) async {
+    final Isar dbInstance = await openDatabase();
+    await dbInstance.writeTxn(() async {
+      for (var service in services) {
+        await dbInstance.services.put(service);
+      }
+    });
+  }
+
+  Future<void> saveHighlights(List<Highlight> highlights) async {
+    final Isar dbInstance = await openDatabase();
+    await dbInstance.writeTxn(() async {
+      for (var highlight in highlights) {
+        await dbInstance.highlights.put(highlight);
+      }
+    });
+  }
+
+  Future<void> savePromos(List<Promo> promos) async {
+    final Isar dbInstance = await openDatabase();
+    await dbInstance.writeTxn(() async {
+      for (var promo in promos) {
+        await dbInstance.promos.put(promo);
+      }
+    });
+  }
+
+  Future<void> saveBanners(List<Banner> banners) async {
+    final Isar dbInstance = await openDatabase();
+    await dbInstance.writeTxn(() async {
+      for (var banner in banners) {
+        await dbInstance.banners.put(banner);
+      }
+    });
+  }
+
+  // Load methods to retrieve data from local storage
+
   Future<List<Service>> loadAllService() async {
     final Isar dbInstance = await openDatabase();
-    List<Service> services = await dbInstance.services.where().findAll();
-
-    if (services.isEmpty) {
-      // Fetch data from API
-      final response = await DataContent().getContents();
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        List<dynamic> data = json['menu1'];
-        services = data
-            .map((item) => Service(
-                  gambar: item['mGambar'] ?? '',
-                  judul: item['mJudul'] ?? '',
-                  keterangan: item['mKeterangan'] ?? '',
-                  link: item['mLink'] ?? '',
-                ))
-            .toList();
-
-        // Store data locally
-        for (var service in services) {
-          await createNewService(
-            gambar: service.gambar,
-            judul: service.judul,
-            keterangan: service.keterangan,
-            link: service.link,
-          );
-        }
-      } else {
-        throw Exception('Failed to load Service from API');
-      }
-    }
-    return services;
+    return await dbInstance.services.where().findAll();
   }
 
-  Future<void> createNewService(
-      {required String gambar,
-      required String judul,
-      required String keterangan,
-      required String link}) async {
-    final Isar dbInstance = await openDatabase();
-    final service = Service(
-        gambar: gambar, judul: judul, keterangan: keterangan, link: link);
-    await dbInstance.writeTxn(() async {
-      await dbInstance.services.put(service);
-    });
-  }
-  // -- End of Service --
-
-  // -- Highlight --
   Future<List<Highlight>> loadAllHighlight() async {
     final Isar dbInstance = await openDatabase();
-    List<Highlight> highlights = await dbInstance.highlights.where().findAll();
-
-    if (highlights.isEmpty) {
-      // Fetch data from API
-      final response = await DataContent().getContents();
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        List<dynamic> data = json['menuheader'];
-        highlights = data
-            .map((item) => Highlight(
-                  gambar: item['mGambar'] ?? '',
-                  judul: item['mJudul'] ?? '',
-                  keterangan: item['nominal'] ?? '0',
-                  link: item['mLink'] ?? '',
-                ))
-            .toList();
-
-        // Store data locally
-        for (var highlight in highlights) {
-          await createNewHighlight(
-            gambar: highlight.gambar,
-            judul: highlight.judul,
-            keterangan: highlight.keterangan,
-            link: highlight.link,
-          );
-        }
-      } else {
-        throw Exception('Failed to load Highlight from API');
-      }
-    }
-    return highlights;
+    return await dbInstance.highlights.where().findAll();
   }
 
-  Future<void> createNewHighlight(
-      {required String gambar,
-      required String judul,
-      required String keterangan,
-      required String link}) async {
-    final Isar dbInstance = await openDatabase();
-    final highlight = Highlight(
-        gambar: gambar, judul: judul, keterangan: keterangan, link: link);
-    await dbInstance.writeTxn(() async {
-      await dbInstance.highlights.put(highlight);
-    });
-  }
-  // -- End of Highlight --
-
-// -- Promo --
   Future<List<Promo>> loadAllPromo() async {
     final Isar dbInstance = await openDatabase();
-    List<Promo> promos = await dbInstance.promos.where().findAll();
-
-    if (promos.isEmpty) {
-      // Fetch data from API
-      final response = await DataContent().getContents();
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        List<dynamic> data = json['menulist'];
-        promos = data
-            .map((item) => Promo(
-                  gambar: item['mGambar'] ?? '',
-                  judul: item['mJudul'] ?? '',
-                  keterangan: item['mKeterangan'] ?? '',
-                  link: item['mLink'] ?? '',
-                ))
-            .toList();
-
-        // Store data locally
-        for (var promo in promos) {
-          await createNewPromo(
-            gambar: promo.gambar,
-            judul: promo.judul,
-            keterangan: promo.keterangan,
-            link: promo.link,
-          );
-        }
-      } else {
-        throw Exception('Failed to load Promo from API');
-      }
-    }
-    return promos;
+    return await dbInstance.promos.where().findAll();
   }
 
-  Future<void> createNewPromo(
-      {required String gambar,
-      required String judul,
-      required String keterangan,
-      required String link}) async {
-    final Isar dbInstance = await openDatabase();
-    final promo =
-        Promo(gambar: gambar, judul: judul, keterangan: keterangan, link: link);
-    await dbInstance.writeTxn(() async {
-      await dbInstance.promos.put(promo);
-    });
-  }
-  // -- End of Promo --
-
-// -- Banner --
   Future<List<Banner>> loadAllBanner() async {
     final Isar dbInstance = await openDatabase();
-    List<Banner> banners = await dbInstance.banners.where().findAll();
-
-    if (banners.isEmpty) {
-      // Fetch data from API
-      final response = await DataContent().getContents();
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        List<dynamic> data = json['banner'];
-        banners = data
-            .map((item) => Banner(
-                  gambar: item,
-                ))
-            .toList();
-
-        // Store data locally
-        for (var banner in banners) {
-          await createNewBanner(
-            gambar: banner.gambar,
-          );
-        }
-      } else {
-        throw Exception('Failed to load Banner from API');
-      }
-    }
-    return banners;
+    return await dbInstance.banners.where().findAll();
   }
-
-  Future<void> createNewBanner({required String gambar}) async {
-    final Isar dbInstance = await openDatabase();
-    final banner = Banner(gambar: gambar);
-    await dbInstance.writeTxn(() async {
-      await dbInstance.banners.put(banner);
-    });
-  }
-  // -- End of Banner --
 
   Future<void> clearDatabase() async {
     final Isar dbInstance = await openDatabase();

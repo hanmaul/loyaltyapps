@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:loyalty/screen/response/no_internet_page.dart';
 import 'package:loyalty/screen/loading/shimmer_home.dart';
 import 'package:loyalty/screen/response/server_error.dart';
+import 'package:loyalty/services/webview_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -147,6 +148,7 @@ class _HomePageState extends State<HomePage> {
                 return ServerError(
                   message: state.message,
                   onRetry: () async {
+                    await WebViewService().clearCache(); // clear cache webview
                     context.read<ContentBloc>().add(PullToRefreshEvent());
                   },
                 );

@@ -11,11 +11,13 @@ class InternetAwareWidget extends StatefulWidget {
   final Widget child;
   final bool byPass;
   final bool checkKey;
+  final VoidCallback? onInternetAccessRestored;
   const InternetAwareWidget({
     Key? key,
     required this.child,
     this.byPass = false,
     this.checkKey = false,
+    this.onInternetAccessRestored,
   }) : super(key: key);
 
   @override
@@ -53,6 +55,11 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
 
     if (result != ConnectivityResult.none) {
       hasInternet = await _checkInternetAccess();
+    }
+
+    if (hasInternet) {
+      // Trigger the callback when internet access is restored
+      widget.onInternetAccessRestored?.call();
     }
 
     // Set state once to update online status

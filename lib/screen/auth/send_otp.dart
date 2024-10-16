@@ -85,8 +85,8 @@ class _SendOtpState extends State<SendOtp> {
 
       if (response.statusCode == 200) {
         // Notify user that a new OTP has been sent
-        _showInfo('Kode OTP baru dikirim',
-            'Silakan periksa SMS Anda untuk kode baru.');
+        _showInfo('Kode OTP baru telah dikirim',
+            'Silakan periksa SMS atau WhatsApp Anda untuk menerima kode tersebut.');
       } else {
         _showError('Gagal Mengirim OTP!',
             'Terjadi kesalahan. Silakan coba lagi nanti.');
