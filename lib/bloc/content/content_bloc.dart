@@ -143,7 +143,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       } else {
         emit(FailureLoadState(
             message:
-                'Gagal memuat menu. Mohon periksa koneksi internet anda dan coba lagi'));
+                'Gagal memuat menu.\nMohon periksa koneksi internet Anda dan coba lagi'));
       }
     }
   }
