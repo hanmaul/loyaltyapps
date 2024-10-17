@@ -169,6 +169,16 @@ class _ContentServicesState extends State<ContentServices> {
                           height: imgSize,
                           child: CachedNetworkImage(
                             imageUrl: menuItem.gambar,
+                            placeholder: (context, url) => Center(
+                              child: SizedBox(
+                                height: boxSize * 0.5, // Adjust the size here
+                                width: boxSize * 0.5, // Adjust the size here
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                             fit: BoxFit.cover,
                           ),
                         ),

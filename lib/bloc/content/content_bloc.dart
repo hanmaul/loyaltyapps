@@ -9,49 +9,6 @@ import 'package:loyalty/data/repository/database_repository.dart';
 part 'content_event.dart';
 part 'content_state.dart';
 
-// class ContentBloc extends Bloc<ContentEvent, ContentState> {
-//   final DatabaseRepository databaseRepository;
-//
-//   ContentBloc({
-//     required this.databaseRepository,
-//   }) : super(ContentInitial()) {
-//     on<ContentEvent>(
-//       (event, emit) async {
-//         if (event is LoadEvent || event is PullToRefreshEvent) {
-//           emit(LoadingState());
-//           try {
-//             if (event is PullToRefreshEvent) {
-//               await databaseRepository.clearContent();
-//               await InAppWebViewController.clearAllCache();
-//             }
-//
-//             final banners = databaseRepository.loadAllBanner();
-//             final highlights = databaseRepository.loadAllHighlight();
-//             final services = databaseRepository.loadAllService();
-//             final promos = databaseRepository.loadAllPromo();
-//
-//             List<Banner> banner = await banners;
-//             List<Highlight> highlight = await highlights;
-//             List<Service> service = await services;
-//             List<Promo> promo = await promos;
-//
-//             emit(LoadedState(
-//               banner: banner,
-//               highlight: highlight,
-//               service: service,
-//               promo: promo,
-//             ));
-//           } catch (e) {
-//             emit(FailureLoadState(
-//                 message:
-//                     'Gagal memuat menu. Silakan periksa koneksi internet Anda dan coba lagi.'));
-//           }
-//         }
-//       },
-//     );
-//   }
-// }
-
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final DatabaseRepository databaseRepository;
 
@@ -88,10 +45,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         }
       }
 
-      if (event is PullToRefreshEvent) {
-        print('PULL TO REFRESH');
+      if (event is RefreshEvent) {
+        print('REFRESH EVENT');
 
-        // Always fetch fresh data from the API when PullToRefreshEvent is triggered
+        // Always fetch fresh data from the API when RefreshEvent is triggered
         await _fetchAndStoreMenu(emit);
       }
     });
@@ -138,12 +95,15 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           highlight: highlightsFromStorage,
           service: servicesFromStorage,
           promo: promosFromStorage,
+          messageError:
+              'Gagal memperbarui halaman utama.\nMohon periksa koneksi internet Anda dan coba lagi.',
         ));
         print('FETCH MENU FAILED');
       } else {
         emit(FailureLoadState(
-            message:
-                'Gagal memuat menu.\nMohon periksa koneksi internet Anda dan coba lagi'));
+          message:
+              'Gagal memuat menu.\nMohon periksa koneksi internet Anda dan coba lagi',
+        ));
       }
     }
   }

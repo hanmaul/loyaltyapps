@@ -51,110 +51,129 @@ class _HomePageState extends State<HomePage> {
         )..add(LoadEvent()),
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: BlocBuilder<ContentBloc, ContentState>(
-            builder: (context, state) {
-              if (state is LoadedState) {
-                return RefreshIndicator(
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      SliverPadding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate([
-                            Stack(
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                  width: mediaQueryWidth,
-                                  height:
-                                      carouselHeight + (highlightHeight * 1.05),
-                                ),
-                                _buildCarousel(state.banner, carouselHeight),
-                                Positioned(
-                                  top: carouselHeight * 0.95,
-                                  left: (mediaQueryWidth - highlightWidth) / 2,
-                                  right: (mediaQueryWidth - highlightWidth) / 2,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(
-                                      highlightHeight * 0.12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        width: 0.1,
-                                        color: Colors.grey,
+          body: BlocListener<ContentBloc, ContentState>(
+            listener: (context, state) {
+              if (state is LoadedState &&
+                  state.messageError != null &&
+                  state.messageError!.isNotEmpty) {
+                // Show a SnackBar for any error message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.messageError!),
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              }
+            },
+            child: BlocBuilder<ContentBloc, ContentState>(
+              builder: (context, state) {
+                if (state is LoadedState) {
+                  return RefreshIndicator(
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverPadding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).padding.top),
+                          sliver: SliverList(
+                            delegate: SliverChildListDelegate([
+                              Stack(
+                                children: [
+                                  Container(
+                                    color: Colors.white,
+                                    width: mediaQueryWidth,
+                                    height: carouselHeight +
+                                        (highlightHeight * 1.05),
+                                  ),
+                                  _buildCarousel(state.banner, carouselHeight),
+                                  Positioned(
+                                    top: carouselHeight * 0.95,
+                                    left:
+                                        (mediaQueryWidth - highlightWidth) / 2,
+                                    right:
+                                        (mediaQueryWidth - highlightWidth) / 2,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(
+                                        highlightHeight * 0.12,
                                       ),
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(15),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                          width: 0.1,
+                                          color: Colors.grey,
+                                        ),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(15),
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.2),
+                                            spreadRadius: 4,
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 2),
+                                          )
+                                        ],
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.2),
-                                          spreadRadius: 4,
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 2),
-                                        )
-                                      ],
-                                    ),
-                                    height: highlightHeight,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Keuangan Anda",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
+                                      height: highlightHeight,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            "Keuangan Anda",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: highlightHeight * 0.04),
-                                          child: _buildHighlight(
-                                              state.highlight, highlightHeight),
-                                        ),
-                                      ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: highlightHeight * 0.04),
+                                            child: _buildHighlight(
+                                                state.highlight,
+                                                highlightHeight),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            ContentServices(
-                              service: state.service,
-                            ),
-                            ContentAdds(
-                              adds: state.promo,
-                              mobile: mobile,
-                            ),
-                          ]),
+                                ],
+                              ),
+                              ContentServices(
+                                service: state.service,
+                              ),
+                              ContentAdds(
+                                adds: state.promo,
+                                mobile: mobile,
+                              ),
+                            ]),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  onRefresh: () async {
-                    context.read<ContentBloc>().add(PullToRefreshEvent());
-                  },
-                );
-              }
-              if (state is LoadingState) {
-                return const ShimmerHome();
-              }
-              if (state is FailureLoadState) {
-                return ServerError(
-                  message: state.message,
-                  onRetry: () async {
-                    await WebViewService().clearCache(); // clear cache webview
-                    context.read<ContentBloc>().add(PullToRefreshEvent());
-                  },
-                );
-              }
-              return Container();
-            },
+                      ],
+                    ),
+                    onRefresh: () async {
+                      context.read<ContentBloc>().add(RefreshEvent());
+                    },
+                  );
+                }
+                if (state is LoadingState) {
+                  return const ShimmerHome();
+                }
+                if (state is FailureLoadState) {
+                  return ServerError(
+                    message: state.message,
+                    onRetry: () async {
+                      await WebViewService()
+                          .clearCache(); // clear cache webview
+                      context.read<ContentBloc>().add(RefreshEvent());
+                    },
+                  );
+                }
+                return Container();
+              },
+            ),
           ),
         ),
       ),

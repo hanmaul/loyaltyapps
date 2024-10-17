@@ -5,4 +5,4 @@ sealed class ContentEvent {}
 
 class LoadEvent extends ContentEvent {}
 
-class PullToRefreshEvent extends ContentEvent {}
+class RefreshEvent extends ContentEvent {}

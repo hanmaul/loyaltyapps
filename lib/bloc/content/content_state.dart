@@ -12,12 +12,14 @@ final class LoadedState extends ContentState {
   final List<Highlight> highlight;
   final List<Service> service;
   final List<Promo> promo;
+  final String? messageError;
 
   LoadedState({
     required this.banner,
     required this.highlight,
     required this.service,
     required this.promo,
+    this.messageError,
   });
 }
 
