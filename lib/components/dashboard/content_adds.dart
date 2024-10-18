@@ -129,6 +129,13 @@ class _ContentAddsState extends State<ContentAdds> {
                               width: double.infinity,
                               child: CachedNetworkImage(
                                 imageUrl: item.gambar,
+                                fadeInDuration:
+                                    const Duration(milliseconds: 100),
+                                fadeInCurve: Curves.easeIn,
+                                errorWidget: (context, url, error) => Container(
+                                  height: 170,
+                                  color: const Color(0xffd6d9d8),
+                                ),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -235,6 +242,12 @@ class _ContentAddsState extends State<ContentAdds> {
                             width: double.infinity,
                             child: CachedNetworkImage(
                               imageUrl: item.gambar,
+                              fadeInDuration: const Duration(milliseconds: 100),
+                              fadeInCurve: Curves.easeIn,
+                              errorWidget: (context, url, error) => Container(
+                                height: 170,
+                                color: const Color(0xffd6d9d8),
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),

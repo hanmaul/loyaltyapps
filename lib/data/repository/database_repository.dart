@@ -351,7 +351,6 @@ class DatabaseRepository {
   }
 
   // Save methods to store API-fetched data to local storage
-
   Future<void> saveServices(List<Service> services) async {
     final Isar dbInstance = await openDatabase();
     await dbInstance.writeTxn(() async {

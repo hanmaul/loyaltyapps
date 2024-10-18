@@ -24,6 +24,7 @@ class _ContentServicesState extends State<ContentServices> {
   final InternetService internetService = InternetService();
   final FetchLocation fetchLocation = FetchLocation();
   final SettingsService settingsService = SettingsService();
+  bool imageError = false;
 
   Future<void> getUrl(String urlWeb, String urlTitle) async {
     DatabaseRepository databaseRepository = DatabaseRepository();
@@ -167,19 +168,27 @@ class _ContentServicesState extends State<ContentServices> {
                           color: Colors.transparent,
                           width: imgSize,
                           height: imgSize,
-                          child: CachedNetworkImage(
-                            imageUrl: menuItem.gambar,
-                            placeholder: (context, url) => Center(
-                              child: SizedBox(
-                                height: boxSize * 0.5, // Adjust the size here
-                                width: boxSize * 0.5, // Adjust the size here
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: menuItem.gambar,
+                                fadeInDuration:
+                                    const Duration(milliseconds: 100),
+                                fadeInCurve: Curves.easeIn,
+                                errorWidget: (context, url, error) => Container(
+                                  width: boxSize,
+                                  height: boxSize,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xffd6d9d8),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                ),
+                                fit: BoxFit.cover, // Image fit as before
                               ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                            fit: BoxFit.cover,
+                            ],
                           ),
                         ),
                       ],

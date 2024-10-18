@@ -6,7 +6,6 @@ import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/webview/content.dart';
 import 'package:loyalty/services/internet_service.dart';
 import 'package:loyalty/services/settings_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ContentKeuangan extends StatefulWidget {
   final String icon;
@@ -120,8 +119,18 @@ class _ContentKeuanganState extends State<ContentKeuangan> {
                         width: iconSize,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                      fadeInDuration: const Duration(milliseconds: 100),
+                      fadeInCurve: Curves.easeIn,
+                      errorWidget: (context, url, error) => Container(
+                        width: iconSize,
+                        height: iconSize,
+                        decoration: const BoxDecoration(
+                          color: Color(0xffd6d9d8),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
+                      ),
                       fit: BoxFit.cover,
                     ),
                   ),

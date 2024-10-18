@@ -1,13 +1,12 @@
 import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 class SettingsService {
   Future<void> openPhoneSettings() async {
     if (Platform.isAndroid) {
       const intent = AndroidIntent(
-        action: 'android.settings.WIRELESS_SETTINGS',
+        action: 'android.settings.SETTINGS', // Open general settings
       );
       await intent.launch();
     } else if (Platform.isIOS) {

@@ -196,6 +196,13 @@ class _HomePageState extends State<HomePage> {
           color: Colors.transparent,
           child: CachedNetworkImage(
             imageUrl: item.gambar,
+            fadeInDuration: const Duration(milliseconds: 100),
+            fadeInCurve: Curves.easeIn,
+            errorWidget: (context, url, error) => Container(
+              height: carouselHeight,
+              color: const Color(0xffd6d9d8),
+            ),
+            fit: BoxFit.cover,
           ),
         );
       }).toList(),
