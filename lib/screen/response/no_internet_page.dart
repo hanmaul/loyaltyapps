@@ -26,6 +26,7 @@ class InternetAwareWidget extends StatefulWidget {
 
 class _InternetAwareWidgetState extends State<InternetAwareWidget> {
   bool _isOnline = true;
+  bool _wasOffline = false;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   final InternetService _internetService = InternetService();
 
@@ -57,10 +58,15 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
       hasInternet = await _checkInternetAccess();
     }
 
-    // if (hasInternet) {
-    //   // Trigger the callback when internet access is restored
-    //   widget.onInternetAccessRestored?.call();
-    // }
+    if (hasInternet && _wasOffline) {
+      // Trigger the callback when internet access is restored
+      widget.onInternetAccessRestored?.call();
+      _wasOffline = false; // Reset the flag after internet is restored
+    }
+
+    if (!hasInternet) {
+      _wasOffline = true; // Set the flag when offline
+    }
 
     // Set state once to update online status
     setState(() => _isOnline = hasInternet);
