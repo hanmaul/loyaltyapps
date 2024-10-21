@@ -43,28 +43,6 @@ class DatabaseRepository {
     return _isarInstance!;
   }
 
-  // late Future<Isar> _db;
-  //
-  // DatabaseRepository() {
-  //   _db = openDatabase();
-  // }
-  //
-  // Future<Isar> openDatabase() async {
-  //   if (Isar.instanceNames.isEmpty) {
-  //     final dir = await getApplicationDocumentsDirectory();
-  //     final isar = await Isar.open([
-  //       UserSchema,
-  //       ServiceSchema,
-  //       HighlightSchema,
-  //       PromoSchema,
-  //       BannerSchema,
-  //       LoggedOutSchema,
-  //     ], directory: dir.path);
-  //     return isar;
-  //   }
-  //   return Future.value(Isar.getInstance());
-  // }
-
   Future<bool> checkUserExists() async {
     final Isar dbInstance = await openDatabase();
     final existingUser = await dbInstance.users.get(1);
@@ -134,7 +112,6 @@ class DatabaseRepository {
     if (existingUser != null) {
       return existingUser.registered;
     } else {
-      print('User not found.');
       return false;
     }
   }
@@ -148,8 +125,6 @@ class DatabaseRepository {
       await dbInstance.writeTxn(() async {
         await dbInstance.users.put(existingUser);
       });
-    } else {
-      print('User not found.');
     }
   }
 
@@ -202,11 +177,9 @@ class DatabaseRepository {
         case 'appVersion':
           return existingUser.appVersion;
         default:
-          print('Invalid field: $field');
           return '';
       }
     } else {
-      print('User not found. Create a new user or handle this case.');
       return '';
     }
   }
@@ -242,7 +215,6 @@ class DatabaseRepository {
           existingUser.appVersion = data;
           break;
         default:
-          print('Invalid field: $field');
           return;
       }
 
@@ -276,7 +248,6 @@ class DatabaseRepository {
           newUser.appVersion = data;
           break;
         default:
-          print('Invalid field: $field');
           return;
       }
       await dbInstance.writeTxn(() => dbInstance.users.put(newUser));

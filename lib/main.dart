@@ -16,9 +16,8 @@ import 'package:loyalty/services/app_observer.dart';
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(const MyApp());
 }
@@ -48,8 +47,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void initialization() async {
-    await Future.delayed(const Duration(seconds: 2));
-    FlutterNativeSplash.remove();
     await Permission.camera.request();
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);

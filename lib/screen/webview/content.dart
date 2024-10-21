@@ -78,7 +78,7 @@ class _ContentState extends State<Content> {
         'longitude': position['longitude']!,
       };
     } catch (e) {
-      print("Error fetching location: $e");
+      debugPrint("Error fetching location: $e");
       return {
         'latitude': 0.0,
         'longitude': 0.0,
@@ -100,7 +100,7 @@ class _ContentState extends State<Content> {
         return false; // GPS is disabled
       }
     } catch (e) {
-      print("Error checking GPS: $e");
+      debugPrint("Error checking GPS: $e");
       return false; // Return false in case of an error
     }
   }

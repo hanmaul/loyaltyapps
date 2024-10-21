@@ -72,7 +72,7 @@ class _TermsOfUseState extends State<TermsOfUse> {
       await nextPage(); // Ensure this is awaited
     } catch (e) {
       // Handle potential errors
-      print('Error during agree process: $e');
+      debugPrint('Error during agree process: $e');
     } finally {
       setState(() {
         isAgreeing = false; // Stop the loading when the process is done

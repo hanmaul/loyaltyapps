@@ -4,7 +4,7 @@ class FilterErrorService {
   // This method filters the WebView errors and returns the error type, image path, and message
   static Map<String, String> filterError(WebResourceErrorType errorType) {
     // Log the error type for debugging
-    print('ERROR LOADING - TYPE : ${errorType.toString()}');
+    //print('ERROR LOADING - TYPE : ${errorType.toString()}');
 
     if (errorType == WebResourceErrorType.TIMEOUT ||
         errorType == WebResourceErrorType.NOT_CONNECTED_TO_INTERNET ||
@@ -44,7 +44,7 @@ class FilterErrorService {
   // This method filters the HTTP errors based on the status code
   static Map<String, String> filterHttpError(int statusCode) {
     // Log the status code for debugging
-    print('ERROR HTTP - STATUS CODE : ${statusCode}');
+    //print('ERROR HTTP - STATUS CODE : ${statusCode}');
 
     if (statusCode == 404) {
       return {

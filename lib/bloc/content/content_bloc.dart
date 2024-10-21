@@ -5,6 +5,7 @@ import 'package:loyalty/data/model/promo.dart';
 import 'package:loyalty/data/model/service.dart';
 import 'package:meta/meta.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'content_event.dart';
 part 'content_state.dart';
@@ -19,34 +20,42 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       emit(LoadingState());
 
       if (event is LoadEvent) {
-        // Check if local storage has data
-        final bannersFromStorage = await databaseRepository.loadAllBanner();
-        final highlightsFromStorage =
-            await databaseRepository.loadAllHighlight();
-        final servicesFromStorage = await databaseRepository.loadAllService();
-        final promosFromStorage = await databaseRepository.loadAllPromo();
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final bool firstTime = prefs.getBool('firstTime') ?? true;
 
-        // If local storage has data, load it from storage
-        if (bannersFromStorage.isNotEmpty &&
-            highlightsFromStorage.isNotEmpty &&
-            servicesFromStorage.isNotEmpty &&
-            promosFromStorage.isNotEmpty) {
-          emit(LoadedState(
-            banner: bannersFromStorage,
-            highlight: highlightsFromStorage,
-            service: servicesFromStorage,
-            promo: promosFromStorage,
-          ));
-          print('LOAD EVENT - STORAGE NOT EMPTY');
+        if (firstTime) {
+          //print('LOAD EVENT - FIRST LAUNCH APP');
+          await _fetchAndStoreMenu(emit, firstTime: true, prefs: prefs);
         } else {
-          // If local storage is empty, fetch from API
-          print('LOAD EVENT - STORAGE EMPTY');
-          await _fetchAndStoreMenu(emit);
+          // Check if local storage has data
+          final bannersFromStorage = await databaseRepository.loadAllBanner();
+          final highlightsFromStorage =
+              await databaseRepository.loadAllHighlight();
+          final servicesFromStorage = await databaseRepository.loadAllService();
+          final promosFromStorage = await databaseRepository.loadAllPromo();
+
+          // If local storage has data, load it from storage
+          if (bannersFromStorage.isNotEmpty &&
+              highlightsFromStorage.isNotEmpty &&
+              servicesFromStorage.isNotEmpty &&
+              promosFromStorage.isNotEmpty) {
+            emit(LoadedState(
+              banner: bannersFromStorage,
+              highlight: highlightsFromStorage,
+              service: servicesFromStorage,
+              promo: promosFromStorage,
+            ));
+            //print('LOAD EVENT - STORAGE NOT EMPTY');
+          } else {
+            // If local storage is empty, fetch from API
+            //print('LOAD EVENT - STORAGE EMPTY');
+            await _fetchAndStoreMenu(emit);
+          }
         }
       }
 
       if (event is RefreshEvent) {
-        print('REFRESH EVENT');
+        //print('REFRESH EVENT');
 
         // Always fetch fresh data from the API when RefreshEvent is triggered
         await _fetchAndStoreMenu(emit);
@@ -54,7 +63,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     });
   }
 
-  Future<void> _fetchAndStoreMenu(Emitter<ContentState> emit) async {
+  Future<void> _fetchAndStoreMenu(Emitter<ContentState> emit,
+      {bool firstTime = false, SharedPreferences? prefs}) async {
     try {
       // Fetch data from API
       final bannersFromApi = await databaseRepository.fetchBannersFromApi();
@@ -78,7 +88,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         service: servicesFromApi,
         promo: promosFromApi,
       ));
-      print('FETCH MENU SUCCESS');
+
+      // Update firstTime flag only if it's the first launch
+      if (firstTime && prefs != null) {
+        await prefs.setBool('firstTime', false);
+        //print('SUCCESS LOAD FIRST LAUNCH, FIRST TIME SET TO FALSE');
+      }
+      //print('FETCH MENU SUCCESS');
     } catch (e) {
       // Handle error, fall back to local storage if available
       final bannersFromStorage = await databaseRepository.loadAllBanner();
@@ -96,13 +112,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           service: servicesFromStorage,
           promo: promosFromStorage,
           messageError:
-              'Gagal memperbarui halaman utama.\nMohon periksa koneksi internet Anda dan coba lagi.',
+              'Gagal memperbarui halaman utama.\nPeriksa koneksi internet Anda dan coba lagi.',
         ));
-        print('FETCH MENU FAILED');
+        //print('FETCH MENU FAILED');
       } else {
         emit(FailureLoadState(
           message:
-              'Gagal memuat menu.\nMohon periksa koneksi internet Anda dan coba lagi',
+              'Gagal memuat halaman utama.\nPeriksa koneksi internet Anda dan coba lagi.',
         ));
       }
     }

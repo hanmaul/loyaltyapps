@@ -3,6 +3,7 @@ import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/main.dart';
 import 'package:loyalty/services/auth_service.dart';
 import 'package:loyalty/services/internet_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLifecycleObserver extends WidgetsBindingObserver {
   DatabaseRepository databaseRepository = DatabaseRepository();
@@ -12,7 +13,15 @@ class AppLifecycleObserver extends WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _checkForLogout();
+    } else if (state == AppLifecycleState.detached ||
+        state == AppLifecycleState.paused) {
+      _resetFirstTimeFlag();
     }
+  }
+
+  Future<void> _resetFirstTimeFlag() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('firstTime', true);
   }
 
 // Function to check if the user exists and route is not '/get-otp'
