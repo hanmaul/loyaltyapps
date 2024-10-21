@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/material.dart';
@@ -6,15 +7,15 @@ import 'package:loyalty/components/alert.dart';
 import 'package:loyalty/data/repository/database_repository.dart';
 import 'package:loyalty/screen/auth/get_otp.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   // Background logout logic without UI navigation
   static Future<void> clearSession() async {
     bool userExists = await DatabaseRepository().checkUserExists();
     if (userExists) {
-      await InAppWebViewController.clearAllCache(); // Clear WebView cache
-      await CookieManager().deleteAllCookies(); // Delete WebView cookies
-      await DatabaseRepository().clearDatabase(); // Clear local user data
+      await clearAllAppData();
       await DatabaseRepository().saveLogoutSession(
           "Anda telah keluar karena akun Anda digunakan di perangkat lain.");
     }
@@ -31,9 +32,7 @@ class AuthService {
   }
 
   static Future<void> signOutByUser(BuildContext context) async {
-    await InAppWebViewController.clearAllCache(); // Clear WebView cache
-    await CookieManager().deleteAllCookies(); // Delete WebView cookies
-    await DatabaseRepository().clearDatabase();
+    await clearAllAppData();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const GetOtp()),
@@ -111,6 +110,31 @@ class AuthService {
     if (!userKey) {
       // If the user key does not exist, sign the user out
       await signOut(context);
+    }
+  }
+
+  static Future<void> clearAllAppData() async {
+    try {
+      // Clear WebView cache
+      await InAppWebViewController.clearAllCache();
+
+      // Delete WebView cookies
+      await CookieManager().deleteAllCookies();
+
+      // Clear local database
+      await DatabaseRepository().clearDatabase();
+
+      // Clear SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
+      // Clear app cache
+      Directory cacheDir = await getTemporaryDirectory();
+      if (cacheDir.existsSync()) {
+        cacheDir.deleteSync(recursive: true);
+      }
+    } catch (e) {
+      debugPrint('Error clearing app data: $e');
     }
   }
 }
