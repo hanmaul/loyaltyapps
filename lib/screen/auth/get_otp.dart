@@ -133,6 +133,12 @@ class _GetOtpState extends State<GetOtp> {
   }
 
   @override
+  void dispose() {
+    phoneController.dispose(); // Clean up the text controller
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
