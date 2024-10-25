@@ -58,6 +58,8 @@ class _InternetAwareWidgetState extends State<InternetAwareWidget> {
       hasInternet = await _checkInternetAccess();
     }
 
+    if (!mounted) return;
+
     if (hasInternet && _wasOffline) {
       // Trigger the callback when internet access is restored
       widget.onInternetAccessRestored?.call();
