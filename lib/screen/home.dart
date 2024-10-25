@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
             return InternetAwareWidget(
               byPass: true,
               onInternetAccessRestored: () {
-                context.read<ContentBloc>().add(LoadEvent());
+                context.read<ContentBloc>().add(RefreshEvent());
               },
               child: Scaffold(
                 backgroundColor: Colors.white,
