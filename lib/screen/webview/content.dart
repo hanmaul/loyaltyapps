@@ -300,14 +300,14 @@ class _ContentState extends State<Content> {
                               FilterErrorService.filterError(error.type);
                           receivedError(errorDetails);
                         },
-                        onReceivedHttpError:
-                            (controller, request, errorResponse) {
-                          final errorDetails =
-                              FilterErrorService.filterHttpError(
-                            errorResponse.statusCode ?? 0,
-                          );
-                          receivedError(errorDetails);
-                        },
+                        // onReceivedHttpError:
+                        //     (controller, request, errorResponse) {
+                        //   final errorDetails =
+                        //       FilterErrorService.filterHttpError(
+                        //     errorResponse.statusCode ?? 0,
+                        //   );
+                        //   receivedError(errorDetails);
+                        // },
                         onWebViewCreated: (InAppWebViewController controller) {
                           _webViewController = controller;
                           controller.addJavaScriptHandler(

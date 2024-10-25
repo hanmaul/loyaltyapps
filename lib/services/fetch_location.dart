@@ -4,13 +4,6 @@ import 'package:loyalty/components/alert.dart';
 
 class FetchLocation {
   Future<bool> requestLocationPermission(BuildContext context) async {
-    // Check if GPS is enabled
-    // bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    // if (!serviceEnabled) {
-    //   await Geolocator.openLocationSettings();
-    //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    // }
-
     // Request location permission
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -30,38 +23,6 @@ class FetchLocation {
     }
 
     return true;
-  }
-
-  /// Ensures that location permission is granted
-  Future<bool> _ensureLocationPermissionGranted(BuildContext context) async {
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permission denied, return false
-        return false;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      _showDeniedForeverDialog(context);
-      return false;
-    }
-
-    return true;
-  }
-
-  /// Opens location settings and returns true when the service is enabled
-  Future<bool> _ensureLocationServiceEnabled() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    }
-
-    return serviceEnabled;
   }
 
   Future<bool> checkLocationService() async {

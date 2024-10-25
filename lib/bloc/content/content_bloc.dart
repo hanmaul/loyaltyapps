@@ -24,7 +24,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         final bool firstTime = prefs.getBool('firstTime') ?? true;
 
         if (firstTime) {
-          print('LOAD EVENT - FIRST LAUNCH APP');
+          //print('LOAD EVENT - FIRST LAUNCH APP');
           await _fetchAndStoreMenu(emit, firstTime: true, prefs: prefs);
         } else {
           // Check if local storage has data
@@ -45,17 +45,17 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
               service: servicesFromStorage,
               promo: promosFromStorage,
             ));
-            print('LOAD EVENT - STORAGE NOT EMPTY');
+            //print('LOAD EVENT - STORAGE NOT EMPTY');
           } else {
             // If local storage is empty, fetch from API
-            print('LOAD EVENT - STORAGE EMPTY');
+            //print('LOAD EVENT - STORAGE EMPTY');
             await _fetchAndStoreMenu(emit);
           }
         }
       }
 
       if (event is RefreshEvent) {
-        print('REFRESH EVENT');
+        //print('REFRESH EVENT');
 
         // Always fetch fresh data from the API when RefreshEvent is triggered
         await _fetchAndStoreMenu(emit);
@@ -92,9 +92,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       // Update firstTime flag only if it's the first launch
       if (firstTime && prefs != null) {
         await prefs.setBool('firstTime', false);
-        print('SUCCESS LOAD FIRST LAUNCH, FIRST TIME SET TO FALSE');
+        //print('SUCCESS LOAD FIRST LAUNCH, FIRST TIME SET TO FALSE');
       }
-      print('FETCH MENU SUCCESS');
+      //print('FETCH MENU SUCCESS');
     } catch (e) {
       // Handle error, fall back to local storage if available
       final bannersFromStorage = await databaseRepository.loadAllBanner();
@@ -114,7 +114,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           messageError:
               'Gagal memperbarui halaman utama.\nPeriksa koneksi internet Anda dan coba lagi.',
         ));
-        print('FETCH MENU FAILED');
+        //print('FETCH MENU FAILED');
       } else {
         emit(FailureLoadState(
           message:
