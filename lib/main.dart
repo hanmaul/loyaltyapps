@@ -50,8 +50,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseApi().initNotifications();
-    await _fetchLocation
-        .requestLocationPermission(navigatorKey.currentContext!);
   }
 
   @override

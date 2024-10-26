@@ -72,7 +72,8 @@ class _ContentState extends State<Content> {
     FetchLocation fetchLocation = FetchLocation();
     try {
       // Fetch latitude and longitude
-      Map<String, double> position = await fetchLocation.getCurrentPosition();
+      Map<String, double> position =
+          await fetchLocation.getCurrentPosition(context);
       return {
         'latitude': position['latitude']!,
         'longitude': position['longitude']!,
